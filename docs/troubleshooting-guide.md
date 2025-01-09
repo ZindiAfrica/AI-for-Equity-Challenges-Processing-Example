@@ -7,6 +7,7 @@
 - Check internet connectivity
 - If using pip, try switching to uv: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - Verify uv is working: `uv --version`
+- Check Python version: `python --version` (should be 3.10.0 or higher)
 
 ### 2. Permission Errors
 - Verify you're using the correct team credentials

@@ -3,7 +3,7 @@
 ## Prerequisites
 
 1. AWS CLI configured with your credentials
-2. Python 3.10+ installed locally
+2. Python 3.10.0 or higher installed locally
 3. uv package manager installed:
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
