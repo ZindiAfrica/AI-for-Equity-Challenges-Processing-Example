@@ -1,9 +1,35 @@
 import base64
+import os
 import subprocess
 
 import boto3
 import sagemaker
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
+
+def check_aws_environment():
+    """Print AWS environment settings and handle AWS_PROFILE precedence"""
+    aws_profile = os.environ.get('AWS_PROFILE', '')
+    
+    if aws_profile:
+        print(f"Using AWS_PROFILE: {aws_profile}")
+        # If AWS_PROFILE is set, unset other AWS environment variables
+        for key in ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_REGION']:
+            if key in os.environ:
+                del os.environ[key]
+    else:
+        # Print individual credentials if AWS_PROFILE is not set
+        print(f"AWS_ACCESS_KEY_ID: {'*****' if os.environ.get('AWS_ACCESS_KEY_ID') else 'not set'}")
+        print(f"AWS_REGION: {os.environ.get('AWS_REGION', 'not set')}")
+        print(f"AWS_SECRET_ACCESS_KEY: {'*****' if os.environ.get('AWS_SECRET_ACCESS_KEY') else 'not set'}")
+
+    # Get and print current user identity
+    try:
+        sts = boto3.client('sts')
+        caller_identity = sts.get_caller_identity()
+        username = caller_identity['Arn'].split('/')[-1]
+        print(f"AWS Username: {username}")
+    except Exception as e:
+        print(f"Failed to get AWS identity: {e}")
 
 
 def get_account_id():
@@ -42,6 +68,9 @@ def build_and_push_docker_image(image_name, account_id, region):
 
 
 def main():
+    # Check AWS environment first
+    check_aws_environment()
+    
     # Import helper
     from utils.aws_utils import get_execution_role
 
