@@ -12,9 +12,10 @@ WORKDIR /app
 # Copy requirements first to leverage Docker cache
 COPY pyproject.toml .
 
-# Install Python dependencies
+# Install uv and Python dependencies
 RUN pip install --no-cache-dir uv && \
-    uv pip install --system -e ".[dev]"
+    uv pip install --system -e ".[dev]" && \
+    rm -rf ~/.cache/pip ~/.cache/uv
 
 # Copy the application code
 COPY notebooks/ notebooks/
