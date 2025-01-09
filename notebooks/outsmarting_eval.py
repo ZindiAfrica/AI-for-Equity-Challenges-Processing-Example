@@ -6,8 +6,8 @@ import joblib
 import boto3
 
 # Initialize S3 client
-s3_client = boto3.client('s3')
-bucket_name = 'comp-user-5ow9bw-team-bucket'
+s3_client = boto3.client("s3")
+bucket_name = "comp-user-5ow9bw-team-bucket"
 
 # Load preprocessed datasets from S3
 print("Downloading preprocessed test dataset from S3...")
@@ -18,20 +18,24 @@ test_df = pd.read_csv(test_data_path)
 model_s3_path = f"s3://{bucket_name}/models/random_forest_model.joblib"
 local_model_path = "random_forest_model.joblib"
 print("Downloading trained model from S3...")
-s3_client.download_file(bucket_name, "models/random_forest_model.joblib", local_model_path)
+s3_client.download_file(
+    bucket_name, "models/random_forest_model.joblib", local_model_path
+)
 
 # Load the model
 model = joblib.load(local_model_path)
 
 # Specify the target column
-target_column = 'Total'
+target_column = "Total"
 
 # Prepare the test data
-X_test = test_df.drop(columns=[target_column, 'ID', 'Location'], errors='ignore')  # Exclude unnecessary columns
+X_test = test_df.drop(
+    columns=[target_column, "ID", "Location"], errors="ignore"
+)  # Exclude unnecessary columns
 y_test = test_df[target_column]
 
 # Handle categorical features in the test data
-categorical_cols = X_test.select_dtypes(include=['object']).columns
+categorical_cols = X_test.select_dtypes(include=["object"]).columns
 for col in categorical_cols:
     le = LabelEncoder()
     X_test[col] = le.fit_transform(X_test[col])
@@ -49,9 +53,7 @@ y_pred = model.predict(X_test)
 mae = mean_absolute_error(y_test, y_pred)
 
 # Save evaluation metrics
-evaluation_metrics = {
-    "mean_absolute_error": mae
-}
+evaluation_metrics = {"mean_absolute_error": mae}
 print(f"Mean Absolute Error (MAE): {mae}")
 
 # Upload evaluation metrics to S3
@@ -64,4 +66,3 @@ print("Uploading evaluation metrics to S3...")
 s3_client.upload_file(metrics_path, bucket_name, "evaluation/evaluation_metrics.json")
 
 print(f"Evaluation metrics saved to {metrics_s3_path}")
-

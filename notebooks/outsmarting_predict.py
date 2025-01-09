@@ -4,8 +4,8 @@ import joblib
 import boto3
 
 # Initialize S3 client
-s3_client = boto3.client('s3')
-bucket_name = 'comp-user-5ow9bw-team-bucket'
+s3_client = boto3.client("s3")
+bucket_name = "comp-user-5ow9bw-team-bucket"
 
 # Load preprocessed test dataset from S3
 print("Downloading preprocessed test dataset from S3...")
@@ -16,16 +16,20 @@ test_df = pd.read_csv(test_data_path)
 model_s3_path = f"s3://{bucket_name}/models/random_forest_model.joblib"
 local_model_path = "random_forest_model.joblib"
 print("Downloading trained model from S3...")
-s3_client.download_file(bucket_name, "models/random_forest_model.joblib", local_model_path)
+s3_client.download_file(
+    bucket_name, "models/random_forest_model.joblib", local_model_path
+)
 
 # Load the model
 model = joblib.load(local_model_path)
 
 # Prepare the test data
-X_test = test_df.drop(columns=['Total', 'ID', 'Location'], errors='ignore')  # Exclude unnecessary columns
+X_test = test_df.drop(
+    columns=["Total", "ID", "Location"], errors="ignore"
+)  # Exclude unnecessary columns
 
 # Handle categorical features in the test data
-categorical_cols = X_test.select_dtypes(include=['object']).columns
+categorical_cols = X_test.select_dtypes(include=["object"]).columns
 for col in categorical_cols:
     le = LabelEncoder()
     X_test[col] = le.fit_transform(X_test[col])
@@ -42,8 +46,8 @@ print("Making predictions on test data...")
 predictions = model.predict(X_test)
 
 # Create the final DataFrame with ID and predictions
-submission = test_df[['ID']].copy()
-submission['Predicted_Total'] = predictions
+submission = test_df[["ID"]].copy()
+submission["Predicted_Total"] = predictions
 
 # Save predictions to a CSV file
 submission_path = "Predictions.csv"
@@ -55,4 +59,3 @@ print("Uploading predictions to S3...")
 s3_client.upload_file(submission_path, bucket_name, "predictions/Predictions.csv")
 
 print(f"Predictions saved to {predictions_s3_path}")
-
