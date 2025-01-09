@@ -19,9 +19,12 @@ uv venv
 source .venv/bin/activate
 ```
 
-2. Install dependencies and development tools (uv is much faster than pip):
+2. Install dependencies and development tools:
 ```bash
-uv pip install ".[dev]"
+# Install main package and dev dependencies
+uv pip install -e ".[dev]"
+
+# Install pre-commit hooks
 pre-commit install
 ```
 
@@ -46,6 +49,10 @@ cd sua-outsmarting-outbreaks-example
 
 2. Configure AWS credentials in your environment:
 ```bash
+# Set up AWS credentials
+aws configure
+
+# Or use a specific profile
 export AWS_PROFILE=your-profile-name
 ```
 
@@ -61,6 +68,18 @@ Results are saved to your team's S3 bucket:
 - Trained model: `s3://<team-bucket>/output/training/`
 - Evaluation results: `s3://<team-bucket>/output/evaluation/`
 - Final predictions: `s3://<team-bucket>/output/predictions/`
+
+## Project Structure
+
+The project uses modern Python packaging with pyproject.toml:
+- Dependencies are managed in pyproject.toml
+- Development tools (ruff, pytest, etc.) are included in [dev] extras
+- Code quality is enforced via ruff and pre-commit hooks
+- Tests are managed with pytest
+
+To add new dependencies:
+1. Add them to pyproject.toml
+2. Reinstall the package: `uv pip install -e ".[dev]"`
 
 ## Resource Configuration
 
