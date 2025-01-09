@@ -68,9 +68,10 @@ You can also run this pipeline directly from AWS CloudShell:
 1. Log into AWS Console and navigate to SageMaker Studio
 2. Open SageMaker Studio and select your user profile
 3. In the launcher, choose "Python 3 (PyTorch 2.0 Python 3.10 GPU Optimized)" kernel
-4. Install required packages in a new cell:
+4. Install uv and required packages in a new cell:
 ```python
-!pip install pandas scikit-learn boto3 sagemaker
+!curl -LsSf https://astral.sh/uv/install.sh | sh
+!uv pip install pandas scikit-learn boto3 sagemaker
 ```
 
 5. Clone this repository in a new cell:

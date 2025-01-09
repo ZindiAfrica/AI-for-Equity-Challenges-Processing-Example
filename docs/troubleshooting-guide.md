@@ -5,7 +5,8 @@
 ### 1. Package Installation Fails
 - Try restarting the kernel
 - Check internet connectivity
-- Verify pip is up to date: `pip install --upgrade pip`
+- If using pip, try switching to uv: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- Verify uv is working: `uv --version`
 
 ### 2. Permission Errors
 - Verify you're using the correct team credentials
