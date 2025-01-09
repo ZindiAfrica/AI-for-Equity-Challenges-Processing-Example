@@ -16,6 +16,6 @@ services:
       - AWS_REGION=us-east-2
     volumes:
       - .:/app
-    command: tail -f /dev/null  # Keep container running
+    command: python debug_entry.py
     stdin_open: true  # docker run -i
     tty: true        # docker run -t
