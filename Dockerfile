@@ -14,7 +14,7 @@ COPY pyproject.toml .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir uv && \
-    uv pip install -e ".[dev]"
+    uv pip install --system -e ".[dev]"
 
 # Copy the application code
 COPY notebooks/ notebooks/
