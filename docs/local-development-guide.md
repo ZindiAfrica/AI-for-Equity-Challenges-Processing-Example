@@ -49,6 +49,9 @@ source .venv/bin/activate
 # Install main package and dev dependencies
 uv pip install -e ".[dev]"
 
+# Verify key packages are installed
+python -c "import boto3, sagemaker, pandas, sklearn, joblib"
+
 # Install pre-commit hooks
 pre-commit install
 ```

@@ -4,6 +4,8 @@
 - Access to AWS SageMaker Studio (provided by competition organizers)
 - Your team's S3 bucket permissions
 - GitHub account with repository access
+- Docker installed and configured (for local testing)
+- AWS CLI configured with your credentials
 
 ## AWS CloudShell Setup
 

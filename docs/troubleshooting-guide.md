@@ -16,10 +16,18 @@
 - Ensure pre-commit hooks are installed: `pre-commit install`
 - Run pre-commit manually: `pre-commit run --all-files`
 
-### 2. Permission Errors
-- Verify you're using the correct team credentials
-- Check S3 bucket permissions
-- Ensure SageMaker execution role has required permissions
+### 2. AWS Credential Issues
+- Verify AWS credentials are properly set in environment:
+  ```bash
+  aws configure list
+  aws sts get-caller-identity
+  ```
+- Check S3 bucket permissions with:
+  ```bash
+  aws s3 ls s3://comp-user-5ow9bw-team-bucket
+  ```
+- Ensure Docker has access to AWS credentials
+- Verify SageMaker execution role permissions
 
 ### 3. Resource Limits
 - Check if you've hit the team's GPU instance quota
