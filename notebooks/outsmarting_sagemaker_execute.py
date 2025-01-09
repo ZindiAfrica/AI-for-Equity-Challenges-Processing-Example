@@ -1,10 +1,10 @@
 # Import necessary libraries
 import sagemaker
-from sagemaker.image_uris import retrieve
+from sagemaker.image_uris import retrieve as retrieve_image_uri
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 # Initialize SageMaker session and role
-sagemaker_session = sagemaker_session = sagemaker.Session(
+sagemaker_session = sagemaker.Session(
     default_bucket="comp-user-5ow9bw-team-bucket"
 )
 role = sagemaker.get_execution_role()
@@ -21,15 +21,13 @@ model_training_script = "./outsmarting_train.py"
 model_evaluation_script = "./outsmarting_eval.py"
 model_prediction_script = "./outsmarting_predict.py"
 
-from sagemaker.image_uris import retrieve
-
 # Specify framework details
 framework = "sklearn"
 version = "0.23-1"  # Replace with desired version
 region = "us-east-2"  # Replace with your AWS region
 
 # Retrieve the image URI
-image_uri = retrieve(
+image_uri = retrieve_image_uri(
     framework=framework, region=region, version=version, image_scope="inference"
 )
 
