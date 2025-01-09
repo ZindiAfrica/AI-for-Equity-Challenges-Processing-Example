@@ -25,15 +25,17 @@ def get_execution_role():
         if ':role/' in caller_identity['Arn']:
             return caller_identity['Arn']
             
-        # If using user credentials, try to assume SageMaker role
-        try:
-            role_arn = f"arn:aws:iam::{caller_identity['Account']}:role/SageMakerRole-{username}"
-            assumed_role = sts.assume_role(
-                RoleArn=role_arn,
-                RoleSessionName="local-dev-session"
-            )
-            return role_arn
-        except Exception as e:
-            print(f"Failed to assume SageMaker role: {e}")
-            # If can't assume role, return current user ARN
-            return caller_identity['Arn']
+        # Only try to assume SageMaker role for comp-user prefixed users
+        if username.startswith('comp-user'):
+            try:
+                role_arn = f"arn:aws:iam::{caller_identity['Account']}:role/SageMakerRole-{username}"
+                assumed_role = sts.assume_role(
+                    RoleArn=role_arn,
+                    RoleSessionName="local-dev-session"
+                )
+                return role_arn
+            except Exception as e:
+                print(f"Failed to assume SageMaker role: {e}")
+        
+        # For non comp-user users or if role assumption fails, return current user ARN
+        return caller_identity['Arn']
