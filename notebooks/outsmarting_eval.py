@@ -1,9 +1,9 @@
 # Import necessary libraries
+import boto3
+import joblib
 import pandas as pd
 from sklearn.metrics import mean_absolute_error
 from sklearn.preprocessing import LabelEncoder
-import joblib
-import boto3
 
 # Initialize S3 client
 s3_client = boto3.client("s3")

@@ -1,6 +1,6 @@
 # Import necessary libraries
-import pandas as pd
 import boto3
+import pandas as pd
 from scipy.spatial import cKDTree
 
 # Initialize S3 client

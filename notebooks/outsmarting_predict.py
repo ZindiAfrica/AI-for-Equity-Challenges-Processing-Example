@@ -1,7 +1,8 @@
 # Import necessary libraries
-import pandas as pd
-import joblib
 import boto3
+import joblib
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
 
 # Initialize S3 client
 s3_client = boto3.client("s3")

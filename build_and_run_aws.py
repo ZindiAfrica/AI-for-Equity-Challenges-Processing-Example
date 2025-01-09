@@ -1,10 +1,9 @@
+import base64
+import subprocess
+
 import boto3
 import sagemaker
-from sagemaker.processing import ScriptProcessor, ProcessingInput, ProcessingOutput
-import os
-import subprocess
-import base64
-import time
+from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 
 def get_account_id():

@@ -1,8 +1,7 @@
 # Import necessary libraries
-import boto3
 import sagemaker
-from sagemaker.processing import ScriptProcessor, ProcessingInput, ProcessingOutput
-from sagemaker import image_uris
+from sagemaker.image_uris import retrieve
+from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 # Initialize SageMaker session and role
 sagemaker_session = sagemaker_session = sagemaker.Session(
