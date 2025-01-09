@@ -19,9 +19,21 @@ uv venv
 source .venv/bin/activate
 ```
 
-2. Install dependencies (uv is much faster than pip):
+2. Install dependencies and development tools (uv is much faster than pip):
 ```bash
-uv pip install .
+uv pip install ".[dev]"
+pre-commit install
+```
+
+3. Run code quality checks:
+```bash
+ruff check .
+ruff format .
+```
+
+4. Run tests:
+```bash
+pytest
 ```
 
 ## Setup Instructions

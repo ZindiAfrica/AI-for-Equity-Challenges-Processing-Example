@@ -8,6 +8,13 @@
 - If using pip, try switching to uv: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - Verify uv is working: `uv --version`
 - Check Python version: `python --version` (should be 3.10.0 or higher)
+- For development dependencies, install with: `uv pip install ".[dev]"`
+
+### 2. Code Quality Checks Fail
+- Run `ruff check .` to see detailed linting errors
+- Run `ruff format .` to automatically fix formatting
+- Ensure pre-commit hooks are installed: `pre-commit install`
+- Run pre-commit manually: `pre-commit run --all-files`
 
 ### 2. Permission Errors
 - Verify you're using the correct team credentials
