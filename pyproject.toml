@@ -12,6 +12,13 @@ dependencies = [
     "scipy==1.11.4",
 ]
 
+[project.optional-dependencies]
+dev = [
+    "ruff>=0.1.9",
+    "pytest>=7.4.3",
+    "pre-commit>=3.6.0",
+]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
