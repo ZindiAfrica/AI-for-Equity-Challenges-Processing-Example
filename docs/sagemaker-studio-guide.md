@@ -3,6 +3,65 @@
 ## Prerequisites
 - Access to AWS SageMaker Studio (provided by competition organizers)
 - Your team's S3 bucket permissions
+- GitHub account with repository access
+
+## AWS CloudShell Setup
+
+You can also run this pipeline directly from AWS CloudShell:
+
+1. Open AWS CloudShell:
+   - Go to AWS Console
+   - Click the CloudShell icon in the top navigation bar
+   - Wait for the shell environment to initialize
+
+2. Clone and setup the repository:
+   ```bash
+   git clone https://github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+   cd AI-for-Equity-Challenges-Processing-Example
+   pip install --user -r requirements.txt
+   ```
+
+3. Configure git:
+   ```bash
+   git config --global user.name "Your Name"
+   git config --global user.email "your.email@example.com"
+   ```
+
+4. Run the pipeline:
+   ```bash
+   python build_and_run_aws.py
+   ```
+
+5. Monitor progress:
+   ```bash
+   aws sagemaker list-processing-jobs
+   aws sagemaker describe-processing-job --processing-job-name <job-name>
+   ```
+
+## SageMaker Studio Setup
+
+1. Configure AWS credentials in SageMaker:
+   - Open SageMaker Studio Terminal
+   - Run AWS configuration:
+   ```bash
+   aws configure
+   ```
+   - Enter your:
+     - AWS Access Key ID
+     - AWS Secret Access Key
+     - Default region (us-east-2)
+     - Default output format (json)
+
+2. Verify AWS configuration:
+   ```bash
+   aws sts get-caller-identity
+   ```
+
+3. Configure git in SageMaker:
+   ```bash
+   git config --global user.name "Your Name"
+   git config --global user.email "your.email@example.com"
+   ```
 
 ## Setup Instructions
 

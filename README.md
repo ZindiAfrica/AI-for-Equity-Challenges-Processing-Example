@@ -20,10 +20,53 @@ Choose your preferred method to run the pipeline:
 │   ├── outsmarting_eval.py       # Model evaluation script
 │   └── outsmarting_predict.py    # Prediction generation script
 ├── docs/                         # Detailed documentation
+│   ├── sagemaker-studio-guide.md # AWS SageMaker Studio setup and usage
+│   ├── local-development-guide.md # Local development instructions
+│   └── troubleshooting-guide.md  # Common issues and solutions
 ├── Dockerfile                    # Container definition for SageMaker
 ├── build_and_push.sh            # Script to build and push Docker image
 ├── build_and_run_aws.py         # Script to execute pipeline on AWS
 └── requirements.txt             # Python dependencies
+```
+
+## GitHub Authentication Setup
+
+### Generate SSH Key (Recommended)
+1. Generate a new SSH key:
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+2. Add to GitHub:
+- Copy your public key:
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+- Go to GitHub → Settings → SSH Keys → New SSH Key
+- Paste your public key and save
+
+3. Add to SageMaker:
+- Open SageMaker Studio
+- Click File → New → Terminal
+- Create SSH directory:
+```bash
+mkdir -p ~/.ssh
+chmod 700 ~/.ssh
+```
+- Copy your private key:
+```bash
+vim ~/.ssh/id_ed25519  # Paste your private key here
+chmod 600 ~/.ssh/id_ed25519
+```
+
+### Generate GitHub Token (Alternative)
+1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
+2. Generate new token with 'repo' scope
+3. Copy token and add to SageMaker:
+```bash
+git config --global credential.helper store
+echo "https://YOUR_USERNAME:YOUR_TOKEN@github.com" > ~/.git-credentials
+chmod 600 ~/.git-credentials
 ```
 
 ## Getting Help
