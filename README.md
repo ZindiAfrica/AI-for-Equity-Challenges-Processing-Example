@@ -1,6 +1,115 @@
 # SUA Outsmarting Outbreaks Challenge Example
 
-This repository contains example code for running ML pipelines on AWS using SageMaker. You can run this example in two ways:
+This repository contains example code for running ML pipelines on AWS using SageMaker.
+
+## Example CI/CD Pipeline
+
+The `.github/workflows/ml-pipeline.yml` file shows how to set up automated deployments:
+
+```yaml
+name: ML Pipeline
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to run against'
+        required: true
+        default: 'staging'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-2
+
+      - name: Start SageMaker Pipeline
+        run: |
+          aws sagemaker start-pipeline-execution \
+            --pipeline-name ml-training-pipeline \
+            --pipeline-execution-display-name github-action-${GITHUB_SHA}
+```
+
+## Authentication Setup
+
+### 1. GitHub Authentication
+Choose one of these methods:
+
+#### Option A: SSH Keys (Recommended)
+1. Generate an ED25519 SSH key:
+```bash
+ssh-keygen -t ed25519 -C "your_email@example.com"
+```
+
+2. Start SSH agent and add your key:
+```bash
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+```
+
+3. Copy your public key:
+```bash
+cat ~/.ssh/id_ed25519.pub
+```
+
+4. Add the key to GitHub:
+   - Go to GitHub Settings → SSH Keys
+   - Click "New SSH Key"
+   - Paste your public key
+
+#### Option B: Personal Access Token
+1. Generate a token:
+   - Go to GitHub Settings → Developer Settings → Personal Access Tokens
+   - Click "Generate New Token"
+   - Select repo scope
+   - Copy the generated token
+
+2. Use the token with HTTPS:
+```bash
+git clone https://YOUR_TOKEN@github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+```
+
+### 2. AWS Authentication
+1. Configure AWS CLI:
+```bash
+aws configure
+# Enter your AWS Access Key ID
+# Enter your AWS Secret Access Key
+# Region: us-east-2
+# Output format: json
+```
+
+2. Test AWS access:
+```bash
+aws sts get-caller-identity
+```
+
+## Getting Started
+
+Clone this repository using your preferred authentication method:
+
+```bash
+# Using SSH
+git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+
+# Using HTTPS with token
+git clone https://YOUR_TOKEN@github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+
+# Public read-only access
+git clone https://github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+```
+
+## Running the Example
+
+You can run this example in several ways:
 
 ## Option 1: Using AWS SageMaker Studio (Recommended)
 
@@ -20,15 +129,94 @@ This repository contains example code for running ML pipelines on AWS using Sage
 
 5. Clone this repository in a new cell:
 ```python
-!git clone <repository-url>
-%cd sua-outsmarting-outbreaks-example
+# If using SSH
+!git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+
+# If using HTTPS with token
+!git clone https://YOUR_TOKEN@github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+
+%cd AI-for-Equity-Challenges-Processing-Example
 ```
 
-6. Open and run the notebooks in order:
-- `notebooks/outsmarting_data_prep.py`
-- `notebooks/outsmarting_train.py`
-- `notebooks/outsmarting_eval.py`
-- `notebooks/outsmarting_predict.py`
+6. Run the Pipeline
+
+#### Method A: Direct Notebook Execution
+Run notebooks in order:
+```python
+%run notebooks/outsmarting_data_prep.py
+%run notebooks/outsmarting_train.py
+%run notebooks/outsmarting_eval.py
+%run notebooks/outsmarting_predict.py
+```
+
+#### Method B: Using Step Functions
+```python
+import boto3
+import json
+
+# Create Step Functions client
+sfn = boto3.client('stepfunctions')
+
+# Define your pipeline
+pipeline_definition = {
+    "Comment": "ML Pipeline",
+    "StartAt": "DataPrep",
+    "States": {
+        "DataPrep": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::sagemaker:createProcessingJob",
+            "Parameters": {
+                "ProcessingJobName": "data-prep-job",
+                "ProcessingResources": {
+                    "ClusterConfig": {
+                        "InstanceCount": 1,
+                        "InstanceType": "ml.m5.xlarge",
+                        "VolumeSizeInGB": 30
+                    }
+                },
+                "AppSpecification": {
+                    "ImageUri": "YOUR_ECR_IMAGE",
+                    "ContainerEntrypoint": ["python3", "outsmarting_data_prep.py"]
+                }
+            },
+            "Next": "Training"
+        },
+        "Training": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::sagemaker:createTrainingJob",
+            "End": true
+        }
+    }
+}
+
+# Start execution
+response = sfn.start_execution(
+    stateMachineArn='YOUR_STATE_MACHINE_ARN',
+    input=json.dumps(pipeline_definition)
+)
+```
+
+#### Method C: Using AWS Batch
+```python
+import boto3
+
+batch = boto3.client('batch')
+
+# Submit job
+response = batch.submit_job(
+    jobName='ml-pipeline-job',
+    jobQueue='YOUR_JOB_QUEUE',
+    jobDefinition='YOUR_JOB_DEFINITION',
+    containerOverrides={
+        'command': ['python3', 'outsmarting_sagemaker_execute.py']
+    }
+)
+
+# Monitor job status
+job_id = response['jobId']
+status = batch.describe_jobs(jobs=[job_id])['jobs'][0]['status']
+print(f"Job Status: {status}")
+```
 
 ## Option 2: Using AWS Console and Local Development
 
