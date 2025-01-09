@@ -31,9 +31,5 @@ source .venv/bin/activate
 echo "Installing dependencies with uv..."
 uv pip install -r requirements.txt
 
-# Create necessary S3 buckets if they don't exist
-aws s3 mb s3://sua-outsmarting-outbreaks-challenge-comp --region us-east-2 || true
-aws s3 mb s3://comp-user-5ow9bw-team-bucket --region us-east-2 || true
-
 echo "Setup complete! You can now run the example notebooks."
 echo "Remember to activate the virtual environment with: source .venv/bin/activate"
