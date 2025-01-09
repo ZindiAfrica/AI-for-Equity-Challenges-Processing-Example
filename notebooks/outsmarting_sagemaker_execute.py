@@ -21,10 +21,10 @@ input_prefix = f"s3://{bucket_name}/"
 output_prefix = f"s3://{out_bucket_name}/output/"
 
 # Define the scripts for each stage (local paths expected for `code` argument)
-data_prep_script = "./outsmarting_data_prep.py"
-model_training_script = "./outsmarting_train.py"
-model_evaluation_script = "./outsmarting_eval.py"
-model_prediction_script = "./outsmarting_predict.py"
+data_prep_script = "notebooks/outsmarting_data_prep.py"
+model_training_script = "notebooks/outsmarting_train.py"
+model_evaluation_script = "notebooks/outsmarting_eval.py"
+model_prediction_script = "notebooks/outsmarting_predict.py"
 
 # Specify framework details
 framework = "sklearn"
