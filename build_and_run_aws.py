@@ -42,11 +42,14 @@ def build_and_push_docker_image(image_name, account_id, region):
 
 
 def main():
+    # Import helper
+    from utils.aws_utils import get_execution_role
+
     # Initialize AWS clients
     region = "us-east-2"
     account_id = get_account_id()
     sagemaker_session = sagemaker.Session()
-    role = sagemaker.get_execution_role()
+    role = get_execution_role()
 
     # Build and push Docker image
     image_name = "outsmarting-pipeline"
