@@ -3,9 +3,15 @@ import sagemaker
 from sagemaker.image_uris import retrieve as retrieve_image_uri
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
-# Initialize SageMaker session and role
-sagemaker_session = sagemaker.Session(default_bucket="comp-user-5ow9bw-team-bucket")
-role = sagemaker.get_execution_role()
+# Initialize SageMaker session with explicit bucket
+sagemaker_session = sagemaker.Session()
+sagemaker_session.default_bucket = lambda: "comp-user-5ow9bw-team-bucket"
+
+# Use AWS user credentials instead of role
+boto_session = boto3.Session()
+sts = boto_session.client('sts')
+caller_identity = sts.get_caller_identity()
+role = caller_identity['Arn']
 
 # Define the S3 bucket for input and output data
 bucket_name = "sua-outsmarting-outbreaks-challenge-comp"
