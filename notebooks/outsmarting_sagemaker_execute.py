@@ -29,7 +29,7 @@ version = "0.23-1"  # Replace with desired version
 region = "us-east-2"  # Replace with your AWS region
 
 # Retrieve the image URI
-image_uri = image_uris.retrieve(
+image_uri = retrieve(
     framework=framework, region=region, version=version, image_scope="inference"
 )
 
