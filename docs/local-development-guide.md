@@ -4,9 +4,31 @@
 
 1. AWS CLI configured with your credentials
 2. Python 3.10+ installed locally
-3. Required Python packages:
+3. uv package manager installed:
 ```bash
-pip install pandas scikit-learn boto3 sagemaker
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+## Virtual Environment Setup
+
+We strongly recommend using a virtual environment for development:
+
+1. Create a new virtual environment:
+```bash
+python -m venv .venv
+```
+
+2. Activate the virtual environment:
+```bash
+# On macOS/Linux:
+source .venv/bin/activate
+# On Windows:
+.venv\Scripts\activate
+```
+
+3. Install dependencies using uv (faster than pip):
+```bash
+uv pip install -r requirements.txt
 ```
 
 ## Setup Instructions
