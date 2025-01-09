@@ -4,9 +4,7 @@ from sagemaker.image_uris import retrieve as retrieve_image_uri
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 # Initialize SageMaker session and role
-sagemaker_session = sagemaker.Session(
-    default_bucket="comp-user-5ow9bw-team-bucket"
-)
+sagemaker_session = sagemaker.Session(default_bucket="comp-user-5ow9bw-team-bucket")
 role = sagemaker.get_execution_role()
 
 # Define the S3 bucket for input and output data
