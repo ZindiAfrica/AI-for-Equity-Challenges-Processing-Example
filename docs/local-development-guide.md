@@ -13,20 +13,13 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 We strongly recommend using a virtual environment for development:
 
-1. Create a new virtual environment:
+1. Create and activate a new virtual environment using uv:
 ```bash
-python -m venv .venv
-```
-
-2. Activate the virtual environment:
-```bash
-# On macOS/Linux:
+uv venv
 source .venv/bin/activate
-# On Windows:
-.venv\Scripts\activate
 ```
 
-3. Install dependencies using uv (faster than pip):
+2. Install dependencies (uv is much faster than pip):
 ```bash
 uv pip install -r requirements.txt
 ```
