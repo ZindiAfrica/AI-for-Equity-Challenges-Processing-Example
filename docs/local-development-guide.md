@@ -78,10 +78,9 @@ cd sua-outsmarting-outbreaks-example
 2. Configure AWS credentials in your environment:
 ```bash
 # Set up AWS credentials
-aws configure
-
-# Or use a specific profile
-export AWS_PROFILE=your-profile-name
+export AWS_ACCESS_KEY_ID=your_access_key
+export AWS_SECRET_ACCESS_KEY=your_secret_key
+export AWS_DEFAULT_REGION=us-east-2
 ```
 
 3. Run the pipeline:
