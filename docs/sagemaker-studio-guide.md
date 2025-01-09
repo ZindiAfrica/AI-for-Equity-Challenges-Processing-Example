@@ -1,0 +1,106 @@
+# Running with AWS SageMaker Studio (Recommended)
+
+## Prerequisites
+- Access to AWS SageMaker Studio (provided by competition organizers)
+- Your team's S3 bucket permissions
+
+## Setup Instructions
+
+1. Log into AWS Console and navigate to SageMaker Studio
+2. Open SageMaker Studio and select your user profile
+3. In the launcher, choose "Python 3 (PyTorch 2.0 Python 3.10 GPU Optimized)" kernel
+4. Install required packages in a new cell:
+```python
+!pip install pandas scikit-learn boto3 sagemaker
+```
+
+5. Clone this repository in a new cell:
+```python
+# If using SSH
+!git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+
+# If using HTTPS with token
+!git clone https://YOUR_TOKEN@github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+
+%cd AI-for-Equity-Challenges-Processing-Example
+```
+
+## Running the Pipeline
+
+### Method A: Direct Notebook Execution
+Run notebooks in order:
+```python
+%run notebooks/outsmarting_data_prep.py
+%run notebooks/outsmarting_train.py
+%run notebooks/outsmarting_eval.py
+%run notebooks/outsmarting_predict.py
+```
+
+### Method B: Using Step Functions
+```python
+import boto3
+import json
+
+# Create Step Functions client
+sfn = boto3.client('stepfunctions')
+
+# Define your pipeline
+pipeline_definition = {
+    "Comment": "ML Pipeline",
+    "StartAt": "DataPrep",
+    "States": {
+        "DataPrep": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::sagemaker:createProcessingJob",
+            "Parameters": {
+                "ProcessingJobName": "data-prep-job",
+                "ProcessingResources": {
+                    "ClusterConfig": {
+                        "InstanceCount": 1,
+                        "InstanceType": "ml.m5.xlarge",
+                        "VolumeSizeInGB": 30
+                    }
+                },
+                "AppSpecification": {
+                    "ImageUri": "YOUR_ECR_IMAGE",
+                    "ContainerEntrypoint": ["python3", "outsmarting_data_prep.py"]
+                }
+            },
+            "Next": "Training"
+        },
+        "Training": {
+            "Type": "Task",
+            "Resource": "arn:aws:states:::sagemaker:createTrainingJob",
+            "End": true
+        }
+    }
+}
+
+# Start execution
+response = sfn.start_execution(
+    stateMachineArn='YOUR_STATE_MACHINE_ARN',
+    input=json.dumps(pipeline_definition)
+)
+```
+
+### Method C: Using AWS Batch
+```python
+import boto3
+
+batch = boto3.client('batch')
+
+# Submit job
+response = batch.submit_job(
+    jobName='ml-pipeline-job',
+    jobQueue='YOUR_JOB_QUEUE',
+    jobDefinition='YOUR_JOB_DEFINITION',
+    containerOverrides={
+        'command': ['python3', 'outsmarting_sagemaker_execute.py']
+    }
+)
+
+# Monitor job status
+job_id = response['jobId']
+status = batch.describe_jobs(jobs=[job_id])['jobs'][0]['status']
+print(f"Job Status: {status}")
+```
