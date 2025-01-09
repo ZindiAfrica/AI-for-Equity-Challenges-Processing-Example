@@ -21,7 +21,7 @@ source .venv/bin/activate
 
 2. Install dependencies (uv is much faster than pip):
 ```bash
-uv pip install -r requirements.txt
+uv pip install .
 ```
 
 ## Setup Instructions
