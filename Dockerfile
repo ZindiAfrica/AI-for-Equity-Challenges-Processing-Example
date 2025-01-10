@@ -9,13 +9,13 @@ RUN apt-get update && apt-get install -y \
 # Set up working directory
 WORKDIR /app
 
-# Copy requirements first to leverage Docker cache
+# Copy project configuration
 COPY pyproject.toml .
 
 # Install uv and Python dependencies
-RUN pip install --no-cache-dir uv && \
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
     uv pip install --system -e ".[dev]" && \
-    rm -rf ~/.cache/pip ~/.cache/uv
+    rm -rf ~/.cache/uv
 
 # Copy the application code
 COPY notebooks/ notebooks/

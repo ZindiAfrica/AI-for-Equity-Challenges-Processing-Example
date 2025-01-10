@@ -5,10 +5,11 @@
 ### 1. Package Installation Fails
 - Try restarting the kernel
 - Check internet connectivity
-- If using pip, try switching to uv: `curl -LsSf https://astral.sh/uv/install.sh | sh`
+- Install uv if not present: `curl -LsSf https://astral.sh/uv/install.sh | sh`
 - Verify uv is working: `uv --version`
 - Check Python version: `python --version` (should be 3.10.0 or higher)
-- For development dependencies, install with: `uv pip install ".[dev]"`
+- For development dependencies: `uv pip install -e ".[dev]"`
+- For system-wide installation: `uv pip install -e ".[dev]" --system`
 
 ### 2. Code Quality Checks Fail
 - Run `ruff check .` to see detailed linting errors
