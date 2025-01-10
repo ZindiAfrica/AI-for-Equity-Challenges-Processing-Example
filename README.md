@@ -25,7 +25,7 @@ Choose your preferred method to run the pipeline:
 │   └── troubleshooting-guide.md  # Common issues and solutions
 ├── Dockerfile                    # Container definition for SageMaker
 ├── build_and_run_aws.py         # Script to build Docker image and execute pipeline on AWS
-└── requirements.txt             # Python dependencies
+└── pyproject.toml              # Python dependencies and build configuration
 ```
 
 ## GitHub Authentication Setup

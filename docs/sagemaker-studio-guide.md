@@ -73,7 +73,7 @@ You can also run this pipeline directly from AWS CloudShell:
 4. Install uv and required packages in a new cell:
 ```python
 !curl -LsSf https://astral.sh/uv/install.sh | sh
-!uv pip install -r requirements.txt
+!uv pip install -e ".[dev]"
 ```
 
 5. Clone this repository in a new cell:

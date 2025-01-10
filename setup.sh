@@ -29,7 +29,7 @@ source .venv/bin/activate
 
 # Install Python dependencies using uv
 echo "Installing dependencies with uv..."
-uv pip install -r requirements.txt
+uv pip install -e ".[dev]"
 
 echo "Setup complete! You can now run the example notebooks."
 echo "Remember to activate the virtual environment with: source .venv/bin/activate"
