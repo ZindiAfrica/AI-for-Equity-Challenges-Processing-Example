@@ -34,7 +34,7 @@ pre-commit install
 
 3. Run code quality checks:
 ```bash
-ruff check .
+ruff check --fix .
 ruff format .
 ```
 

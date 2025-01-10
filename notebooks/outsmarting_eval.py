@@ -1,5 +1,6 @@
 import logging
 import sys
+
 import boto3
 import joblib
 import pandas as pd
@@ -8,11 +9,7 @@ from sklearn.preprocessing import LabelEncoder
 
 # Configure logging
 logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.StreamHandler(sys.stdout)
-    ]
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", handlers=[logging.StreamHandler(sys.stdout)]
 )
 logger = logging.getLogger(__name__)
 
@@ -88,7 +85,7 @@ logger.info("Calculating evaluation metrics...")
 mae = mean_absolute_error(y_test, y_pred)
 
 # ----------------------------------------
-# Save and Upload Results 
+# Save and Upload Results
 # ----------------------------------------
 logger.info("\nSaving evaluation results...")
 evaluation_metrics = {"mean_absolute_error": mae}
