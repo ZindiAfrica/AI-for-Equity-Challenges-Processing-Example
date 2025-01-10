@@ -41,7 +41,8 @@ def get_execution_role():
                 # Construct role name with SageMakerRole- prefix
                 role_name = f"SageMakerRole-{username}"
                 role_arn = f"arn:aws:iam::{caller_identity['Account']}:role/{role_name}"
-                assumed_role = sts.assume_role(RoleArn=role_arn, RoleSessionName="local-dev-session")
+                # Attempt to assume role to verify access
+                sts.assume_role(RoleArn=role_arn, RoleSessionName="local-dev-session")
                 return role_arn  # Return the role ARN instead of temporary credentials
             except Exception as e:
                 print(f"Failed to assume SageMaker role, falling back to user credentials: {e}")
