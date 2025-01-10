@@ -62,18 +62,7 @@ ruff check .
 ruff format .
 ```
 
-4. Run tests:
-```bash
-pytest
-```
-
 ## Setup Instructions
-
-1. Clone the repository:
-```bash
-git clone <repository-url>
-cd sua-outsmarting-outbreaks-example
-```
 
 2. Configure AWS credentials in your environment:
 ```bash
