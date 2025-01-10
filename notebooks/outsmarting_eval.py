@@ -5,10 +5,11 @@ import pandas as pd
 from sklearn.metrics import mean_absolute_error
 from sklearn.preprocessing import LabelEncoder
 
-# Initialize S3 client and get workspace name
+# Initialize S3 client and use team bucket
 s3_client = boto3.client("s3")
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
-bucket_name = f"{workspace_name}-team-bucket"
+# Use the team bucket format - do not create new buckets
+bucket_name = f"{workspace_name}-team-bucket"  
 
 # Load preprocessed datasets from S3
 print("Downloading preprocessed test dataset from S3...")

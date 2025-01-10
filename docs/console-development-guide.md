@@ -40,6 +40,10 @@ pre-commit install
 export AWS_ACCESS_KEY_ID=your_access_key
 export AWS_SECRET_ACCESS_KEY=your_secret_key
 export AWS_DEFAULT_REGION=us-east-2
+
+# Note: The code will use your team's assigned S3 bucket in the format:
+# {workspace}-team-bucket
+# Do not create your own buckets - only use the team bucket
 ```
 
 4. Run code quality checks:
