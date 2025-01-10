@@ -39,7 +39,7 @@ def get_execution_role():
     except Exception as e:
         print(f"Failed to get SageMaker role: {e}")
         print("Falling back to current user/role credentials...")
-        
+
         # If not running in SageMaker, use the current user/role
         sts = boto3.client("sts")
         caller_identity = sts.get_caller_identity()
@@ -47,26 +47,31 @@ def get_execution_role():
 
         # Extract the full path after user/ or role/
         arn = caller_identity["Arn"]
-        if "/user/" in arn:
-            path_parts = arn.split("/user/")[1].split("/")
-        elif "/role/" in arn:
-            path_parts = arn.split("/role/")[1].split("/")
+        if "user/" in arn:
+            path_parts = arn.split("user/")[1].split("/")
+        elif "role/" in arn:
+            path_parts = arn.split("role/")[1].split("/")
         else:
             path_parts = []
-        
+
         username = path_parts[0] if path_parts else "default"
+
+        print(f"Got username {username}")
 
         # Check if current credentials are for a role
         if ":role/" in arn:
+            print(f"It's a role, returning the ARN: {arn}")
             return arn
 
         # Try to assume SageMaker role for comp-user pattern
         if "comp-user-" in username:
             try:
+                print(f"Matching comp-user pattern: {username}")
                 # Extract the comp-user ID portion
                 user_id = username.split("comp-user-")[1]
                 role_name = f"SageMakerRole-comp-user-{user_id}"
                 role_arn = f"arn:aws:iam::{caller_identity['Account']}:role/{role_name}"
+                print(f"Assuming role: {role_arn}")
                 # Attempt to assume role to verify access
                 sts.assume_role(RoleArn=role_arn, RoleSessionName="local-dev-session")
                 return role_arn  # Return the role ARN instead of temporary credentials
