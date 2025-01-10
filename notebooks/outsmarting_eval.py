@@ -27,16 +27,18 @@ logger.info(f"Using S3 bucket: {bucket_name}")
 logger.info("Starting model evaluation process...")
 logger.info("Downloading preprocessed test dataset from S3...")
 test_data_path = f"s3://{bucket_name}/processed_test.csv"
+logger.info(f"Reading test data from: {test_data_path}")
 test_df = pd.read_csv(test_data_path)
+logger.info(f"Test dataset shape: {test_df.shape}")
 
 # Load the trained model from S3
 model_s3_path = f"s3://{bucket_name}/models/random_forest_model.joblib"
 local_model_path = "random_forest_model.joblib"
-print("Downloading trained model from S3...")
+logger.info("Downloading trained model from S3...")
 s3_client.download_file(bucket_name, "models/random_forest_model.joblib", local_model_path)
-
-# Load the model
+logger.info("Loading model into memory...")
 model = joblib.load(local_model_path)
+logger.info("Model loaded successfully")
 
 # Specify the target column
 target_column = "Total"
