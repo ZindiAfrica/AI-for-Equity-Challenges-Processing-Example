@@ -29,15 +29,21 @@ def get_execution_role():
     Returns:
         str: The ARN to use for AWS operations
     """
+    print("\nAttempting to get execution role...")
     try:
         # Try to get SageMaker execution role
         import sagemaker
-
-        return sagemaker.get_execution_role()
-    except Exception:
+        role = sagemaker.get_execution_role()
+        print(f"Successfully got SageMaker execution role: {role}")
+        return role
+    except Exception as e:
+        print(f"Failed to get SageMaker role: {e}")
+        print("Falling back to current user/role credentials...")
+        
         # If not running in SageMaker, use the current user/role
         sts = boto3.client("sts")
         caller_identity = sts.get_caller_identity()
+        print(f"Current caller identity: {caller_identity['Arn']}")
 
         # Extract the full path after user/ or role/
         arn = caller_identity["Arn"]
