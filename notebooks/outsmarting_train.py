@@ -20,9 +20,7 @@ train_df = pd.read_csv(train_data_path)
 target_column = "Total"
 
 # Feature and target split
-X = train_df.drop(
-    columns=[target_column, "ID", "Location"], errors="ignore"
-)  # Exclude unnecessary columns
+X = train_df.drop(columns=[target_column, "ID", "Location"], errors="ignore")  # Exclude unnecessary columns
 y = train_df[target_column]
 
 # Handle categorical features

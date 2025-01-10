@@ -17,17 +17,13 @@ test_df = pd.read_csv(test_data_path)
 model_s3_path = f"s3://{bucket_name}/models/random_forest_model.joblib"
 local_model_path = "random_forest_model.joblib"
 print("Downloading trained model from S3...")
-s3_client.download_file(
-    bucket_name, "models/random_forest_model.joblib", local_model_path
-)
+s3_client.download_file(bucket_name, "models/random_forest_model.joblib", local_model_path)
 
 # Load the model
 model = joblib.load(local_model_path)
 
 # Prepare the test data
-X_test = test_df.drop(
-    columns=["Total", "ID", "Location"], errors="ignore"
-)  # Exclude unnecessary columns
+X_test = test_df.drop(columns=["Total", "ID", "Location"], errors="ignore")  # Exclude unnecessary columns
 
 # Handle categorical features in the test data
 categorical_cols = X_test.select_dtypes(include=["object"]).columns

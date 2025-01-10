@@ -10,9 +10,9 @@ sagemaker_session.default_bucket = lambda: "comp-user-5ow9bw-team-bucket"
 
 # Use AWS user credentials instead of role
 boto_session = boto3.Session()
-sts = boto_session.client('sts')
+sts = boto_session.client("sts")
 caller_identity = sts.get_caller_identity()
-role = caller_identity['Arn']
+role = caller_identity["Arn"]
 
 # Define the S3 bucket for input and output data
 bucket_name = "sua-outsmarting-outbreaks-challenge-comp"
@@ -32,9 +32,7 @@ version = "0.23-1"  # Replace with desired version
 region = "us-east-2"  # Replace with your AWS region
 
 # Retrieve the image URI
-image_uri = retrieve_image_uri(
-    framework=framework, region=region, version=version, image_scope="inference"
-)
+image_uri = retrieve_image_uri(framework=framework, region=region, version=version, image_scope="inference")
 
 print(f"Image URI: {image_uri}")
 
@@ -52,14 +50,8 @@ script_processor = ScriptProcessor(
 print("Starting Data Preparation Job...")
 data_prep_job = script_processor.run(
     code=data_prep_script,
-    inputs=[
-        ProcessingInput(source=input_prefix, destination="/opt/ml/processing/input")
-    ],
-    outputs=[
-        ProcessingOutput(
-            source="/opt/ml/processing/output", destination=output_prefix + "data_prep/"
-        )
-    ],
+    inputs=[ProcessingInput(source=input_prefix, destination="/opt/ml/processing/input")],
+    outputs=[ProcessingOutput(source="/opt/ml/processing/output", destination=output_prefix + "data_prep/")],
 )
 data_prep_job.wait()
 print("Data Preparation Job completed.")
@@ -74,11 +66,7 @@ training_job = script_processor.run(
             destination="/opt/ml/processing/input",
         )
     ],
-    outputs=[
-        ProcessingOutput(
-            source="/opt/ml/processing/output", destination=output_prefix + "training/"
-        )
-    ],
+    outputs=[ProcessingOutput(source="/opt/ml/processing/output", destination=output_prefix + "training/")],
 )
 training_job.wait()
 print("Model Training Job completed.")

@@ -1,4 +1,3 @@
-
 import boto3
 
 
@@ -14,7 +13,7 @@ def get_execution_role():
         import sagemaker
 
         return sagemaker.get_execution_role()
-    except Exception as e:
+    except Exception:
         # If not running in SageMaker, use the current user/role
         sts = boto3.client("sts")
         caller_identity = sts.get_caller_identity()
@@ -31,9 +30,7 @@ def get_execution_role():
         if username.startswith("comp-user"):
             try:
                 role_arn = f"arn:aws:iam::{caller_identity['Account']}:role/SageMakerRole-{username}"
-                assumed_role = sts.assume_role(
-                    RoleArn=role_arn, RoleSessionName="local-dev-session"
-                )
+                assumed_role = sts.assume_role(RoleArn=role_arn, RoleSessionName="local-dev-session")
                 # Use the temporary credentials from assumed role
                 return assumed_role["Credentials"]["AccessKeyId"]
             except Exception as e:

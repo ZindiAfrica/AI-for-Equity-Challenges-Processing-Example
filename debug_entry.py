@@ -1,6 +1,7 @@
 import os
 import time
 
+
 def print_settings():
     """Print environment settings excluding secrets"""
     print("\nCurrent Settings:")
@@ -11,10 +12,11 @@ def print_settings():
             print(f"{key}={value}")
     print("-" * 50)
 
+
 if __name__ == "__main__":
     print_settings()
     print("\nContainer is running in debug mode. Use Ctrl+C to stop.")
-    
+
     try:
         while True:
             time.sleep(1)

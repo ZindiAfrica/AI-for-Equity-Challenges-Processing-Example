@@ -6,14 +6,15 @@ import boto3
 import sagemaker
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
+
 def check_aws_environment():
     """Print AWS environment settings and handle AWS_PROFILE precedence"""
-    aws_profile = os.environ.get('AWS_PROFILE', '')
-    
+    aws_profile = os.environ.get("AWS_PROFILE", "")
+
     if aws_profile:
         print(f"Using AWS_PROFILE: {aws_profile}")
         # If AWS_PROFILE is set, unset other AWS environment variables
-        for key in ['AWS_ACCESS_KEY_ID', 'AWS_SECRET_ACCESS_KEY', 'AWS_REGION']:
+        for key in ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_REGION"]:
             if key in os.environ:
                 del os.environ[key]
     else:
@@ -24,9 +25,9 @@ def check_aws_environment():
 
     # Get and print current user identity
     try:
-        sts = boto3.client('sts')
+        sts = boto3.client("sts")
         caller_identity = sts.get_caller_identity()
-        username = caller_identity['Arn'].split('/')[-1]
+        username = caller_identity["Arn"].split("/")[-1]
         print(f"AWS Username: {username}")
     except Exception as e:
         print(f"Failed to get AWS identity: {e}")
@@ -43,23 +44,15 @@ def build_and_push_docker_image(image_name, account_id, region):
 
     # Tag the image for ECR
     ecr_repo = f"{account_id}.dkr.ecr.{region}.amazonaws.com/{image_name}"
-    subprocess.run(
-        ["docker", "tag", f"{image_name}:latest", f"{ecr_repo}:latest"], check=True
-    )
+    subprocess.run(["docker", "tag", f"{image_name}:latest", f"{ecr_repo}:latest"], check=True)
 
     # Get ECR login token and login
     ecr = boto3.client("ecr")
     token = ecr.get_authorization_token()
-    username, password = (
-        base64.b64decode(token["authorizationData"][0]["authorizationToken"])
-        .decode()
-        .split(":")
-    )
+    username, password = base64.b64decode(token["authorizationData"][0]["authorizationToken"]).decode().split(":")
     registry = token["authorizationData"][0]["proxyEndpoint"]
 
-    subprocess.run(
-        ["docker", "login", "-u", username, "-p", password, registry], check=True
-    )
+    subprocess.run(["docker", "login", "-u", username, "-p", password, registry], check=True)
 
     # Push the image to ECR
     subprocess.run(["docker", "push", f"{ecr_repo}:latest"], check=True)
@@ -70,7 +63,7 @@ def build_and_push_docker_image(image_name, account_id, region):
 def main():
     # Check AWS environment first
     check_aws_environment()
-    
+
     # Import helper
     from utils.aws_utils import get_execution_role
 
