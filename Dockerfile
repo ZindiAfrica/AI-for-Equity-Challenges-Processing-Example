@@ -14,8 +14,10 @@ COPY pyproject.toml .
 
 # Install uv and Python dependencies
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
+    export PATH="/root/.local/bin:$PATH" && \
     uv pip install --system -e ".[dev]" && \
-    rm -rf ~/.cache/uv
+    rm -rf ~/.cache/uv && \
+    echo 'export PATH="/root/.local/bin:$PATH"' >> /etc/profile
 
 # Copy the application code
 COPY notebooks/ notebooks/
