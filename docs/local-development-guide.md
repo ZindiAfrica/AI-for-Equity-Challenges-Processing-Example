@@ -10,31 +10,7 @@
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-## Development Options
-
-You can develop either using a local virtual environment or Docker. Choose the method that works best for you.
-
-### Option 1: Docker Development
-
-1. Build and run using docker compose:
-```bash
-docker compose build
-docker compose up
-```
-
-2. Set your AWS credentials as environment variables:
-```bash
-export AWS_ACCESS_KEY_ID=your_access_key
-export AWS_SECRET_ACCESS_KEY=your_secret_key
-export AWS_REGION=us-east-2
-```
-
-3. Push to ECR (if needed):
-```bash
-./build_and_push.sh
-```
-
-### Option 2: Virtual Environment Setup
+## Virtual Environment Setup
 
 We strongly recommend using a virtual environment for development:
 

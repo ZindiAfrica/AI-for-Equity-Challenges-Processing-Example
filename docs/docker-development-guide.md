@@ -13,22 +13,34 @@ This guide covers how to develop and run the ML pipeline using Docker containers
 
 ## Development Setup
 
-1. Build the development container:
+1. Configure AWS credentials as environment variables:
+```bash
+export AWS_ACCESS_KEY_ID=your_access_key
+export AWS_SECRET_ACCESS_KEY=your_secret_key
+export AWS_REGION=us-east-2
+```
+
+2. Build the development container:
 ```bash
 docker compose build
 ```
 
-2. Start the development container:
+3. Start the development container:
 ```bash
 docker compose up dev
 ```
 
-3. In a new terminal, exec into the running container:
+4. In a new terminal, exec into the running container:
 ```bash
 docker compose exec dev bash
 ```
 
-4. Inside the container, your code is mounted at /app and AWS credentials are automatically injected from your environment.
+5. Inside the container, your code is mounted at /app and AWS credentials are automatically injected from your environment.
+
+6. Push to ECR (if needed):
+```bash
+./build_and_push.sh
+```
 
 ## Running the Pipeline
 
