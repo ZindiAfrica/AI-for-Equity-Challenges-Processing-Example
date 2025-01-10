@@ -8,9 +8,16 @@ from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProces
 sagemaker_session = sagemaker.Session()
 sagemaker_session.default_bucket = lambda: "comp-user-5ow9bw-team-bucket"
 
+# Get username for tagging
+sts = boto3.client("sts")
+username = sts.get_caller_identity()["Arn"].split("/")[-1]
+
 # Get the appropriate execution role
 from utils.aws_utils import get_execution_role
 role = get_execution_role()
+
+# Define common tags
+tags = [{"Key": "team", "Value": username}]
 
 # Define the S3 bucket for input and output data
 bucket_name = "sua-outsmarting-outbreaks-challenge-comp"
@@ -42,6 +49,7 @@ script_processor = ScriptProcessor(
     instance_count=1,
     instance_type="ml.r5a.2xlarge",
     sagemaker_session=sagemaker_session,
+    tags=tags
 )
 
 # Execute Data Preparation Script

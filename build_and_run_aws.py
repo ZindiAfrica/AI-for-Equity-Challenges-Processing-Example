@@ -102,7 +102,11 @@ def main():
     image_name = f"{workspace}"
     ecr_image_uri = build_and_push_docker_image(image_name, account_id, region, image_tag)
 
-    # Create SageMaker processor
+    # Get username for tagging
+    sts = boto3.client("sts")
+    username = sts.get_caller_identity()["Arn"].split("/")[-1]
+    
+    # Create SageMaker processor with tags
     processor = ScriptProcessor(
         image_uri=ecr_image_uri,
         command=["python3"],
@@ -112,6 +116,7 @@ def main():
         volume_size_in_gb=100,
         max_runtime_in_seconds=86400,  # 24 hours
         sagemaker_session=sagemaker_session,
+        tags=[{"Key": "team", "Value": username}]
     )
 
     # Run the processing job
