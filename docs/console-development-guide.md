@@ -20,7 +20,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 1. Clone the repository and install dependencies:
 ```bash
-git clone https://github.com/your-org/sua-outsmarting-outbreaks.git
+git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
 cd sua-outsmarting-outbreaks
 ./setup.sh
 ```

@@ -18,7 +18,7 @@ You can also run this pipeline directly from AWS CloudShell:
 
 2. Clone and setup the repository:
    ```bash
-   git clone https://github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+   git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
    cd AI-for-Equity-Challenges-Processing-Example
    pip install --user -r requirements.txt
    ```
