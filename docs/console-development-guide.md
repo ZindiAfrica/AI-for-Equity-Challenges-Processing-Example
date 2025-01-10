@@ -1,79 +1,123 @@
-# Local Development with AWS Console
+# Local Development Guide
 
-This guide covers how to develop and run the ML pipeline directly on your local machine using the AWS Console for resource management. This approach is suitable if you:
-- Prefer working directly with Python on your local machine
-- Want direct access to AWS resources through the console
-- Need to debug code locally before deploying
+This guide covers how to develop and run the ML pipeline on your local machine. Choose this approach if you:
+- Want to develop with your preferred local Python environment
+- Need direct access to AWS resources through the console
+- Want to debug code locally before deploying to SageMaker
+- Prefer command line tools over web interfaces
 
 ## Prerequisites
 
-1. AWS CLI configured with your credentials
+1. AWS CLI installed and configured with appropriate credentials
 2. Python 3.10.0 or higher installed locally
-3. uv package manager installed:
+3. Docker installed and running (for container builds)
+4. uv package manager installed:
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
-## Setup Instructions
+## Quick Start
 
-1. Create and activate a new virtual environment using uv:
+1. Clone the repository and install dependencies:
 ```bash
-uv venv
+git clone https://github.com/your-org/sua-outsmarting-outbreaks.git
+cd sua-outsmarting-outbreaks
+./setup.sh
+```
+
+## Development Workflow
+
+1. Activate the virtual environment:
+```bash
 source .venv/bin/activate
 ```
 
-2. Install dependencies and development tools:
+2. Configure your AWS credentials:
 ```bash
-# Install main package and dev dependencies
-uv pip install -e ".[dev]"
-
-# Verify key packages are installed
-python -c "import boto3, sagemaker, pandas, sklearn, joblib"
-
-# Install pre-commit hooks
-pre-commit install
-```
-
-3. Configure AWS credentials in your environment:
-```bash
-# Set up AWS credentials
+# Option 1: Using environment variables
 export AWS_ACCESS_KEY_ID=your_access_key
 export AWS_SECRET_ACCESS_KEY=your_secret_key
 export AWS_DEFAULT_REGION=us-east-2
 
-# Note: The code will use your team's assigned S3 bucket in the format:
-# {workspace}-team-bucket
-# Do not create your own buckets - only use the team bucket
+# Option 2: Using AWS CLI profiles
+aws configure --profile sua-competition
+export AWS_PROFILE=sua-competition
 ```
 
-4. Run code quality checks:
+3. Run code quality checks:
 ```bash
-ruff check .
+# Format code
 ruff format .
+
+# Run linting
+ruff check .
+
+# Run tests
+pytest
 ```
 
-5. Run the pipeline (this will build the Docker image and execute the SageMaker pipeline):
-```python
+4. Build and test Docker image locally:
+```bash
+# Build image
+docker compose build
+
+# Run debug container
+docker compose up dev
+```
+
+## Running the Pipeline
+
+1. Run the full pipeline:
+```bash
 python build_and_run_aws.py
 ```
 
-Note: The script handles both building/pushing the Docker image and executing the SageMaker pipeline in one step.
+This will:
+- Build and push the Docker image to ECR
+- Execute the SageMaker pipeline with all stages
+- Save outputs to your team's S3 bucket
+
+2. Run individual pipeline stages:
+```bash
+# Data preparation
+python notebooks/outsmarting_data_prep.py
+
+# Model training
+python notebooks/outsmarting_train.py 
+
+# Model evaluation
+python notebooks/outsmarting_eval.py
+
+# Generate predictions
+python notebooks/outsmarting_predict.py
+```
 
 ## Project Structure
 
-The project uses modern Python packaging with pyproject.toml:
-- Dependencies are managed in pyproject.toml
-- Development tools (ruff, pytest, etc.) are included in [dev] extras
-- Code quality is enforced via ruff and pre-commit hooks
-- Tests are managed with pytest
+```
+.
+├── notebooks/           # Pipeline stage implementations
+├── tests/              # Unit and integration tests  
+├── utils/              # Shared utility functions
+├── Dockerfile          # Container definition
+├── pyproject.toml      # Dependencies and build config
+└── setup.sh           # Development environment setup
+```
 
-To add new dependencies:
-1. Add them to pyproject.toml
-2. Reinstall the package: `uv pip install -e ".[dev]"`
+## Monitoring and Debugging
 
-## Monitoring
+1. View pipeline progress:
+   - AWS Console -> SageMaker -> Processing jobs
+   - CloudWatch logs for detailed execution logs
+   - S3 bucket for stage outputs and artifacts
 
-Monitor job progress in:
-1. AWS Console -> SageMaker -> Processing jobs
-2. CloudWatch logs
-3. S3 bucket for output files
+2. Debug locally:
+   - Use debug_entry.py for interactive container debugging
+   - Check Docker logs: `docker compose logs dev`
+   - Monitor resource usage: `docker stats`
+
+3. Common issues:
+   - Check troubleshooting guide for known issues
+   - Verify AWS credentials and permissions
+   - Ensure Docker daemon is running
+   - Check S3 bucket permissions
