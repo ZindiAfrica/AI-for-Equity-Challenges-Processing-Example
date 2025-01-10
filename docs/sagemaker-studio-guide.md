@@ -7,9 +7,23 @@
 - Docker installed and configured (for local testing)
 - AWS CLI configured with your credentials
 
+## AWS Role Configuration
+
+The pipeline automatically handles role selection based on your AWS identity:
+
+1. If running in SageMaker:
+   - Uses the SageMaker execution role
+
+2. If running locally with comp-user account:
+   - Attempts to use `SageMakerRole-{username}` 
+   - Falls back to user credentials if role access fails
+
+3. If running with other accounts:
+   - Uses the current user/role ARN
+
 ## AWS CloudShell Setup
 
-You can also run this pipeline directly from AWS CloudShell:
+You can run this pipeline directly from AWS CloudShell:
 
 1. Open AWS CloudShell:
    - Go to AWS Console
@@ -21,6 +35,11 @@ You can also run this pipeline directly from AWS CloudShell:
    git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
    cd AI-for-Equity-Challenges-Processing-Example
    pip install --user -r requirements.txt
+   ```
+
+   Note: For comp-user accounts, the pipeline will automatically try to use:
+   ```
+   arn:aws:iam::{account_id}:role/SageMakerRole-comp-user-{id}
    ```
 
 3. Configure git:
