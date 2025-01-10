@@ -29,7 +29,9 @@ def get_execution_role():
         # Only try to assume SageMaker role for comp-user prefixed users
         if username.startswith("comp-user"):
             try:
-                role_arn = f"arn:aws:iam::{caller_identity['Account']}:role/SageMakerRole-{username}"
+                # Construct role name with SageMakerRole- prefix
+                role_name = f"SageMakerRole-{username}"
+                role_arn = f"arn:aws:iam::{caller_identity['Account']}:role/{role_name}"
                 assumed_role = sts.assume_role(RoleArn=role_arn, RoleSessionName="local-dev-session")
                 # Use the temporary credentials from assumed role
                 return assumed_role["Credentials"]["AccessKeyId"]
