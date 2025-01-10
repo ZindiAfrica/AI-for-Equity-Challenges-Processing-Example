@@ -72,11 +72,26 @@ def main():
     # Initialize AWS clients
     region = "us-east-2"
     account_id = get_account_id()
+    
+    # Get execution role and verify permissions
+    role = get_execution_role()
+    print(f"Using execution role: {role}")
+    
     # Initialize SageMaker session with workspace-specific bucket
     sagemaker_session = sagemaker.Session()
     bucket_name = get_bucket_name()
     sagemaker_session.default_bucket = lambda: bucket_name
-    role = get_execution_role()
+    
+    # Verify role has required permissions
+    iam = boto3.client('iam')
+    try:
+        iam.simulate_principal_policy(
+            PolicySourceArn=role,
+            ActionNames=['sagemaker:CreateProcessingJob']
+        )
+        print("Role has required SageMaker permissions")
+    except Exception as e:
+        print(f"Warning: Role may not have required permissions: {e}")
 
     # Import helper
     from utils.aws_utils import get_registry_name
