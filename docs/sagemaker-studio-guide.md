@@ -34,7 +34,8 @@ You can run this pipeline directly from AWS CloudShell:
    ```bash
    git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
    cd AI-for-Equity-Challenges-Processing-Example
-   pip install --user -r requirements.txt
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   uv pip install -e ".[dev]"
    ```
 
    Note: For comp-user accounts, the pipeline will automatically try to use:
@@ -91,9 +92,15 @@ You can run this pipeline directly from AWS CloudShell:
 3. In the launcher, choose "Python 3 (PyTorch 2.0 Python 3.10 GPU Optimized)" kernel
 4. Install required packages in a new cell:
 ```python
+# Install uv package installer
 !curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install project dependencies using pyproject.toml
 !uv pip install -e ".[dev]"
 !uv pip install -e ".[dev]" --system  # For system-wide installation
+
+# Verify installation
+!uv pip list
 ```
 
 5. Clone this repository in a new cell:
