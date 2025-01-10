@@ -38,13 +38,13 @@ def get_account_id():
     return sts.get_caller_identity()["Account"]
 
 
-def build_and_push_docker_image(image_name, account_id, region):
+def build_and_push_docker_image(image_name, account_id, region, image_tag):
     # Build the Docker image
-    subprocess.run(["docker", "build", "-t", image_name, "."], check=True)
+    subprocess.run(["docker", "build", "-t", f"{image_name}:{image_tag}", "."], check=True)
 
     # Tag the image for ECR
-    ecr_repo = f"{account_id}.dkr.ecr.{region}.amazonaws.com/{image_name}"
-    subprocess.run(["docker", "tag", f"{image_name}:latest", f"{ecr_repo}:latest"], check=True)
+    ecr_repo = f"{account_id}.dkr.ecr.{region}.amazonaws.com/{image_name}:{image_tag}"
+    subprocess.run(["docker", "tag", f"{image_name}:{image_tag}", ecr_repo], check=True)
 
     # Get ECR login token and login
     ecr = boto3.client("ecr")
@@ -55,7 +55,7 @@ def build_and_push_docker_image(image_name, account_id, region):
     subprocess.run(["docker", "login", "-u", username, "-p", password, registry], check=True)
 
     # Push the image to ECR
-    subprocess.run(["docker", "push", f"{ecr_repo}:latest"], check=True)
+    subprocess.run(["docker", "push", ecr_repo], check=True)
 
     return ecr_repo
 
@@ -80,9 +80,10 @@ def main():
     from utils.aws_utils import get_workspace_name
 
     # Build and push Docker image
-    image_name = "outsmarting-pipeline"
+    image_tag = "outsmarting-pipeline"
     workspace = get_workspace_name()
-    ecr_image_uri = build_and_push_docker_image(image_name, account_id, region)
+    image_name = f"comp-user-{workspace}-workspace"
+    ecr_image_uri = build_and_push_docker_image(image_name, account_id, region, image_tag)
 
     # Create SageMaker processor
     processor = ScriptProcessor(
