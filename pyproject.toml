@@ -16,7 +16,6 @@ dependencies = [
 [project.optional-dependencies]
 dev = [
     "ruff>=0.1.13",
-    "pytest>=7.4.4",
     "pre-commit>=3.6.0",
 ]
 
@@ -54,14 +53,6 @@ line-ending = "auto"
 
 [tool.ruff.lint.isort]
 known-first-party = ["notebooks"]
-
-[tool.pytest.ini_options]
-minversion = "6.0"
-addopts = "-ra -q --doctest-modules"
-testpaths = [
-    "tests",
-]
-python_files = ["test_*.py"]
 
 [dependency-groups]
 dev = [
