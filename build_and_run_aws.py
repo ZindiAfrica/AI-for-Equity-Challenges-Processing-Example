@@ -70,9 +70,10 @@ def main():
     # Initialize AWS clients
     region = "us-east-2"
     account_id = get_account_id()
-    # Initialize SageMaker session with explicit bucket
+    # Initialize SageMaker session with workspace-specific bucket
     sagemaker_session = sagemaker.Session()
-    sagemaker_session.default_bucket = lambda: "comp-user-5ow9bw-team-bucket"
+    workspace = get_workspace_name()
+    sagemaker_session.default_bucket = lambda: f"{workspace}-team-bucket"
     role = get_execution_role()
 
     # Import helper
