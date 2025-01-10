@@ -8,11 +8,9 @@ from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProces
 sagemaker_session = sagemaker.Session()
 sagemaker_session.default_bucket = lambda: "comp-user-5ow9bw-team-bucket"
 
-# Use AWS user credentials instead of role
-boto_session = boto3.Session()
-sts = boto_session.client("sts")
-caller_identity = sts.get_caller_identity()
-role = caller_identity["Arn"]
+# Get the appropriate execution role
+from utils.aws_utils import get_execution_role
+role = get_execution_role()
 
 # Define the S3 bucket for input and output data
 bucket_name = "sua-outsmarting-outbreaks-challenge-comp"
