@@ -40,7 +40,7 @@ script_processor = ScriptProcessor(
     command=["python3"],
     role=role,
     instance_count=1,
-    instance_type="ml.m5.large",
+    instance_type="ml.r5a.2xlarge",
     sagemaker_session=sagemaker_session,
 )
 
