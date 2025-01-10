@@ -4,11 +4,10 @@
 set -e
 
 # Configuration
-USER_ID="comp-user-5ow9bw"
 REGION="us-east-2"
 IMAGE_NAME="outsmarting-pipeline"
-AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
-ECR_REPO="${USER_ID}-workspace"
+AWS_ACCOUNT_ID="869935100875"
+ECR_REPO="comp-user-5ow9bw-workspace"
 TAG="latest"
 
 # Get ECR login token and login
