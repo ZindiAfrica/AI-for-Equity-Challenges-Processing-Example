@@ -19,13 +19,24 @@ def find_nearest(hospital_df, location_df, lat_col, lon_col, id_col):
     return nearest
 
 
-# Load datasets
+# Load datasets with error handling
 print("Downloading datasets from S3...")
-train = pd.read_csv(f"s3://{bucket_name}/Train.csv")
-test = pd.read_csv(f"s3://{bucket_name}/Test.csv")
-toilets = pd.read_csv(f"s3://{bucket_name}/toilets.csv")
-waste_management = pd.read_csv(f"s3://{bucket_name}/waste_management.csv")
-water_sources = pd.read_csv(f"s3://{bucket_name}/water_sources.csv")
+try:
+    train = pd.read_csv(f"s3://{bucket_name}/Train.csv")
+    test = pd.read_csv(f"s3://{bucket_name}/Test.csv")
+    toilets = pd.read_csv(f"s3://{bucket_name}/toilets.csv")
+    waste_management = pd.read_csv(f"s3://{bucket_name}/waste_management.csv")
+    water_sources = pd.read_csv(f"s3://{bucket_name}/water_sources.csv")
+except FileNotFoundError as e:
+    print(f"Error: Required input file not found: {str(e)}")
+    print(f"Please ensure all required files exist in s3://{bucket_name}/")
+    raise
+except pd.errors.EmptyDataError:
+    print("Error: One or more input files are empty")
+    raise
+except Exception as e:
+    print(f"Error loading input data: {str(e)}")
+    raise
 
 # Combine train and test datasets
 hospital_data = pd.concat([train, test])

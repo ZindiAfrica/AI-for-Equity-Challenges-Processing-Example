@@ -54,13 +54,21 @@ script_processor = ScriptProcessor(
 
 # Execute Data Preparation Script
 print("Starting Data Preparation Job...")
-data_prep_job = script_processor.run(
-    code=data_prep_script,
-    inputs=[ProcessingInput(source=input_prefix, destination="/opt/ml/processing/input")],
-    outputs=[ProcessingOutput(source="/opt/ml/processing/output", destination=output_prefix + "data_prep/")],
-)
-data_prep_job.wait()
-print("Data Preparation Job completed.")
+try:
+    data_prep_job = script_processor.run(
+        code=data_prep_script,
+        inputs=[ProcessingInput(source=input_prefix, destination="/opt/ml/processing/input")],
+        outputs=[ProcessingOutput(source="/opt/ml/processing/output", destination=output_prefix + "data_prep/")],
+    )
+    data_prep_job.wait()
+    print("Data Preparation Job completed successfully.")
+except Exception as e:
+    print(f"Data Preparation Job failed: {str(e)}")
+    print("Please check CloudWatch logs for detailed error information.")
+    # Get the job name to help locate logs
+    if hasattr(data_prep_job, 'job_name'):
+        print(f"Job name: {data_prep_job.job_name}")
+    raise
 
 # Execute Model Training Script
 print("Starting Model Training Job...")
