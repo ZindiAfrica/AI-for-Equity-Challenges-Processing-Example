@@ -14,6 +14,7 @@ TAG="latest"
 # Get ECR login token and login
 echo "Logging into ECR..."
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com
+aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin 869935100875.dkr.ecr.us-east-2.amazonaws.com
 
 # Build the Docker image
 echo "Building Docker image..."
