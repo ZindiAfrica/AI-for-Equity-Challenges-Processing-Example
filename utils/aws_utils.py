@@ -14,7 +14,7 @@ def get_execution_role():
         import sagemaker
 
         return sagemaker.get_execution_role()
-    except:
+    except Exception as e:
         # If not running in SageMaker, use the current user/role
         sts = boto3.client("sts")
         caller_identity = sts.get_caller_identity()
@@ -34,7 +34,8 @@ def get_execution_role():
                 assumed_role = sts.assume_role(
                     RoleArn=role_arn, RoleSessionName="local-dev-session"
                 )
-                return role_arn
+                # Use the temporary credentials from assumed role
+                return assumed_role["Credentials"]["AccessKeyId"]
             except Exception as e:
                 print(f"Failed to assume SageMaker role: {e}")
 
