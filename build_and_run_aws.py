@@ -75,7 +75,8 @@ def main():
 
     # Build and push Docker image
     image_name = "outsmarting-pipeline"
-    ecr_image_uri = build_and_push_docker_image(image_name, account_id, region)
+    workspace = "comp-user-5ow9bw-workspace"
+    ecr_image_uri = build_and_push_docker_image(f"{workspace}/{image_name}", account_id, region)
 
     # Create SageMaker processor
     processor = ScriptProcessor(

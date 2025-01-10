@@ -7,7 +7,7 @@ set -e
 REGION="us-east-2"
 IMAGE_NAME="outsmarting-pipeline"
 AWS_ACCOUNT_ID="869935100875"
-ECR_REPO="comp-user-5ow9bw-workspace"
+ECR_REPO="comp-user-5ow9bw-workspace/${IMAGE_NAME}"
 TAG="latest"
 
 # Get ECR login token and login
