@@ -52,10 +52,12 @@ ruff check .
 ruff format .
 ```
 
-5. Run the pipeline:
+5. Run the pipeline (this will build the Docker image and execute the SageMaker pipeline):
 ```python
 python build_and_run_aws.py
 ```
+
+Note: The script handles both building/pushing the Docker image and executing the SageMaker pipeline in one step.
 
 ## Project Structure
 

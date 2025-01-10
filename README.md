@@ -24,8 +24,7 @@ Choose your preferred method to run the pipeline:
 │   ├── local-development-guide.md # Local development instructions
 │   └── troubleshooting-guide.md  # Common issues and solutions
 ├── Dockerfile                    # Container definition for SageMaker
-├── build_and_push.sh            # Script to build and push Docker image
-├── build_and_run_aws.py         # Script to execute pipeline on AWS
+├── build_and_run_aws.py         # Script to build Docker image and execute pipeline on AWS
 └── requirements.txt             # Python dependencies
 ```
 
