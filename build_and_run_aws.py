@@ -72,23 +72,20 @@ def main():
     # Initialize AWS clients
     region = "us-east-2"
     account_id = get_account_id()
-    
+
     # Get execution role and verify permissions
     role = get_execution_role()
     print(f"Using execution role: {role}")
-    
+
     # Initialize SageMaker session with workspace-specific bucket
     sagemaker_session = sagemaker.Session()
     bucket_name = get_bucket_name()
     sagemaker_session.default_bucket = lambda: bucket_name
-    
+
     # Verify role has required permissions
-    iam = boto3.client('iam')
+    iam = boto3.client("iam")
     try:
-        iam.simulate_principal_policy(
-            PolicySourceArn=role,
-            ActionNames=['sagemaker:CreateProcessingJob']
-        )
+        iam.simulate_principal_policy(PolicySourceArn=role, ActionNames=["sagemaker:CreateProcessingJob"])
         print("Role has required SageMaker permissions")
     except Exception as e:
         print(f"Warning: Role may not have required permissions: {e}")
@@ -105,18 +102,18 @@ def main():
     # Get username for tagging
     sts = boto3.client("sts")
     username = sts.get_caller_identity()["Arn"].split("/")[-1]
-    
+
     # Create SageMaker processor with tags
     processor = ScriptProcessor(
         image_uri=ecr_image_uri,
         command=["python3"],
         role=role,
         instance_count=1,
-        instance_type="ml.g4dn.8xlarge",
+        instance_type="ml.m5.large",
         volume_size_in_gb=100,
         max_runtime_in_seconds=86400,  # 24 hours
         sagemaker_session=sagemaker_session,
-        tags=[{"Key": "team", "Value": username}]
+        tags=[{"Key": "team", "Value": username}],
     )
 
     # Run the processing job
