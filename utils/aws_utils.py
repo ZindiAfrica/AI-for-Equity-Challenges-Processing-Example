@@ -1,13 +1,25 @@
 import boto3
 
 
-def get_workspace_name():
+def get_user_name():
     """Get the workspace name for the current user"""
     sts = boto3.client("sts")
     caller_identity = sts.get_caller_identity()
     arn_parts = caller_identity["Arn"].split("/")
     username = arn_parts[-1] if len(arn_parts) > 1 else "default"
+    return username
+
+
+def get_registry_name():
+    """Get the workspace name for the current user"""
+    username = get_user_name()
     return f"{username}-workspace"
+
+
+def get_bucket_name():
+    """Get the workspace name for the current user"""
+    username = get_user_name()
+    return f"{username}-team-bucket"
 
 
 def get_execution_role():

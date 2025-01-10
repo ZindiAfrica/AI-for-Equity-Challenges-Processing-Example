@@ -379,3 +379,4 @@ terraform.tfstate.backup
 *.tfvars
 id_ed25519*
 .aider*
+*.iml

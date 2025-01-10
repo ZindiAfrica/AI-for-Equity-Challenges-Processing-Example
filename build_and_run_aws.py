@@ -6,6 +6,8 @@ import boto3
 import sagemaker
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
+from utils.aws_utils import get_bucket_name
+
 
 def check_aws_environment():
     """Print AWS environment settings and handle AWS_PROFILE precedence"""
@@ -65,23 +67,23 @@ def main():
     check_aws_environment()
 
     # Import helpers
-    from utils.aws_utils import get_execution_role, get_workspace_name
+    from utils.aws_utils import get_execution_role
 
     # Initialize AWS clients
     region = "us-east-2"
     account_id = get_account_id()
     # Initialize SageMaker session with workspace-specific bucket
     sagemaker_session = sagemaker.Session()
-    workspace = get_workspace_name()
-    sagemaker_session.default_bucket = lambda: f"{workspace}-team-bucket"
+    bucket_name = get_bucket_name()
+    sagemaker_session.default_bucket = lambda: bucket_name
     role = get_execution_role()
 
     # Import helper
-    from utils.aws_utils import get_workspace_name
+    from utils.aws_utils import get_registry_name
 
     # Build and push Docker image
     image_tag = "outsmarting-pipeline"
-    workspace = get_workspace_name()
+    workspace = get_registry_name()
     image_name = f"{workspace}"
     ecr_image_uri = build_and_push_docker_image(image_name, account_id, region, image_tag)
 
