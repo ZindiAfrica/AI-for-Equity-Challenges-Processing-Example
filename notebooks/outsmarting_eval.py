@@ -16,15 +16,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Initialize S3 client and use team bucket
-logger.info("Initializing AWS S3 client...")
+# ----------------------------------------
+# Initialize AWS Resources
+# ----------------------------------------
+logger.info("\nInitializing AWS resources...")
 s3_client = boto3.client("s3")
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
 bucket_name = f"{workspace_name}-team-bucket"
 logger.info(f"Using S3 bucket: {bucket_name}")
 
-# Load preprocessed datasets from S3
-logger.info("Starting model evaluation process...")
+# ----------------------------------------
+# Load Test Dataset
+# ----------------------------------------
+logger.info("\nStarting model evaluation process...")
 logger.info("Downloading preprocessed test dataset from S3...")
 test_data_path = f"s3://{bucket_name}/processed_test.csv"
 logger.info(f"Reading test data from: {test_data_path}")
@@ -49,17 +53,22 @@ X_test = test_df.drop(columns=[target_column, "ID", "Location"], errors="ignore"
 y_test = test_df[target_column]
 logger.info(f"Features shape: {X_test.shape}, Target shape: {y_test.shape}")
 
-# Handle categorical features in the test data
-logger.info("Processing categorical features...")
+# ----------------------------------------
+# Process Categorical Features
+# ----------------------------------------
+logger.info("\nProcessing categorical features...")
 categorical_cols = X_test.select_dtypes(include=["object"]).columns
 logger.info(f"Found {len(categorical_cols)} categorical columns: {list(categorical_cols)}")
+
 for col in categorical_cols:
     logger.debug(f"Encoding column: {col}")
     le = LabelEncoder()
     X_test[col] = le.fit_transform(X_test[col])
 
-# Align test dataset with training features
-logger.info("Aligning features with training data...")
+# ----------------------------------------
+# Align Features
+# ----------------------------------------
+logger.info("\nAligning features with training data...")
 missing_cols = set(model.feature_names_in_) - set(X_test.columns)
 if missing_cols:
     logger.warning(f"Adding missing columns with zero values: {missing_cols}")
@@ -70,24 +79,30 @@ if missing_cols:
 X_test = X_test[model.feature_names_in_]
 logger.info(f"Final feature matrix shape: {X_test.shape}")
 
-# Evaluate the model
-logger.info("Making predictions on test data...")
+# ----------------------------------------
+# Model Evaluation
+# ----------------------------------------
+logger.info("\nMaking predictions on test data...")
 y_pred = model.predict(X_test)
 logger.info("Calculating evaluation metrics...")
 mae = mean_absolute_error(y_test, y_pred)
 
-# Save evaluation metrics
+# ----------------------------------------
+# Save and Upload Results 
+# ----------------------------------------
+logger.info("\nSaving evaluation results...")
 evaluation_metrics = {"mean_absolute_error": mae}
 logger.info(f"Model Performance - Mean Absolute Error (MAE): {mae:.4f}")
 
-# Upload evaluation metrics to S3
-logger.info("Saving evaluation metrics...")
+# Save metrics locally
+logger.info("Writing metrics to file...")
 metrics_path = "evaluation_metrics.json"
 with open(metrics_path, "w") as f:
     f.write(str(evaluation_metrics))
 
+# Upload to S3
 metrics_s3_path = f"s3://{bucket_name}/evaluation/evaluation_metrics.json"
 logger.info(f"Uploading metrics to {metrics_s3_path}")
 s3_client.upload_file(metrics_path, bucket_name, "evaluation/evaluation_metrics.json")
 
-logger.info("Evaluation process completed successfully")
+logger.info("\nEvaluation process completed successfully")
