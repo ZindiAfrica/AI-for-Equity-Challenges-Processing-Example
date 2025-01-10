@@ -73,9 +73,12 @@ def main():
     sagemaker_session = sagemaker.Session()
     role = get_execution_role()
 
+    # Import helper
+    from utils.aws_utils import get_workspace_name
+    
     # Build and push Docker image
     image_name = "outsmarting-pipeline"
-    workspace = "comp-user-5ow9bw-workspace"
+    workspace = get_workspace_name()
     ecr_image_uri = build_and_push_docker_image(f"{workspace}/{image_name}", account_id, region)
 
     # Create SageMaker processor

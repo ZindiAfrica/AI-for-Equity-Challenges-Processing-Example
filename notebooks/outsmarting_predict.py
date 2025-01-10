@@ -4,9 +4,10 @@ import joblib
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
-# Initialize S3 client
+# Initialize S3 client and get workspace name
 s3_client = boto3.client("s3")
-bucket_name = "comp-user-5ow9bw-team-bucket"
+workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
+bucket_name = f"{workspace_name}-team-bucket"
 
 # Load preprocessed test dataset from S3
 print("Downloading preprocessed test dataset from S3...")

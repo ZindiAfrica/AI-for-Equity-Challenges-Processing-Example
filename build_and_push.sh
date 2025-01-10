@@ -7,7 +7,8 @@ set -e
 REGION="us-east-2"
 IMAGE_NAME="outsmarting-pipeline"
 AWS_ACCOUNT_ID="869935100875"
-ECR_REPO="comp-user-5ow9bw-workspace/${IMAGE_NAME}"
+WORKSPACE_NAME=$(aws sts get-caller-identity --query 'Arn' --output text | cut -d'/' -f2)-workspace
+ECR_REPO="${WORKSPACE_NAME}/${IMAGE_NAME}"
 TAG="latest"
 
 # Get ECR login token and login

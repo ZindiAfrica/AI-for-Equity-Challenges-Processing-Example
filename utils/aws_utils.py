@@ -1,6 +1,15 @@
 import boto3
 
 
+def get_workspace_name():
+    """Get the workspace name for the current user"""
+    sts = boto3.client("sts")
+    caller_identity = sts.get_caller_identity()
+    arn_parts = caller_identity["Arn"].split("/")
+    username = arn_parts[-1] if len(arn_parts) > 1 else "default"
+    return f"{username}-workspace"
+
+
 def get_execution_role():
     """
     Get the appropriate execution role or user ARN based on the environment.
