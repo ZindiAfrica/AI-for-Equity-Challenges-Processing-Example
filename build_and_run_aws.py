@@ -78,7 +78,7 @@ def main():
 
     # Import helper
     from utils.aws_utils import get_workspace_name
-    
+
     # Build and push Docker image
     image_name = "outsmarting-pipeline"
     workspace = get_workspace_name()
