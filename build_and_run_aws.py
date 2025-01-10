@@ -64,8 +64,8 @@ def main():
     # Check AWS environment first
     check_aws_environment()
 
-    # Import helper
-    from utils.aws_utils import get_execution_role
+    # Import helpers
+    from utils.aws_utils import get_execution_role, get_workspace_name
 
     # Initialize AWS clients
     region = "us-east-2"
