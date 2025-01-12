@@ -1,11 +1,9 @@
 import base64
-import logging
 import os
 import subprocess
 import sys
 import warnings
 from pathlib import Path
-from typing import Optional
 
 import boto3
 import sagemaker
