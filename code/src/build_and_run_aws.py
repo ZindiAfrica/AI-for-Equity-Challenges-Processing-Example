@@ -121,7 +121,7 @@ def build_and_push_docker_image(
             check=True,
         )
     except subprocess.CalledProcessError as e:
-        print(f"Error building Docker image: {e}")
+        logger.error(f"Error building Docker image: {e}")
         sys.exit(1)
 
     # Tag the image for ECR
@@ -129,7 +129,7 @@ def build_and_push_docker_image(
     try:
         subprocess.run(["docker", "tag", f"{image_name}:{image_tag}", ecr_repo], check=True)
     except subprocess.CalledProcessError as e:
-        print(f"Error tagging Docker image: {e}")
+        logger.error(f"Error tagging Docker image: {e}")
         sys.exit(1)
 
     # Get ECR login token and login
@@ -207,7 +207,7 @@ def main() -> None:
         iam.simulate_principal_policy(PolicySourceArn=role, ActionNames=["sagemaker:CreateProcessingJob"])
         print("Role has required SageMaker permissions")
     except Exception as e:
-        print(f"Warning: Role may not have required permissions: {e}")
+        logger.warning(f"Role may not have required permissions: {e}")
 
     # Build and push Docker image
     image_tag = get_user_docker_image_tag()

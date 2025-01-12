@@ -121,8 +121,8 @@ def get_execution_role() -> str:
         print(f"Successfully got SageMaker execution role: {role}")
         return role
     except Exception as e:
-        print(f"Failed to get SageMaker role: {e}")
-        print("Falling back to current user/role credentials...")
+        logger.error(f"Failed to get SageMaker role: {e}")
+        logger.info("Falling back to current user/role credentials...")
 
         # If not running in SageMaker, use the current user/role
         sts = boto3.client("sts")
@@ -168,7 +168,7 @@ def get_execution_role() -> str:
                 print("Successfully assumed SageMaker execution role")
                 return role_arn
             except Exception as e:
-                print(f"Failed to assume SageMaker role, falling back to user credentials: {e}")
+                logger.error(f"Failed to assume SageMaker role, falling back to user credentials: {e}")
                 return caller_identity["Arn"]  # Fall back to user ARN
 
         # For non comp-user users, return current user ARN
