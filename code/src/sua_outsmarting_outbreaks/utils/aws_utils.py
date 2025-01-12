@@ -27,6 +27,27 @@ def get_user_name() -> str:
     username: str = arn_parts[-1] if len(arn_parts) > 1 else "default"
     return os.environ.get("USER_NAME", username)
 
+def initialize_aws_resources() -> tuple[str, str, str, str, list[dict[str, str]]]:
+    """Initialize common AWS resources and return configuration.
+    
+    Returns:
+        Tuple containing:
+            str: Username
+            str: IAM role ARN
+            str: Data bucket name
+            str: User bucket name 
+            list: Common tags
+    """
+    username = get_user_name()
+    role = get_execution_role()
+    data_bucket_name = get_data_bucket_name()
+    user_bucket_name = get_user_bucket_name()
+    
+    # Define common tags
+    tags = [{"Key": "team", "Value": username}]
+    
+    return username, role, data_bucket_name, user_bucket_name, tags
+
 
 def get_user_registry_name() -> str:
     """Get the ECR registry name for the current user.

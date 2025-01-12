@@ -31,16 +31,9 @@ from sua_outsmarting_outbreaks.utils.logging_utils import (
 # Configure logger
 logger = setup_logger(__name__)
 
-# Initialize S3 client and get team bucket
+# Initialize AWS resources
 s3_client = boto3.client("s3")
-
-username = get_user_name()
-role = get_execution_role()
-data_bucket_name = get_data_bucket_name()
-user_bucket_name = get_user_bucket_name()
-
-# Define common tags
-tags = [{"Key": "team", "Value": username}]
+username, role, data_bucket_name, user_bucket_name, tags = initialize_aws_resources()
 
 logger.info(f"Using team bucket: {user_bucket_name}")
 logger.info("Using instance specifications:")
