@@ -11,6 +11,9 @@ s3_client = boto3.client("s3")
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
 bucket_name = f"{workspace_name}-team-bucket"
 
+# Define common tags
+tags = [{"Key": "team", "Value": workspace_name}]
+
 print(f"\nUsing team bucket: {bucket_name}")
 print("Using instance: ml.g4dn.8xlarge")
 print("- NVIDIA T4 GPU with 16GB memory")

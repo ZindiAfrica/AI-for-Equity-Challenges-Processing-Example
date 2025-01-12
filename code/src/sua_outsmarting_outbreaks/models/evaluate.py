@@ -22,6 +22,9 @@ workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
 bucket_name = f"{workspace_name}-team-bucket"
 logger.info(f"Using S3 bucket: {bucket_name}")
 
+# Define common tags
+tags = [{"Key": "team", "Value": workspace_name}]
+
 # ----------------------------------------
 # Load Test Dataset
 # ----------------------------------------

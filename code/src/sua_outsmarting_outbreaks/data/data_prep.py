@@ -7,9 +7,12 @@ from scipy.spatial import cKDTree
 s3_client = boto3.client("s3")
 bucket_name = "sua-outsmarting-outbreaks-challenge-comp"
 
-# Get workspace name for team bucket
+# Get workspace name for team bucket and tagging
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
 out_bucket_name = f"{workspace_name}-team-bucket"
+
+# Define common tags
+tags = [{"Key": "team", "Value": workspace_name}]
 
 print(f"\nUsing input bucket: {bucket_name}")
 print(f"Using team bucket: {out_bucket_name}")

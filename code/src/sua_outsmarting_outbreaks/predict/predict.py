@@ -10,6 +10,9 @@ workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
 # Use the team bucket format - do not create new buckets
 bucket_name = f"{workspace_name}-team-bucket"
 
+# Define common tags
+tags = [{"Key": "team", "Value": workspace_name}]
+
 # Load preprocessed test dataset from S3
 print("Downloading preprocessed test dataset from S3...")
 test_data_path = f"s3://{bucket_name}/processed_test.csv"
