@@ -17,7 +17,6 @@ Example:
 
 import logging
 
-import boto3
 import sagemaker
 from sagemaker.image_uris import retrieve as retrieve_image_uri
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor

@@ -148,7 +148,7 @@ def get_execution_role() -> str:
         role = sagemaker.get_execution_role()
         logger.info(f"Successfully got SageMaker execution role: {role}")
         return role
-    except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError) as e:
+    except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError, ValueError) as e:
         logger.error(f"Failed to get SageMaker role: {e}")
         logger.info("Falling back to current user/role credentials...")
 

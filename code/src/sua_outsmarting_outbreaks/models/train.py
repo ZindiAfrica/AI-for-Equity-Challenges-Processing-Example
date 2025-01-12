@@ -17,10 +17,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
-    get_data_bucket_name,
-    get_execution_role,
-    get_user_bucket_name,
-    get_user_name,
+    initialize_aws_resources,
 )
 from sua_outsmarting_outbreaks.utils.logging_utils import (
     DataError,
@@ -114,19 +111,19 @@ def prepare_features(
     logger.info("Preparing features and target...")
 
     # Split features and target
-    X = df.drop(columns=[target_col, *exclude_cols], errors="ignore")
-    y = df[target_col]
+    xaxis = df.drop(columns=[target_col, *exclude_cols], errors="ignore")
+    yaxis = df[target_col]
 
     # Handle categorical features
-    categorical_cols = X.select_dtypes(include=["object"]).columns
+    categorical_cols = xaxis.select_dtypes(include=["object"]).columns
     logger.info(f"Found {len(categorical_cols)} categorical columns")
 
     for col in categorical_cols:
         le = LabelEncoder()
-        X[col] = le.fit_transform(X[col])
+        xaxis[col] = le.fit_transform(xaxis[col])
 
-    logger.info(f"Final feature matrix shape: {X.shape}")
-    return X, y
+    logger.info(f"Final feature matrix shape: {xaxis.shape}")
+    return xaxis, yaxis
 
 
 # Prepare features

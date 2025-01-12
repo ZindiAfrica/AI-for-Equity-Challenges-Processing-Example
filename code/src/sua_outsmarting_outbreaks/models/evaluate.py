@@ -8,10 +8,6 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.preprocessing import LabelEncoder
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
-    get_data_bucket_name,
-    get_execution_role,
-    get_user_bucket_name,
-    get_user_name,
     initialize_aws_resources,
 )
 

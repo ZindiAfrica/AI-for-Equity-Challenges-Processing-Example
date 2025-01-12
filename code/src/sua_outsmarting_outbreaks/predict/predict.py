@@ -5,10 +5,7 @@ import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
-    get_data_bucket_name,
-    get_execution_role,
-    get_user_bucket_name,
-    get_user_name,
+    initialize_aws_resources,
 )
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 

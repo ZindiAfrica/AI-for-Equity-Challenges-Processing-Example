@@ -97,6 +97,7 @@ def preprocess_water_sources(water_sources: pd.DataFrame) -> pd.DataFrame:
 
     Returns:
         DataFrame with preprocessed water source data
+
     """
     water_sources.dropna(subset=["water_Transformed_Latitude"], inplace=True)
     water_sources["water_Month_Year_lat_lon"] = (
@@ -118,6 +119,7 @@ def preprocess_supplementary_data(df: pd.DataFrame, prefix: str) -> pd.DataFrame
 
     Returns:
         DataFrame with added composite key column
+
     """
     df[f"{prefix}_Month_Year_lat_lon"] = (
         df[f"{prefix}_Month_Year"]
