@@ -8,11 +8,6 @@ from pathlib import Path
 import boto3
 import sagemaker
 from dotenv import load_dotenv
-
-from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
-
-# Configure logger
-logger = setup_logger(__name__)
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
@@ -82,7 +77,6 @@ def build_and_push_docker_image(
     account_id: str,
     region: str,
     image_tag: str,
-    docker_path: str = "/usr/local/bin/docker",
 ) -> str:
     """Build and push Docker image to ECR.
 
@@ -194,7 +188,7 @@ def main() -> None:
 
     # Get execution role and verify permissions
     role = get_execution_role()
-    print(f"Using execution role: {role}")
+    logger.info(f"Using execution role: {role}")
 
     # Initialize SageMaker session with user-specific bucket
     sagemaker_session = sagemaker.Session()

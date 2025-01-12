@@ -51,8 +51,6 @@ def initialize_aws_resources() -> tuple[sagemaker.Session, str, str, str, str]:
 
     """
     sagemaker_session = sagemaker.Session()
-    sts = boto3.client("sts")
-
     username = get_user_name()
     role = get_execution_role()
     data_bucket_name = get_data_bucket_name()

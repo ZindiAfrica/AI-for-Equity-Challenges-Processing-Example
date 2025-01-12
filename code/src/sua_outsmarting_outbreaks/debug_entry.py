@@ -11,7 +11,7 @@ logger = setup_logger(__name__)
 
 
 def load_env() -> None:
-    """Load environment variables from .env file"""
+    """Load environment variables from .env file."""
     env_path = Path(__file__).parent.parent / ".env"
     if env_path.exists():
         load_dotenv(env_path)
@@ -20,7 +20,7 @@ def load_env() -> None:
 
 
 def print_settings() -> None:
-    """Print environment settings excluding secrets"""
+    """Print environment settings excluding secrets."""
     logger.info("\nCurrent Settings:")
     logger.info("-" * 50)
     for key, value in sorted(os.environ.items()):

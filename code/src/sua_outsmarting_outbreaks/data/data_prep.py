@@ -1,13 +1,9 @@
 # Import necessary libraries
 import boto3
 import pandas as pd
-
-from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
-
-# Configure logger
-logger = setup_logger(__name__)
 from scipy.spatial import cKDTree
 
+from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
     get_execution_role,
@@ -45,6 +41,18 @@ def find_nearest(
     lon_col: str,
     id_col: str,
 ) -> dict[str, str]:
+    """Find nearest locations using KD-tree spatial indexing.
+
+    Args:
+        hospital_df: DataFrame containing hospital locations
+        location_df: DataFrame containing reference locations
+        lat_col: Name of latitude column
+        lon_col: Name of longitude column
+        id_col: Name of ID column
+
+    Returns:
+        Dictionary mapping hospital IDs to nearest location IDs
+    """
     tree = cKDTree(location_df[[lat_col, lon_col]].values)
     nearest = {}
     for _, row in hospital_df.iterrows():
@@ -125,8 +133,9 @@ for df, prefix, id_col in datasets:
 
 # Save processed datasets to S3
 logger.info("Uploading processed datasets to S3...")
-processed_train = merged_data[merged_data["Year"] < 2023]
-processed_test = merged_data[merged_data["Year"] == 2023]
+TRAIN_CUTOFF_YEAR = 2023
+processed_train = merged_data[merged_data["Year"] < TRAIN_CUTOFF_YEAR]
+processed_test = merged_data[merged_data["Year"] == TRAIN_CUTOFF_YEAR]
 
 train_output_path = f"s3://{user_bucket_name}/processed_train.csv"
 test_output_path = f"s3://{user_bucket_name}/processed_test.csv"
