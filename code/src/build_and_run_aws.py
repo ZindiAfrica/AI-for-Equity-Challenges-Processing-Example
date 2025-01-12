@@ -98,6 +98,7 @@ def main():
     import argparse
     parser = argparse.ArgumentParser()
     parser.add_argument('--debug', action='store_true', help='Enable debug mode')
+    parser.add_argument('--build-only', action='store_true', help='Only build and push Docker image')
     args = parser.parse_args()
 
     # Check AWS environment first
@@ -105,6 +106,30 @@ def main():
     
     if args.debug:
         print("Debug mode enabled")
+
+    # Import helpers
+    from sua_outsmarting_outbreaks.utils.aws_utils import get_execution_role
+
+    # Initialize AWS clients
+    region = "us-east-2"
+    account_id = get_account_id()
+
+    # Get execution role and verify permissions
+    role = get_execution_role()
+    print(f"Using execution role: {role}")
+
+    # Import helper
+    from sua_outsmarting_outbreaks.utils.aws_utils import get_registry_name
+
+    # Build and push Docker image
+    image_tag = "outsmarting-pipeline"
+    workspace = get_registry_name()
+    image_name = f"{workspace}"
+    ecr_image_uri = build_and_push_docker_image(image_name, account_id, region, image_tag)
+
+    if args.build_only:
+        print("Build completed successfully")
+        sys.exit(0)
 
     # Import helpers
     from sua_outsmarting_outbreaks.utils.aws_utils import get_execution_role
