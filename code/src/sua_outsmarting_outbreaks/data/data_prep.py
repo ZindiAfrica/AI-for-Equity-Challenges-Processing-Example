@@ -90,6 +90,14 @@ hospital_data = pd.concat([train, test])
 
 # Preprocess water sources
 def preprocess_water_sources(water_sources: pd.DataFrame) -> pd.DataFrame:
+    """Preprocess water sources data by handling missing values and creating composite keys.
+
+    Args:
+        water_sources: DataFrame containing water source information
+
+    Returns:
+        DataFrame with preprocessed water source data
+    """
     water_sources.dropna(subset=["water_Transformed_Latitude"], inplace=True)
     water_sources["water_Month_Year_lat_lon"] = (
         water_sources["water_Month_Year"]
@@ -102,6 +110,15 @@ def preprocess_water_sources(water_sources: pd.DataFrame) -> pd.DataFrame:
 
 
 def preprocess_supplementary_data(df: pd.DataFrame, prefix: str) -> pd.DataFrame:
+    """Preprocess supplementary datasets by creating composite location-time keys.
+
+    Args:
+        df: DataFrame containing supplementary data
+        prefix: String prefix for column names (e.g. 'toilet', 'waste')
+
+    Returns:
+        DataFrame with added composite key column
+    """
     df[f"{prefix}_Month_Year_lat_lon"] = (
         df[f"{prefix}_Month_Year"]
         + "_"

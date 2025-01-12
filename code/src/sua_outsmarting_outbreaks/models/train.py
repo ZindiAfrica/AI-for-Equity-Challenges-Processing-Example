@@ -80,12 +80,12 @@ def load_training_data(bucket_name: str) -> pd.DataFrame:
     except FileNotFoundError:
         error_msg = f"Training data file not found at {train_data_path}"
         logger.error(error_msg)
-        raise DataError(error_msg)
+        raise DataError(error_msg) from None
 
     except pd.errors.EmptyDataError:
         error_msg = f"Training data file is empty at {train_data_path}"
         logger.error(error_msg)
-        raise DataError(error_msg)
+        raise DataError(error_msg) from None
 
     except Exception as e:
         error_msg = f"Failed to load training data: {e!s}"
@@ -121,8 +121,8 @@ def prepare_features(
     logger.info("Preparing features and target...")
 
     # Split features and target
-    X = df.drop(columns=[target_col] + exclude_cols, errors="ignore")
-    y = df[target_col]
+    features = df.drop(columns=[target_col, *exclude_cols], errors="ignore")
+    target = df[target_col]
 
     # Handle categorical features
     categorical_cols = X.select_dtypes(include=["object"]).columns
@@ -141,8 +141,8 @@ X, y = prepare_features(train_df, target_column, ["ID", "Location"])
 
 
 def train_model(
-    X: pd.DataFrame,
-    y: pd.Series,
+    features: pd.DataFrame,
+    target: pd.Series,
     test_size: float = 0.2,
     random_state: int = 42,
 ) -> RandomForestRegressor:
@@ -167,9 +167,9 @@ def train_model(
 
     try:
         logger.info("Splitting data into train/validation sets...")
-        X_train, X_val, y_train, y_val = train_test_split(
-            X,
-            y,
+        features_train, features_val, target_train, target_val = train_test_split(
+            features,
+            target,
             test_size=test_size,
             random_state=random_state,
         )
