@@ -99,7 +99,6 @@ def validate_docker_args(*args: str) -> None:
   # Allow ECR URIs like: 123456789012.dkr.ecr.region.amazonaws.com/repo:tag
   tag_pattern = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
   path_pattern = re.compile(r"^[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9/_-]+:[a-zA-Z0-9._-]+$|^[a-zA-Z0-9/._-]+$")
-  registry_pattern = re.compile(r"^https?://[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/?$")
 
   for arg in args:
     if not isinstance(arg, str):
@@ -143,6 +142,11 @@ def build_and_push_docker_image(
       str: The full ECR repository URI for the pushed image
 
   """
+  # Define validation patterns
+  import re
+  tag_pattern = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
+  path_pattern = re.compile(r"^[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9/_-]+:[a-zA-Z0-9._-]+$|^[a-zA-Z0-9/._-]+$")
+  registry_pattern = re.compile(r"^https?://[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/?$")
   # Get validated docker executable path
   docker_exe = get_docker_executable()
 
