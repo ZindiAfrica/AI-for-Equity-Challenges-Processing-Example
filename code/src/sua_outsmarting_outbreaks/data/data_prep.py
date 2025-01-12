@@ -184,17 +184,30 @@ def preprocess_supplementary_data(df: pd.DataFrame, prefix: str) -> pd.DataFrame
     return df
 
 
-water_sources = preprocess_water_sources(water_sources)
-toilets = preprocess_supplementary_data(toilets, "toilet")
-waste_management = preprocess_supplementary_data(waste_management, "waste")
+def process_data(hospital_data: pd.DataFrame, toilets_df: pd.DataFrame, waste_df: pd.DataFrame, water_df: pd.DataFrame) -> pd.DataFrame:
+    """Process and merge all datasets.
+    
+    Args:
+        hospital_data: DataFrame with hospital data
+        toilets_df: DataFrame with toilet data
+        waste_df: DataFrame with waste management data
+        water_df: DataFrame with water source data
+        
+    Returns:
+        DataFrame with all data merged
+    """
+    # Preprocess each dataset
+    water_sources = preprocess_water_sources(water_df)
+    toilets = preprocess_supplementary_data(toilets_df, "toilet")
+    waste_management = preprocess_supplementary_data(waste_df, "waste")
 
-# Merge datasets with nearest locations
-merged_data = hospital_data.copy()
-datasets = [
-    (toilets, "toilet", "toilet_Month_Year_lat_lon"),
-    (waste_management, "waste", "waste_Month_Year_lat_lon"),
-    (water_sources, "water", "water_Month_Year_lat_lon"),
-]
+    # Merge datasets with nearest locations
+    merged_data = hospital_data.copy()
+    datasets = [
+        (toilets, "toilet", "toilet_Month_Year_lat_lon"),
+        (waste_management, "waste", "waste_Month_Year_lat_lon"),
+        (water_sources, "water", "water_Month_Year_lat_lon"),
+    ]
 
 for df, prefix, id_col in datasets:
     nearest = find_nearest(
@@ -229,5 +242,3 @@ def save_processed_data(merged_data: pd.DataFrame, user_bucket: str) -> None:
     logger.info(f"Saving processed test dataset to {test_output_path}")
     processed_test.to_csv(test_output_path, index=False)
 
-logger.info(f"Processed train dataset saved to {train_output_path}")
-logger.info(f"Processed test dataset saved to {test_output_path}")
