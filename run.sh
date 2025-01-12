@@ -164,11 +164,18 @@ show_menu() {
         "Go to Source Directory"
         "Quit"
     )
-    select opt in "${options[@]}"
-    do
-        # Reset timeout for next iteration
-        TMOUT=5
-        case $opt in
+    while true; do
+        select opt in "${options[@]}"
+        do
+            # Reset timeout for next iteration
+            TMOUT=5
+            
+            # Handle direct q input
+            if [[ "$REPLY" =~ ^[qQ]$ ]]; then
+                exit 0
+            fi
+            
+            case $opt in
             "Help")
                 help
                 ;;
@@ -209,8 +216,10 @@ show_menu() {
                 ;;
             *)
                 echo "Invalid option $REPLY"
+                break
                 ;;
         esac
+        break
     done
 }
 
