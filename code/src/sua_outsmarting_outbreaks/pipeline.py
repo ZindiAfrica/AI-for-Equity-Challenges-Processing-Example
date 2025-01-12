@@ -13,7 +13,7 @@ sts = boto3.client("sts")
 username = sts.get_caller_identity()["Arn"].split("/")[-1]
 
 # Get the appropriate execution role
-from utils.aws_utils import get_execution_role
+from sua_outsmarting_outbreaks.utils.aws_utils import get_execution_role
 
 role = get_execution_role()
 
@@ -27,10 +27,10 @@ input_prefix = f"s3://{bucket_name}/"
 output_prefix = f"s3://{out_bucket_name}/output/"
 
 # Define the scripts for each stage (local paths expected for `code` argument)
-data_prep_script = "notebooks/outsmarting_data_prep.py"
-model_training_script = "notebooks/outsmarting_train.py"
-model_evaluation_script = "notebooks/outsmarting_eval.py"
-model_prediction_script = "notebooks/outsmarting_predict.py"
+data_prep_script = "code/notebooks/outsmarting_data_prep.py"
+model_training_script = "code/notebooks/outsmarting_train.py"
+model_evaluation_script = "code/notebooks/outsmarting_eval.py"
+model_prediction_script = "code/notebooks/outsmarting_predict.py"
 
 # Specify framework details
 framework = "sklearn"

@@ -5,7 +5,7 @@ import subprocess
 import boto3
 import sagemaker
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
-from utils.aws_utils import get_bucket_name
+from sua_outsmarting_outbreaks.utils.aws_utils import get_bucket_name
 
 
 def check_aws_environment():
@@ -90,7 +90,7 @@ def main():
         print(f"Warning: Role may not have required permissions: {e}")
 
     # Import helper
-    from utils.aws_utils import get_registry_name
+    from sua_outsmarting_outbreaks.utils.aws_utils import get_registry_name
 
     # Build and push Docker image
     image_tag = "outsmarting-pipeline"
@@ -117,7 +117,7 @@ def main():
 
     # Run the processing job
     processor.run(
-        code="notebooks/outsmarting_sagemaker_execute.py",
+        code="code/notebooks/outsmarting_sagemaker_execute.py",
         inputs=[
             ProcessingInput(
                 source="s3://sua-outsmarting-outbreaks-challenge-comp",
