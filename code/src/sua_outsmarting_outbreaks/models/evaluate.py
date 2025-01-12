@@ -12,6 +12,7 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_execution_role,
     get_user_bucket_name,
     get_user_name,
+    initialize_aws_resources,
 )
 
 # Configure logging
