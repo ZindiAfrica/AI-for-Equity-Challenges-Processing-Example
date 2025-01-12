@@ -10,7 +10,6 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_user_bucket_name,
     get_user_name,
 )
-
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
 # Configure logger

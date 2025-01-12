@@ -1,4 +1,5 @@
 """Constants used throughout the project."""
+
 from sua_outsmarting_outbreaks.utils.config import settings
 
 # AWS SageMaker instance configurations
@@ -47,5 +48,5 @@ LOG_FORMAT = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 DEFAULT_TAGS = [
     {"Key": "Environment", "Value": settings.environment},
     {"Key": "Project", "Value": settings.project_name},
-    {"Key": "ManagedBy", "Value": "sagemaker"}
+    {"Key": "ManagedBy", "Value": "sagemaker"},
 ]

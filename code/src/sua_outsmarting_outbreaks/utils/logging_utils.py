@@ -3,12 +3,12 @@
 import logging
 import sys
 from pathlib import Path
-from typing import Optional
+
 
 def setup_logger(
     name: str,
     level: str = "INFO",
-    log_file: Optional[Path] = None,
+    log_file: Path | None = None,
 ) -> logging.Logger:
     """Configure and return a logger with consistent formatting.
 
@@ -23,17 +23,18 @@ def setup_logger(
     Example:
         >>> logger = setup_logger(__name__)
         >>> logger.info("Starting process...")
+
     """
     logger = logging.getLogger(name)
-    
+
     # Set log level
     level = getattr(logging, level.upper(), logging.INFO)
     logger.setLevel(level)
 
     # Create formatters and handlers
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S'
+        "%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+        datefmt="%Y-%m-%d %H:%M:%S"
     )
 
     # Console handler
@@ -51,16 +52,20 @@ def setup_logger(
 
 class MLPipelineError(Exception):
     """Base exception class for ML pipeline errors."""
+
     pass
 
 class DataError(MLPipelineError):
     """Raised when there are issues with data loading or processing."""
+
     pass
 
 class ModelError(MLPipelineError):
     """Raised when there are issues with model operations."""
+
     pass
 
 class AWSError(MLPipelineError):
     """Raised when there are issues with AWS services."""
+
     pass
