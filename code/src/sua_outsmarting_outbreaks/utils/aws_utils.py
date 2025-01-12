@@ -1,12 +1,20 @@
-from typing import Dict, List
+"""AWS utility functions for SageMaker pipeline management."""
+from typing import Dict, List, Optional
 
 import boto3
 import os
-from typing import Optional
 
 
 def get_user_name() -> str:
-    """Get the username for the current user"""
+    """Get the username for the current user.
+    
+    Returns:
+        str: The username from AWS identity or environment variable.
+        
+    Example:
+        >>> get_user_name()
+        'john-doe'
+    """
     sts = boto3.client("sts")
     caller_identity: Dict[str, str] = sts.get_caller_identity()
     arn_parts: List[str] = caller_identity["Arn"].split("/")
@@ -15,37 +23,86 @@ def get_user_name() -> str:
 
 
 def get_user_registry_name() -> str:
-    """Get the registry name for the current user"""
+    """Get the ECR registry name for the current user.
+    
+    Returns:
+        str: The ECR registry name, formatted as '{username}-workspace'.
+        
+    Example:
+        >>> get_user_registry_name()
+        'john-doe-workspace'
+    """
     username: str = get_user_name()
     return os.environ.get("USER_REGISTRY_NAME", f"{username}-workspace")
 
 
 def get_user_bucket_name() -> str:
-    """Get the bucket name for the current user"""
+    """Get the S3 bucket name for the current user.
+    
+    Returns:
+        str: The S3 bucket name, formatted as '{username}-team-bucket'.
+        
+    Example:
+        >>> get_user_bucket_name()
+        'john-doe-team-bucket'
+    """
     username: str = get_user_name()
     return os.environ.get("USER_BUCKET_NAME", f"{username}-team-bucket")
 
 
 def get_data_bucket_name() -> str:
-    """Get the source bucket name for the current user"""
+    """Get the source data bucket name.
+    
+    Returns:
+        str: The S3 bucket name containing source data.
+        
+    Example:
+        >>> get_data_bucket_name()
+        'sua-outsmarting-outbreaks-challenge-comp'
+    """
     return os.environ.get("DATA_BUCKET_NAME", "sua-outsmarting-outbreaks-challenge-comp")
 
 
 def get_user_docker_image_tag() -> str:
-    """Get the docker image tag for the current user"""
+    """Get the Docker image tag for the current user.
+    
+    Returns:
+        str: The Docker image tag to use for builds.
+        
+    Example:
+        >>> get_user_docker_image_tag()
+        'outsmarting-pipeline'
+    """
     return os.environ.get("DOCKER_IMAGE_TAG", "outsmarting-pipeline")
 
 def get_script_processor_type() -> str:
-    """Get the SageMaker script processor instance type"""
+    """Get the SageMaker script processor instance type.
+    
+    Returns:
+        str: The SageMaker instance type (e.g. 'ml.m5.2xlarge').
+        
+    Example:
+        >>> get_script_processor_type()
+        'ml.m5.2xlarge'
+    """
     return os.environ.get("SCRIPT_PROCESSOR_TYPE", "ml.m5.2xlarge")
 
 
-def get_execution_role():
-    """
-    Get the appropriate execution role or user ARN based on the environment.
-
+def get_execution_role() -> str:
+    """Get the appropriate execution role or user ARN based on the environment.
+    
+    This function attempts to get the SageMaker execution role first, then falls back
+    to the current user/role credentials if not running in SageMaker.
+    
     Returns:
-        str: The ARN to use for AWS operations
+        str: The ARN to use for AWS operations.
+        
+    Raises:
+        Exception: If unable to get valid credentials.
+        
+    Example:
+        >>> get_execution_role()
+        'arn:aws:iam::123456789012:role/service-role/AmazonSageMaker-ExecutionRole'
     """
     print("\nAttempting to get execution role...")
     try:
