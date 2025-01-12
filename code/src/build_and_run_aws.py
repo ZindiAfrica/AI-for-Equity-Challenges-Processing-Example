@@ -3,6 +3,9 @@ import os
 import subprocess
 import sys
 import warnings
+from pathlib import Path
+
+from dotenv import load_dotenv
 
 # Suppress specific pydantic warning
 warnings.filterwarnings('ignore', message='Field name "json" in "MonitoringDatasetFormat" shadows an attribute in parent "Base"')
@@ -94,6 +97,13 @@ def build_and_push_docker_image(image_name, account_id, region, image_tag):
 
 
 def main():
+    # Load environment variables from .env file
+    env_path = Path(__file__).parent / '.env'
+    if env_path.exists():
+        load_dotenv(env_path)
+    else:
+        print("Warning: .env file not found at", env_path)
+        
     # Parse command line arguments
     import argparse
     parser = argparse.ArgumentParser()
