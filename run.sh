@@ -221,6 +221,7 @@ show_menu() {
         esac
         break
     done
+done
 }
 
 # Main execution
