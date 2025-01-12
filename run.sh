@@ -60,9 +60,13 @@
      echo "Running ML pipeline${debug:+ in debug mode}..."
      cd "$APP_DIR"
      source .venv/bin/activate
+     
+     # Print the command that will be executed
      if [ -n "$debug" ]; then
+         echo "Executing command: python -m sua_outsmarting_outbreaks.debug_entry"
          python -m sua_outsmarting_outbreaks.debug_entry
      else
+         echo "Executing command: python build_and_run_aws.py"
          python build_and_run_aws.py
      fi
      echo "Pipeline completed successfully"
