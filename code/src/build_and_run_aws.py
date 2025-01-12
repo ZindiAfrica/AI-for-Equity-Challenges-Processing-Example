@@ -116,10 +116,14 @@ def build_and_push_docker_image(
 
     # Check if Docker daemon is running
     try:
+        validate_docker_args("info")
         subprocess.run([docker_exe, "info"], check=True, capture_output=True)
     except subprocess.CalledProcessError:
         logger.error("Docker daemon is not running. Please start Docker and try again.")
         logger.error("On macOS, launch Docker Desktop from Applications.")
+        sys.exit(1)
+    except ValueError as e:
+        logger.error(f"Invalid docker command: {e}")
         sys.exit(1)
 
     # Build the Docker image
@@ -130,19 +134,22 @@ def build_and_push_docker_image(
             "Dockerfile",
         )
         build_context = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "code")
+        
+        validate_docker_args("build", "-t", f"{image_name}:{image_tag}", "-f", dockerfile_path, build_context)
         subprocess.run(
             [docker_exe, "build", "-t", f"{image_name}:{image_tag}", "-f", dockerfile_path, build_context],
             check=True,
         )
-    except subprocess.CalledProcessError as e:
+    except (subprocess.CalledProcessError, ValueError) as e:
         logger.error(f"Error building Docker image: {e}")
         sys.exit(1)
 
     # Tag the image for ECR
     ecr_repo = f"{account_id}.dkr.ecr.{region}.amazonaws.com/{image_name}:{image_tag}"
     try:
+        validate_docker_args("tag", f"{image_name}:{image_tag}", ecr_repo)
         subprocess.run([docker_exe, "tag", f"{image_name}:{image_tag}", ecr_repo], check=True)
-    except subprocess.CalledProcessError as e:
+    except (subprocess.CalledProcessError, ValueError) as e:
         logger.error(f"Error tagging Docker image: {e}")
         sys.exit(1)
 
@@ -152,10 +159,20 @@ def build_and_push_docker_image(
     username, password = base64.b64decode(token["authorizationData"][0]["authorizationToken"]).decode().split(":")
     registry = token["authorizationData"][0]["proxyEndpoint"]
 
-    subprocess.run([docker_exe, "login", "-u", username, "-p", password, registry], check=True)
+    try:
+        validate_docker_args("login", "-u", username, "-p", password, registry)
+        subprocess.run([docker_exe, "login", "-u", username, "-p", password, registry], check=True)
+    except (subprocess.CalledProcessError, ValueError) as e:
+        logger.error(f"Error logging into ECR: {e}")
+        sys.exit(1)
 
     # Push the image to ECR
-    subprocess.run([docker_exe, "push", ecr_repo], check=True)
+    try:
+        validate_docker_args("push", ecr_repo)
+        subprocess.run([docker_exe, "push", ecr_repo], check=True)
+    except (subprocess.CalledProcessError, ValueError) as e:
+        logger.error(f"Error pushing image to ECR: {e}")
+        sys.exit(1)
 
     return ecr_repo
 
@@ -220,7 +237,7 @@ def main() -> None:
     try:
         iam.simulate_principal_policy(PolicySourceArn=role, ActionNames=["sagemaker:CreateProcessingJob"])
         logger.info("Role has required SageMaker permissions")
-    except Exception as e:
+    except (boto3.exceptions.BotoCoreError, boto3.exceptions.ClientError) as e:
         logger.warning(f"Role may not have required permissions: {e}")
 
     # Build and push Docker image

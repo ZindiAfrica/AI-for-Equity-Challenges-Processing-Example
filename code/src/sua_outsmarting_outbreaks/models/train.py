@@ -121,8 +121,8 @@ def prepare_features(
     logger.info("Preparing features and target...")
 
     # Split features and target
-    features = df.drop(columns=[target_col, *exclude_cols], errors="ignore")
-    target = df[target_col]
+    X = df.drop(columns=[target_col, *exclude_cols], errors="ignore")
+    y = df[target_col]
 
     # Handle categorical features
     categorical_cols = X.select_dtypes(include=["object"]).columns
