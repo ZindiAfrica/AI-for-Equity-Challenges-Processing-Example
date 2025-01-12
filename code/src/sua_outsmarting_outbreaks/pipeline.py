@@ -21,6 +21,9 @@ role = get_execution_role()
 # Define common tags
 tags = [{"Key": "team", "Value": username}]
 
+# Get workspace name for bucket naming
+workspace_name = get_user_name()
+
 # Define the S3 bucket for input and output data
 bucket_name = os.environ.get("SRC_BUCKET_NAME", "sua-outsmarting-outbreaks-challenge-comp")
 out_bucket_name = os.environ.get("BUCKET_NAME", f"{workspace_name}-team-bucket")

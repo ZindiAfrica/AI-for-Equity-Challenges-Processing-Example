@@ -178,6 +178,7 @@ def main():
     # Get username for tagging and workspace name
     sts = boto3.client("sts")
     username = sts.get_caller_identity()["Arn"].split("/")[-1]
+    from sua_outsmarting_outbreaks.utils.aws_utils import get_user_name
     workspace_name = get_user_name()
 
     # Create SageMaker processor with tags
