@@ -227,6 +227,7 @@ def main() -> None:
   parser = argparse.ArgumentParser()
   parser.add_argument("--debug", action="store_true", help="Enable debug mode")
   parser.add_argument("--build-only", action="store_true", help="Only build and push Docker image")
+  parser.add_argument("--deploy-only", action="store_true", help="Only deploy to SageMaker without rebuilding")
   args = parser.parse_args()
 
   # Check AWS environment first
@@ -253,6 +254,8 @@ def main() -> None:
   if args.build_only:
     logger.info("Build completed successfully")
     sys.exit(0)
+  elif args.deploy_only:
+    logger.info("Skipping build, proceeding with deployment...")
 
   # Initialize AWS clients
   region = "us-east-2"
