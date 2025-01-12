@@ -1,4 +1,8 @@
-# Import necessary libraries
+"""Data preparation module for preprocessing training and test data."""
+
+import os
+from pathlib import Path
+
 import boto3
 import pandas as pd
 from scipy.spatial import cKDTree
@@ -14,19 +18,50 @@ from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 # Configure logger
 logger = setup_logger(__name__)
 
-# Initialize S3 client and get team bucket
-s3_client = boto3.client("s3")
+def get_data_dir() -> Path:
+    """Get the data directory path."""
+    return Path(__file__).parent.parent.parent.parent / "data"
 
-username = get_user_name()
-role = get_execution_role()
-data_bucket_name = get_data_bucket_name()
-user_bucket_name = get_user_bucket_name()
+def ensure_data_dir() -> Path:
+    """Ensure the data directory exists."""
+    data_dir = get_data_dir()
+    data_dir.mkdir(parents=True, exist_ok=True)
+    return data_dir
 
-# Define common tags
-tags = [{"Key": "team", "Value": username}]
+def download_from_s3(bucket: str, key: str, local_path: Path) -> None:
+    """Download a file from S3."""
+    if not local_path.exists():
+        logger.info(f"Downloading {key} from S3...")
+        s3_client = boto3.client("s3")
+        s3_client.download_file(bucket, key, str(local_path))
 
-logger.info(f"Using input bucket: {data_bucket_name}")
-logger.info(f"Using team bucket: {user_bucket_name}")
+def upload_to_s3(local_path: Path, bucket: str, key: str) -> None:
+    """Upload a file to S3."""
+    logger.info(f"Uploading to s3://{bucket}/{key}")
+    s3_client = boto3.client("s3")
+    s3_client.upload_file(str(local_path), bucket, key)
+
+def preprocess_data(local_only: bool = False) -> None:
+    """Preprocess the data for training and testing.
+    
+    Args:
+        local_only: If True, only process local files without S3 interaction
+    """
+    data_dir = ensure_data_dir()
+    
+    if not local_only:
+        # Initialize AWS resources
+        s3_client = boto3.client("s3")
+        username = get_user_name()
+        role = get_execution_role()
+        data_bucket_name = get_data_bucket_name()
+        user_bucket_name = get_user_bucket_name()
+        
+        # Define common tags
+        tags = [{"Key": "team", "Value": username}]
+        
+        logger.info(f"Using input bucket: {data_bucket_name}")
+        logger.info(f"Using team bucket: {user_bucket_name}")
 
 
 # Configure instance type based on data size
