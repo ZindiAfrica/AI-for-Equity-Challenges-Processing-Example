@@ -133,15 +133,12 @@ def load_datasets(data_bucket: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
         logger.error(f"Error: Required input file not found: {e!s}")
         logger.error(f"Please ensure all required files exist in s3://{data_bucket}/")
         raise
-except pd.errors.EmptyDataError:
-    logger.error("Error: One or more input files are empty")
-    raise
-except Exception as e:
-    logger.error(f"Error loading input data: {e!s}")
-    raise
-
-# Combine train and test datasets
-hospital_data = pd.concat([train, test])
+    except pd.errors.EmptyDataError:
+        logger.error("Error: One or more input files are empty")
+        raise
+    except Exception as e:
+        logger.error(f"Error loading input data: {e!s}")
+        raise
 
 
 # Preprocess water sources
