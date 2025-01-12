@@ -29,23 +29,24 @@ def get_user_name() -> str:
 
 def initialize_aws_resources() -> tuple[str, str, str, str, list[dict[str, str]]]:
     """Initialize common AWS resources and return configuration.
-    
+
     Returns:
         Tuple containing:
             str: Username
             str: IAM role ARN
             str: Data bucket name
-            str: User bucket name 
+            str: User bucket name
             list: Common tags
+
     """
     username = get_user_name()
     role = get_execution_role()
     data_bucket_name = get_data_bucket_name()
     user_bucket_name = get_user_bucket_name()
-    
+
     # Define common tags
     tags = [{"Key": "team", "Value": username}]
-    
+
     return username, role, data_bucket_name, user_bucket_name, tags
 
 
@@ -178,8 +179,7 @@ def get_execution_role() -> str:
             try:
                 logger.info(f"Matching comp-user pattern: {username}")
                 # Extract the comp-user ID portion
-                user_id = username.split("comp-user-")[1]
-                role_name = f"SageMakerRole-comp-user-{user_id}"
+                role_name = f"SageMakerRole-{username}"
                 role_arn = f"arn:aws:iam::{caller_identity['Account']}:role/{role_name}"
                 logger.info(f"Attempting to assume role: {role_arn}")
 

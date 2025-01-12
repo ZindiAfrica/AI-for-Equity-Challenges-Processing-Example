@@ -90,22 +90,23 @@ def validate_docker_args(*args: str) -> None:
         
     Raises:
         ValueError: If any argument contains invalid characters
+
     """
     # Define allowed patterns for different arg types
     import re
-    tag_pattern = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9._-]*$')
-    path_pattern = re.compile(r'^[a-zA-Z0-9/._-]+$')
-    
+    tag_pattern = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
+    path_pattern = re.compile(r"^[a-zA-Z0-9/._-]+$")
+
     for arg in args:
         if not isinstance(arg, str):
             raise ValueError(f"Invalid argument type: {type(arg)}")
-        if '\x00' in arg or ';' in arg or '|' in arg:
+        if "\x00" in arg or ";" in arg or "|" in arg:
             raise ValueError(f"Invalid characters in argument: {arg}")
-        if arg.startswith('-') and arg not in ['-t', '-f', '-u', '-p']:
+        if arg.startswith("-") and arg not in ["-t", "-f", "-u", "-p"]:
             raise ValueError(f"Invalid flag argument: {arg}")
-        if ':' in arg and not tag_pattern.match(arg.split(':')[1]):
+        if ":" in arg and not tag_pattern.match(arg.split(":")[1]):
             raise ValueError(f"Invalid image tag format: {arg}")
-        if '/' in arg and not path_pattern.match(arg):
+        if "/" in arg and not path_pattern.match(arg):
             raise ValueError(f"Invalid path format: {arg}")
 
 
