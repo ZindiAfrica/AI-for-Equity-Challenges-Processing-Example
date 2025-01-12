@@ -64,7 +64,7 @@ def check_aws_environment() -> None:
     caller_identity = sts.get_caller_identity()
     username = caller_identity["Arn"].split("/")[-1]
     logger.info(f"AWS Username: {username}")
-  except (boto3.exceptions.Boto3Error, boto3.exceptions.BotoCoreError) as e:
+  except botocore.exceptions.ClientError as e:
     logger.error(f"Failed to get AWS identity: {e}")
 
 
@@ -286,7 +286,7 @@ def main() -> None:
     iam.simulate_principal_policy(PolicySourceArn=role,
                                   ActionNames=["sagemaker:CreateProcessingJob"])
     logger.info("Role has required SageMaker permissions")
-  except (boto3.exceptions.BotoCoreError, boto3.exceptions.ClientError) as e:
+  except botocore.exceptions.ClientError as e:
     logger.warning(f"Role may not have required permissions: {e}")
 
   # Build and push Docker image
