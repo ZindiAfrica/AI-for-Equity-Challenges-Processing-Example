@@ -82,6 +82,33 @@ def get_docker_executable() -> str:
     return docker_path
 
 
+def validate_docker_args(*args: str) -> None:
+    """Validate docker command arguments.
+    
+    Args:
+        *args: Docker command arguments to validate
+        
+    Raises:
+        ValueError: If any argument contains invalid characters
+    """
+    # Define allowed patterns for different arg types
+    import re
+    tag_pattern = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9._-]*$')
+    path_pattern = re.compile(r'^[a-zA-Z0-9/._-]+$')
+    
+    for arg in args:
+        if not isinstance(arg, str):
+            raise ValueError(f"Invalid argument type: {type(arg)}")
+        if '\x00' in arg or ';' in arg or '|' in arg:
+            raise ValueError(f"Invalid characters in argument: {arg}")
+        if arg.startswith('-') and arg not in ['-t', '-f', '-u', '-p']:
+            raise ValueError(f"Invalid flag argument: {arg}")
+        if ':' in arg and not tag_pattern.match(arg.split(':')[1]):
+            raise ValueError(f"Invalid image tag format: {arg}")
+        if '/' in arg and not path_pattern.match(arg):
+            raise ValueError(f"Invalid path format: {arg}")
+
+
 def get_account_id() -> str:
     """Get the AWS account ID for the current session.
 
