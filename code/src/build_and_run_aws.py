@@ -10,6 +10,11 @@ from typing import Optional
 import boto3
 import sagemaker
 from dotenv import load_dotenv
+
+from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
+
+# Configure logger
+logger = setup_logger(__name__)
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
