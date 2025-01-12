@@ -48,6 +48,7 @@ lint_python() {
     cd "$APP_DIR"
     source .venv/bin/activate
     ruff check --fix .
+    ruff format --check .
 }
 
 format_python() {
@@ -55,6 +56,7 @@ format_python() {
     cd "$APP_DIR"
     source .venv/bin/activate
     ruff format .
+    ruff check --fix .
 }
 
 deploy_sagemaker() {
