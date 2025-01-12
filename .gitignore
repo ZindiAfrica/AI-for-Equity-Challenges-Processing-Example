@@ -110,6 +110,7 @@ share/python-wheels/
 MANIFEST
 .python-version
 .pytest_cache/
+.ruff_cache/
 .coverage
 htmlcov/
 *.so
