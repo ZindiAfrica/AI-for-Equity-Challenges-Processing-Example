@@ -12,10 +12,10 @@ workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
 bucket_name = f"{workspace_name}-team-bucket"
 
 print(f"\nUsing team bucket: {bucket_name}")
-print("Using instance: g4dn.8xlarge")
+print("Using instance: ml.g4dn.8xlarge")
 print("- NVIDIA T4 GPU with 16GB memory")
 print("- 32 vCPUs and 128GB RAM")
-print("- Cost: $2.176/hr (on-demand) or $0.653/hr (spot)")
+print("- Cost: $2.72/hr (on-demand) or $0.816/hr (spot)")
 
 
 # Load preprocessed datasets from S3

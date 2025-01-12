@@ -15,7 +15,7 @@ print(f"\nUsing input bucket: {bucket_name}")
 print(f"Using team bucket: {out_bucket_name}")
 
 # Configure instance type based on data size
-# Using m5.2xlarge ($0.519/hr) for optimal memory/cost ratio
+# Using ml.m5.2xlarge ($0.46/hr on-demand, $0.138/hr spot) for optimal memory/cost ratio
 
 
 # Helper function to find nearest locations
