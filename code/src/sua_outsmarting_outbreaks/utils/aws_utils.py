@@ -148,7 +148,7 @@ def get_execution_role() -> str:
         role = sagemaker.get_execution_role()
         logger.info(f"Successfully got SageMaker execution role: {role}")
         return role
-    except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError, ValueError) as e:
+    except (botocore.exceptions.ClientError, ValueError) as e:
         logger.error(f"Failed to get SageMaker role: {e}")
         logger.info("Falling back to current user/role credentials...")
 
@@ -194,7 +194,7 @@ def get_execution_role() -> str:
                 # Use the temporary credentials
                 logger.info("Successfully assumed SageMaker execution role")
                 return role_arn
-            except (botocore.exceptions.BotoCoreError, botocore.exceptions.ClientError) as e:
+            except botocore.exceptions.ClientError as e:
                 logger.error(f"Failed to assume SageMaker role, falling back to user credentials: {e}")
                 return caller_identity["Arn"]  # Fall back to user ARN
 
