@@ -1,10 +1,21 @@
 #!/bin/bash
 set -e
-export AWS_PROFILE=zindicomp
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export APP_NAME="sua-outsmarting-outbreaks"
 export APP_DIR="$SCRIPT_DIR/code/src"
+
+# Load .env file if it exists
+if [ -f "$APP_DIR/.env" ]; then
+    echo "Loading environment variables from .env file..."
+    set -a
+    source "$APP_DIR/.env"
+    set +a
+else
+    echo "No .env file found at $APP_DIR/.env"
+    # Set default AWS profile if not set in environment
+    [ -z "$AWS_PROFILE" ] && export AWS_PROFILE=zindicomp
+fi
 
 # Required functions with component suffixes
 install_dependencies_python() {
