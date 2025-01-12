@@ -6,6 +6,9 @@ import warnings
 from pathlib import Path
 
 from dotenv import load_dotenv
+
+from sua_outsmarting_outbreaks.utils.config import settings
+from sua_outsmarting_outbreaks.utils.constants import MAX_RUNTIME_SECONDS
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
@@ -192,9 +195,9 @@ def main():
     command=["python3"],
     role=role,
     instance_count=1,
-    instance_type="ml.m5.large",
-    volume_size_in_gb=100,
-    max_runtime_in_seconds=86400,  # 24 hours
+    instance_type=settings.sagemaker.instance_type,
+    volume_size_in_gb=settings.sagemaker.volume_size,
+    max_runtime_in_seconds=MAX_RUNTIME_SECONDS,
     sagemaker_session=sagemaker_session,
     tags=[{"Key": "team", "Value": username}],
   )

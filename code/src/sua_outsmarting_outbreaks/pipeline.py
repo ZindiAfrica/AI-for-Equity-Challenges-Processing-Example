@@ -14,21 +14,17 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_user_bucket_name,
     get_user_name,
 )
+from sua_outsmarting_outbreaks.utils.config import settings
 from sua_outsmarting_outbreaks.utils.constants import (
-    AWS_REGION,
     DATA_PREP_OUTPUT,
     DATA_PREP_SCRIPT,
-    DEFAULT_INSTANCE_COUNT,
-    DEFAULT_INSTANCE_TYPE,
     EVALUATION_OUTPUT,
     MAX_RUNTIME_SECONDS,
     MODEL_EVALUATION_SCRIPT,
     MODEL_PREDICTION_SCRIPT,
     MODEL_TRAINING_SCRIPT,
     PREDICTIONS_OUTPUT,
-    SKLEARN_VERSION,
     TRAINING_OUTPUT,
-    VOLUME_SIZE_GB,
 )
 
 # Configure logging
@@ -62,10 +58,10 @@ model_training_script = "sua_outsmarting_outbreaks/models/train.py"
 model_evaluation_script = "sua_outsmarting_outbreaks/models/evaluate.py"
 model_prediction_script = "sua_outsmarting_outbreaks/predict/predict.py"
 
-# Specify framework details
-framework = "sklearn"
-version = "0.23-1"  # Replace with desired version
-region = "us-east-2"  # Replace with your AWS region
+# Get framework details from settings
+framework = settings.model.framework
+version = settings.model.framework_version
+region = settings.aws.region
 
 # Retrieve the image URI
 image_uri = retrieve_image_uri(framework=framework, region=region, version=version,
@@ -78,8 +74,8 @@ script_processor = ScriptProcessor(
   image_uri=image_uri,
   command=["python3"],
   role=role,
-  instance_count=1,
-  instance_type=get_script_processor_type(),  # Configurable via environment
+  instance_count=settings.sagemaker.instance_count,
+  instance_type=settings.sagemaker.instance_type,
   sagemaker_session=sagemaker_session,
   tags=tags,
 )
