@@ -32,3 +32,37 @@ if __name__ == "__main__":
             time.sleep(1)
     except KeyboardInterrupt:
         print("\nExiting debug mode...")
+# Test package initialization
+import pandas as pd
+import pytest
+
+from sua_outsmarting_outbreaks.data.data_prep import find_nearest
+
+
+def test_find_nearest():
+    """Test the find_nearest function with a simple test case"""
+    # Create test data
+    hospital_df = pd.DataFrame({
+        'ID': [1, 2],
+        'Transformed_Latitude': [0.0, 1.0],
+        'Transformed_Longitude': [0.0, 1.0]
+    })
+    
+    location_df = pd.DataFrame({
+        'lat_col': [0.1, 0.9],
+        'lon_col': [0.1, 0.9],
+        'id_col': ['A', 'B']
+    })
+    
+    # Call function
+    result = find_nearest(
+        hospital_df,
+        location_df,
+        'lat_col',
+        'lon_col',
+        'id_col'
+    )
+    
+    # Assert results
+    assert result[1] == 'A'  # First hospital should match first location
+    assert result[2] == 'B'  # Second hospital should match second location
