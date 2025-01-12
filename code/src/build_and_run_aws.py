@@ -1,4 +1,5 @@
 import base64
+import logging
 import os
 import subprocess
 import sys
@@ -6,6 +7,13 @@ import warnings
 from pathlib import Path
 
 from dotenv import load_dotenv
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
@@ -28,8 +36,8 @@ try:
     import boto3
     import sagemaker
 except ImportError:
-    print("Required packages are missing. Please install them with:")
-    print("pip install boto3 sagemaker")
+    logger.error("Required packages are missing. Please install them with:")
+    logger.error("pip install boto3 sagemaker")
     sys.exit(1)
 
 
@@ -55,8 +63,8 @@ def check_aws_environment() -> None:
         caller_identity = sts.get_caller_identity()
         username = caller_identity["Arn"].split("/")[-1]
         print(f"AWS Username: {username}")
-    except Exception as e:
-        print(f"Failed to get AWS identity: {e}")
+    except (boto3.exceptions.Boto3Error, boto3.exceptions.BotoCoreError) as e:
+        logger.error(f"Failed to get AWS identity: {e}")
 
 
 def get_account_id() -> str:
