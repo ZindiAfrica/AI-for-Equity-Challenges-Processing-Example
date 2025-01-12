@@ -49,7 +49,7 @@ lint_python() {
     echo "Running Python linter..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    ruff check .
+    ruff check --fix .
 }
 
 format_python() {
