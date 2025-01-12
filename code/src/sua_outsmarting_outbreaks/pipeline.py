@@ -1,4 +1,6 @@
-# Import necessary libraries
+"""Main pipeline module for orchestrating SageMaker processing jobs."""
+import logging
+from typing import List
 
 import boto3
 import sagemaker
@@ -6,11 +8,34 @@ from sagemaker.image_uris import retrieve as retrieve_image_uri
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
-  get_data_bucket_name,
-  get_execution_role,
-  get_user_bucket_name,
-  get_user_name,
+    get_data_bucket_name,
+    get_execution_role,
+    get_user_bucket_name,
+    get_user_name,
 )
+from sua_outsmarting_outbreaks.utils.constants import (
+    AWS_REGION,
+    DATA_PREP_OUTPUT,
+    DATA_PREP_SCRIPT,
+    DEFAULT_INSTANCE_COUNT,
+    DEFAULT_INSTANCE_TYPE,
+    EVALUATION_OUTPUT,
+    MAX_RUNTIME_SECONDS,
+    MODEL_EVALUATION_SCRIPT,
+    MODEL_PREDICTION_SCRIPT,
+    MODEL_TRAINING_SCRIPT,
+    PREDICTIONS_OUTPUT,
+    SKLEARN_VERSION,
+    TRAINING_OUTPUT,
+    VOLUME_SIZE_GB,
+)
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(levelname)s - %(message)s"
+)
+logger = logging.getLogger(__name__)
 
 # Initialize SageMaker session with explicit bucket
 sagemaker_session = sagemaker.Session()
