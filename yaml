@@ -23,3 +23,28 @@ services:
     command: python debug_entry.py
     stdin_open: true  # docker run -i
     tty: true        # docker run -t
+services:
+  ml-pipeline:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_REGION=us-east-2
+    volumes:
+      - .:/app
+
+  dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_REGION=us-east-2
+    volumes:
+      - .:/app
+    command: python debug_entry.py
+    stdin_open: true  # docker run -i
+    tty: true        # docker run -t
