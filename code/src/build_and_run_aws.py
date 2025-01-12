@@ -84,8 +84,17 @@ def build_and_push_docker_image(image_name, account_id, region, image_tag):
 
 
 def main():
+    # Parse command line arguments
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--debug', action='store_true', help='Enable debug mode')
+    args = parser.parse_args()
+
     # Check AWS environment first
     check_aws_environment()
+    
+    if args.debug:
+        print("Debug mode enabled")
 
     # Import helpers
     from sua_outsmarting_outbreaks.utils.aws_utils import get_execution_role
