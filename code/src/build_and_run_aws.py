@@ -175,9 +175,10 @@ def main():
     image_name = f"{workspace}"
     ecr_image_uri = build_and_push_docker_image(image_name, account_id, region, image_tag)
 
-    # Get username for tagging
+    # Get username for tagging and workspace name
     sts = boto3.client("sts")
     username = sts.get_caller_identity()["Arn"].split("/")[-1]
+    workspace_name = get_user_name()
 
     # Create SageMaker processor with tags
     processor = ScriptProcessor(

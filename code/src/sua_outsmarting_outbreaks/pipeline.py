@@ -1,10 +1,12 @@
 # Import necessary libraries
+import os
+
 import boto3
 import sagemaker
 from sagemaker.image_uris import retrieve as retrieve_image_uri
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
-from sua_outsmarting_outbreaks.utils.aws_utils import get_execution_role
+from sua_outsmarting_outbreaks.utils.aws_utils import get_execution_role, get_user_name
 
 # Initialize SageMaker session with explicit bucket
 sagemaker_session = sagemaker.Session()
