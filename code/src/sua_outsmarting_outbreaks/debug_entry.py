@@ -10,7 +10,7 @@ from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 logger = setup_logger(__name__)
 
 
-def load_env():
+def load_env() -> None:
     """Load environment variables from .env file"""
     env_path = Path(__file__).parent.parent / ".env"
     if env_path.exists():
@@ -19,7 +19,7 @@ def load_env():
         logger.warning("Warning: .env file not found, using system environment variables")
 
 
-def print_settings():
+def print_settings() -> None:
     """Print environment settings excluding secrets"""
     logger.info("\nCurrent Settings:")
     logger.info("-" * 50)

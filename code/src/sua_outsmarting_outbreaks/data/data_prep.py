@@ -38,7 +38,13 @@ logger.info(f"Using team bucket: {user_bucket_name}")
 
 
 # Helper function to find nearest locations
-def find_nearest(hospital_df, location_df, lat_col, lon_col, id_col):
+def find_nearest(
+    hospital_df: pd.DataFrame,
+    location_df: pd.DataFrame,
+    lat_col: str,
+    lon_col: str,
+    id_col: str,
+) -> dict[str, str]:
     tree = cKDTree(location_df[[lat_col, lon_col]].values)
     nearest = {}
     for _, row in hospital_df.iterrows():
@@ -71,7 +77,7 @@ hospital_data = pd.concat([train, test])
 
 
 # Preprocess water sources
-def preprocess_water_sources(water_sources):
+def preprocess_water_sources(water_sources: pd.DataFrame) -> pd.DataFrame:
     water_sources.dropna(subset=["water_Transformed_Latitude"], inplace=True)
     water_sources["water_Month_Year_lat_lon"] = (
         water_sources["water_Month_Year"]
@@ -83,7 +89,7 @@ def preprocess_water_sources(water_sources):
     return water_sources
 
 
-def preprocess_supplementary_data(df, prefix):
+def preprocess_supplementary_data(df: pd.DataFrame, prefix: str) -> pd.DataFrame:
     df[f"{prefix}_Month_Year_lat_lon"] = (
         df[f"{prefix}_Month_Year"]
         + "_"
