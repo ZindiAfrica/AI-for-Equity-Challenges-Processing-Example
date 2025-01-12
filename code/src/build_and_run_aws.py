@@ -1,5 +1,6 @@
 import base64
 import os
+import shutil
 import subprocess
 import sys
 import warnings
@@ -65,6 +66,21 @@ def check_aws_environment() -> None:
         logger.error(f"Failed to get AWS identity: {e}")
 
 
+def get_docker_executable() -> str:
+    """Get the full path to the docker executable.
+
+    Returns:
+        str: Full path to docker executable
+
+    Raises:
+        RuntimeError: If docker executable is not found
+    """
+    docker_path = shutil.which("docker")
+    if not docker_path:
+        raise RuntimeError("Docker executable not found in PATH")
+    return docker_path
+
+
 def get_account_id() -> str:
     """Get the AWS account ID for the current session.
 
@@ -94,16 +110,15 @@ def build_and_push_docker_image(
         str: The full ECR repository URI for the pushed image
 
     """
+    # Get validated docker executable path
+    docker_exe = get_docker_executable()
+
     # Check if Docker daemon is running
     try:
-        subprocess.run(["docker", "info"], check=True, capture_output=True)
+        subprocess.run([docker_exe, "info"], check=True, capture_output=True)
     except subprocess.CalledProcessError:
         logger.error("Docker daemon is not running. Please start Docker and try again.")
         logger.error("On macOS, launch Docker Desktop from Applications.")
-        sys.exit(1)
-    except FileNotFoundError:
-        logger.error("Docker is not installed. Please install Docker and try again.")
-        logger.error("Visit https://docs.docker.com/get-docker/ for installation instructions.")
         sys.exit(1)
 
     # Build the Docker image
@@ -115,7 +130,7 @@ def build_and_push_docker_image(
         )
         build_context = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "code")
         subprocess.run(
-            ["docker", "build", "-t", f"{image_name}:{image_tag}", "-f", dockerfile_path, build_context],
+            [docker_exe, "build", "-t", f"{image_name}:{image_tag}", "-f", dockerfile_path, build_context],
             check=True,
         )
     except subprocess.CalledProcessError as e:
@@ -125,7 +140,7 @@ def build_and_push_docker_image(
     # Tag the image for ECR
     ecr_repo = f"{account_id}.dkr.ecr.{region}.amazonaws.com/{image_name}:{image_tag}"
     try:
-        subprocess.run(["docker", "tag", f"{image_name}:{image_tag}", ecr_repo], check=True)
+        subprocess.run([docker_exe, "tag", f"{image_name}:{image_tag}", ecr_repo], check=True)
     except subprocess.CalledProcessError as e:
         logger.error(f"Error tagging Docker image: {e}")
         sys.exit(1)
@@ -136,10 +151,10 @@ def build_and_push_docker_image(
     username, password = base64.b64decode(token["authorizationData"][0]["authorizationToken"]).decode().split(":")
     registry = token["authorizationData"][0]["proxyEndpoint"]
 
-    subprocess.run(["docker", "login", "-u", username, "-p", password, registry], check=True)
+    subprocess.run([docker_exe, "login", "-u", username, "-p", password, registry], check=True)
 
     # Push the image to ECR
-    subprocess.run(["docker", "push", ecr_repo], check=True)
+    subprocess.run([docker_exe, "push", ecr_repo], check=True)
 
     return ecr_repo
 
