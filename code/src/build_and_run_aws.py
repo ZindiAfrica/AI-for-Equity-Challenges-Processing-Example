@@ -45,23 +45,23 @@ def check_aws_environment() -> None:
     aws_profile = os.environ.get("AWS_PROFILE", "")
 
     if aws_profile:
-        print(f"Using AWS_PROFILE: {aws_profile}")
+        logger.info(f"Using AWS_PROFILE: {aws_profile}")
         # If AWS_PROFILE is set, unset other AWS environment variables
         for key in ["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY", "AWS_REGION"]:
             if key in os.environ:
                 del os.environ[key]
     else:
         # Print individual credentials if AWS_PROFILE is not set
-        print(f"AWS_ACCESS_KEY_ID: {'*****' if os.environ.get('AWS_ACCESS_KEY_ID') else 'not set'}")
-        print(f"AWS_REGION: {os.environ.get('AWS_REGION', 'not set')}")
-        print(f"AWS_SECRET_ACCESS_KEY: {'*****' if os.environ.get('AWS_SECRET_ACCESS_KEY') else 'not set'}")
+        logger.info(f"AWS_ACCESS_KEY_ID: {'*****' if os.environ.get('AWS_ACCESS_KEY_ID') else 'not set'}")
+        logger.info(f"AWS_REGION: {os.environ.get('AWS_REGION', 'not set')}")
+        logger.info(f"AWS_SECRET_ACCESS_KEY: {'*****' if os.environ.get('AWS_SECRET_ACCESS_KEY') else 'not set'}")
 
     # Get and print current user identity
     try:
         sts = boto3.client("sts")
         caller_identity = sts.get_caller_identity()
         username = caller_identity["Arn"].split("/")[-1]
-        print(f"AWS Username: {username}")
+        logger.info(f"AWS Username: {username}")
     except (boto3.exceptions.Boto3Error, boto3.exceptions.BotoCoreError) as e:
         logger.error(f"Failed to get AWS identity: {e}")
 
@@ -153,7 +153,7 @@ def main() -> None:
     if env_path.exists():
         load_dotenv(env_path)
     else:
-        print("Warning: .env file not found at", env_path)
+        logger.warning(f"Warning: .env file not found at {env_path}")
 
     # Parse command line arguments
     import argparse
@@ -167,7 +167,7 @@ def main() -> None:
     check_aws_environment()
 
     if args.debug:
-        print("Debug mode enabled")
+        logger.info("Debug mode enabled")
 
     # Import helpers
 
@@ -177,7 +177,7 @@ def main() -> None:
 
     # Get execution role and verify permissions
     role = get_execution_role()
-    print(f"Using execution role: {role}")
+    logger.info(f"Using execution role: {role}")
 
     # Build and push Docker image
     image_tag = get_user_docker_image_tag()
@@ -185,7 +185,7 @@ def main() -> None:
     ecr_image_uri = build_and_push_docker_image(user_registry_name, account_id, region, image_tag)
 
     if args.build_only:
-        print("Build completed successfully")
+        logger.info("Build completed successfully")
         sys.exit(0)
 
     # Initialize AWS clients
@@ -205,7 +205,7 @@ def main() -> None:
     iam = boto3.client("iam")
     try:
         iam.simulate_principal_policy(PolicySourceArn=role, ActionNames=["sagemaker:CreateProcessingJob"])
-        print("Role has required SageMaker permissions")
+        logger.info("Role has required SageMaker permissions")
     except Exception as e:
         logger.warning(f"Role may not have required permissions: {e}")
 

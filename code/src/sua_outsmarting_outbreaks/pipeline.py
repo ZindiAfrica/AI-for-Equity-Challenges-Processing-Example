@@ -86,7 +86,7 @@ region = settings.aws.region
 # Retrieve the image URI
 image_uri = retrieve_image_uri(framework=framework, region=region, version=version, image_scope="inference")
 
-print(f"Image URI: {image_uri}")
+logger.info(f"Image URI: {image_uri}")
 
 # Common arguments for all jobs
 script_processor = ScriptProcessor(
@@ -139,7 +139,7 @@ def run_data_preparation(
 run_data_preparation(script_processor, input_prefix, output_prefix, data_prep_script)
 
 # Execute Model Training Script
-print("Starting Model Training Job...")
+logger.info("Starting Model Training Job...")
 training_job = script_processor.run(
     code=model_training_script,
     inputs=[
@@ -151,10 +151,10 @@ training_job = script_processor.run(
     outputs=[ProcessingOutput(source="/opt/ml/processing/output", destination=output_prefix + "training/")],
 )
 training_job.wait()
-print("Model Training Job completed.")
+logger.info("Model Training Job completed.")
 
 # Execute Model Evaluation Script
-print("Starting Model Evaluation Job...")
+logger.info("Starting Model Evaluation Job...")
 evaluation_job = script_processor.run(
     code=model_evaluation_script,
     inputs=[
@@ -175,10 +175,10 @@ evaluation_job = script_processor.run(
     ],
 )
 evaluation_job.wait()
-print("Model Evaluation Job completed.")
+logger.info("Model Evaluation Job completed.")
 
 # Execute Model Prediction Script
-print("Starting Model Prediction Job...")
+logger.info("Starting Model Prediction Job...")
 prediction_job = script_processor.run(
     code=model_prediction_script,
     inputs=[
@@ -199,4 +199,4 @@ prediction_job = script_processor.run(
     ],
 )
 prediction_job.wait()
-print("Model Prediction Job completed.")
+logger.info("Model Prediction Job completed.")

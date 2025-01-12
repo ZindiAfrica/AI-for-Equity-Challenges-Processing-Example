@@ -1,6 +1,11 @@
 # Import necessary libraries
 import boto3
 import pandas as pd
+
+from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
+
+# Configure logger
+logger = setup_logger(__name__)
 from scipy.spatial import cKDTree
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
@@ -21,8 +26,8 @@ user_bucket_name = get_user_bucket_name()
 # Define common tags
 tags = [{"Key": "team", "Value": username}]
 
-print(f"\nUsing input bucket: {data_bucket_name}")
-print(f"Using team bucket: {user_bucket_name}")
+logger.info(f"Using input bucket: {data_bucket_name}")
+logger.info(f"Using team bucket: {user_bucket_name}")
 
 
 # Configure instance type based on data size
@@ -43,7 +48,7 @@ def find_nearest(hospital_df, location_df, lat_col, lon_col, id_col):
 
 
 # Load datasets with error handling
-print("Downloading datasets from S3...")
+logger.info("Downloading datasets from S3...")
 try:
     train = pd.read_csv(f"s3://{data_bucket_name}/Train.csv")
     test = pd.read_csv(f"s3://{data_bucket_name}/Test.csv")
@@ -51,14 +56,14 @@ try:
     waste_management = pd.read_csv(f"s3://{data_bucket_name}/waste_management.csv")
     water_sources = pd.read_csv(f"s3://{data_bucket_name}/water_sources.csv")
 except FileNotFoundError as e:
-    print(f"Error: Required input file not found: {e!s}")
-    print(f"Please ensure all required files exist in s3://{data_bucket_name}/")
+    logger.error(f"Error: Required input file not found: {e!s}")
+    logger.error(f"Please ensure all required files exist in s3://{data_bucket_name}/")
     raise
 except pd.errors.EmptyDataError:
-    print("Error: One or more input files are empty")
+    logger.error("Error: One or more input files are empty")
     raise
 except Exception as e:
-    print(f"Error loading input data: {e!s}")
+    logger.error(f"Error loading input data: {e!s}")
     raise
 
 # Combine train and test datasets
@@ -113,7 +118,7 @@ for df, prefix, id_col in datasets:
     merged_data = merged_data.merge(nearest_df, on="ID").merge(df, on=id_col)
 
 # Save processed datasets to S3
-print("Uploading processed datasets to S3...")
+logger.info("Uploading processed datasets to S3...")
 processed_train = merged_data[merged_data["Year"] < 2023]
 processed_test = merged_data[merged_data["Year"] == 2023]
 
@@ -123,5 +128,5 @@ test_output_path = f"s3://{user_bucket_name}/processed_test.csv"
 processed_train.to_csv(train_output_path, index=False)
 processed_test.to_csv(test_output_path, index=False)
 
-print(f"Processed train dataset saved to {train_output_path}")
-print(f"Processed test dataset saved to {test_output_path}")
+logger.info(f"Processed train dataset saved to {train_output_path}")
+logger.info(f"Processed test dataset saved to {test_output_path}")
