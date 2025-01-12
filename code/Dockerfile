@@ -1,9 +1,8 @@
-FROM python:3.10-slim
+# Build stage
+FROM python:3.10-slim as builder
 
-ENV PATH="/root/.local/bin:${PATH}"
-
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
     curl \
     && rm -rf /var/lib/apt/lists/*
@@ -11,36 +10,43 @@ RUN apt-get update && apt-get install -y \
 # Set up working directory
 WORKDIR /app
 
-# Copy project configuration and code
-COPY src/ .
+# Copy only requirements first to leverage Docker cache
+COPY src/pyproject.toml .
 
-# Install uv and Python dependencies
+# Install uv and dependencies
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
     uv pip install --system -e ".[dev]" && \
-    rm -rf ~/.cache/uv && \
-    echo 'export PATH="/root/.local/bin:$PATH"' >> /etc/profile
+    rm -rf ~/.cache/uv
 
-# Set environment variables
+# Final stage
+FROM python:3.10-slim
+
+ENV PATH="/root/.local/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1
 ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-2}
 
-# Add script to handle AWS credentials
-RUN echo '#!/bin/bash\n\
-set -e\n\
-\n\
-# Configure AWS credentials if provided via environment variables\n\
-if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then\n\
-    mkdir -p ~/.aws\n\
-    echo "[default]" > ~/.aws/credentials\n\
-    echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials\n\
-    echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials\n\
-    if [ -n "$AWS_SESSION_TOKEN" ]; then\n\
-        echo "aws_session_token = $AWS_SESSION_TOKEN" >> ~/.aws/credentials\n\
-    fi\n\
-fi\n\
-\n\
-# Execute the main script\n\
-exec python -m notebooks.outsmarting_sagemaker_execute "$@"' > /usr/local/bin/docker-entrypoint.sh \
-    && chmod +x /usr/local/bin/docker-entrypoint.sh
+WORKDIR /app
+
+# Copy only necessary files from builder
+COPY --from=builder /usr/local/lib/python3.10/site-packages/ /usr/local/lib/python3.10/site-packages/
+COPY src/ .
+
+# Add AWS credentials script
+COPY --chmod=755 <<-"EOF" /usr/local/bin/docker-entrypoint.sh
+#!/bin/bash
+set -e
+
+if [ -n "$AWS_ACCESS_KEY_ID" ] && [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
+    mkdir -p ~/.aws
+    echo "[default]" > ~/.aws/credentials
+    echo "aws_access_key_id = $AWS_ACCESS_KEY_ID" >> ~/.aws/credentials
+    echo "aws_secret_access_key = $AWS_SECRET_ACCESS_KEY" >> ~/.aws/credentials
+    if [ -n "$AWS_SESSION_TOKEN" ]; then
+        echo "aws_session_token = $AWS_SESSION_TOKEN" >> ~/.aws/credentials
+    fi
+fi
+
+exec python -m notebooks.outsmarting_sagemaker_execute "$@"
+EOF
 
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
