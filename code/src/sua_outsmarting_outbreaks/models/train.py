@@ -9,10 +9,12 @@ Example:
 
 """
 
-import logging
-import sys
-
 import boto3
+from sua_outsmarting_outbreaks.utils.logging_utils import (
+    DataError,
+    ModelError,
+    setup_logger,
+)
 import joblib
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
@@ -26,13 +28,8 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_user_name,
 )
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
-)
-logger = logging.getLogger(__name__)
+# Configure logger
+logger = setup_logger(__name__)
 
 # Initialize S3 client and get team bucket
 s3_client = boto3.client("s3")
@@ -64,19 +61,34 @@ def load_training_data(bucket_name: str) -> pd.DataFrame:
         DataFrame containing the training data
 
     Raises:
-        FileNotFoundError: If the training data file doesn't exist
-        pd.errors.EmptyDataError: If the training data file is empty
-
+        DataError: If there are issues loading or processing the data
     """
     logger.info("Downloading preprocessed training data from S3...")
     train_data_path = f"s3://{bucket_name}/processed_train.csv"
+    
     try:
         train_df = pd.read_csv(train_data_path)
+        
+        if train_df.empty:
+            raise DataError("Training data file is empty")
+            
         logger.info(f"Loaded training data with shape: {train_df.shape}")
         return train_df
+        
+    except FileNotFoundError:
+        error_msg = f"Training data file not found at {train_data_path}"
+        logger.error(error_msg)
+        raise DataError(error_msg)
+        
+    except pd.errors.EmptyDataError:
+        error_msg = f"Training data file is empty at {train_data_path}"
+        logger.error(error_msg)
+        raise DataError(error_msg)
+        
     except Exception as e:
-        logger.error(f"Failed to load training data: {e!s}")
-        raise
+        error_msg = f"Failed to load training data: {str(e)}"
+        logger.error(error_msg)
+        raise DataError(error_msg) from e
 
 
 # Load training data
@@ -143,30 +155,46 @@ def train_model(
     Returns:
         Trained RandomForestRegressor model
 
+    Raises:
+        ModelError: If there are issues during model training
+        ValueError: If input data is invalid
     """
-    logger.info("Splitting data into train/validation sets...")
-    X_train, X_val, y_train, y_val = train_test_split(
-        X,
-        y,
-        test_size=test_size,
-        random_state=random_state,
-    )
+    if X.empty or y.empty:
+        raise ValueError("Input data cannot be empty")
 
-    logger.info("Training RandomForestRegressor model...")
-    model = RandomForestRegressor(
-        n_estimators=100,
-        max_depth=None,
-        min_samples_split=2,
-        min_samples_leaf=1,
-        random_state=random_state,
-    )
-    model.fit(X_train, y_train)
+    try:
+        logger.info("Splitting data into train/validation sets...")
+        X_train, X_val, y_train, y_val = train_test_split(
+            X,
+            y,
+            test_size=test_size,
+            random_state=random_state,
+        )
 
-    # Log validation score
-    val_score = model.score(X_val, y_val)
-    logger.info(f"Validation R² score: {val_score:.4f}")
+        logger.info("Training RandomForestRegressor model...")
+        model = RandomForestRegressor(
+            n_estimators=100,
+            max_depth=None,
+            min_samples_split=2,
+            min_samples_leaf=1,
+            random_state=random_state,
+        )
+        
+        model.fit(X_train, y_train)
 
-    return model
+        # Validate model performance
+        val_score = model.score(X_val, y_val)
+        logger.info(f"Validation R² score: {val_score:.4f}")
+        
+        if val_score < 0:
+            logger.warning("Model performance is worse than random prediction")
+        
+        return model
+        
+    except Exception as e:
+        error_msg = f"Error during model training: {str(e)}"
+        logger.error(error_msg)
+        raise ModelError(error_msg) from e
 
 
 # Train the model
