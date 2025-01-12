@@ -1,4 +1,18 @@
-"""Main pipeline module for orchestrating SageMaker processing jobs."""
+"""Main pipeline module for orchestrating SageMaker processing jobs.
+
+This module handles the end-to-end ML pipeline execution on AWS SageMaker, including:
+- Data preparation
+- Model training
+- Model evaluation
+- Prediction generation
+
+The pipeline uses SageMaker Processing jobs to run each stage in a containerized
+environment with specified compute resources.
+
+Example:
+    >>> from sua_outsmarting_outbreaks.pipeline import run_pipeline
+    >>> run_pipeline()
+"""
 import logging
 from typing import List
 
@@ -34,15 +48,29 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Initialize SageMaker session with explicit bucket
-sagemaker_session = sagemaker.Session()
-
-sts = boto3.client("sts")
-
-username = get_user_name()
-role = get_execution_role()
-data_bucket_name = get_data_bucket_name()
-user_bucket_name = get_user_bucket_name()
+def initialize_aws_resources() -> tuple[sagemaker.Session, str, str, str, str]:
+    """Initialize AWS resources and sessions.
+    
+    Returns:
+        tuple containing:
+            sagemaker.Session: Initialized SageMaker session
+            str: Username for resource tagging
+            str: IAM role ARN for execution
+            str: Data bucket name
+            str: User bucket name
+    """
+    sagemaker_session = sagemaker.Session()
+    sts = boto3.client("sts")
+    
+    username = get_user_name()
+    role = get_execution_role()
+    data_bucket_name = get_data_bucket_name()
+    user_bucket_name = get_user_bucket_name()
+    
+    return sagemaker_session, username, role, data_bucket_name, user_bucket_name
+    
+# Initialize AWS resources
+sagemaker_session, username, role, data_bucket_name, user_bucket_name = initialize_aws_resources()
 
 # Define common tags
 tags = [{"Key": "team", "Value": username}]
@@ -80,24 +108,42 @@ script_processor = ScriptProcessor(
   tags=tags,
 )
 
+def run_data_preparation(
+    script_processor: ScriptProcessor,
+    input_prefix: str,
+    output_prefix: str,
+    script_path: str
+) -> None:
+    """Execute the data preparation stage of the pipeline.
+    
+    Args:
+        script_processor: Configured SageMaker ScriptProcessor
+        input_prefix: S3 prefix for input data
+        output_prefix: S3 prefix for output data
+        script_path: Path to data preparation script
+        
+    Raises:
+        Exception: If the processing job fails
+    """
+    logger.info("Starting Data Preparation Job...")
+    try:
+        data_prep_job = script_processor.run(
+            code=script_path,
+            inputs=[ProcessingInput(source=input_prefix, destination="/opt/ml/processing/input")],
+            outputs=[ProcessingOutput(source="/opt/ml/processing/output",
+                                   destination=output_prefix + "data_prep/")],
+        )
+        data_prep_job.wait()
+        logger.info("Data Preparation Job completed successfully.")
+    except Exception as e:
+        logger.error(f"Data Preparation Job failed: {str(e)}")
+        logger.error("Please check CloudWatch logs for detailed error information.")
+        if hasattr(data_prep_job, "job_name"):
+            logger.error(f"Job name: {data_prep_job.job_name}")
+        raise
+
 # Execute Data Preparation Script
-print("Starting Data Preparation Job...")
-try:
-  data_prep_job = script_processor.run(
-    code=data_prep_script,
-    inputs=[ProcessingInput(source=input_prefix, destination="/opt/ml/processing/input")],
-    outputs=[ProcessingOutput(source="/opt/ml/processing/output",
-                              destination=output_prefix + "data_prep/")],
-  )
-  data_prep_job.wait()
-  print("Data Preparation Job completed successfully.")
-except Exception as e:
-  print(f"Data Preparation Job failed: {str(e)}")
-  print("Please check CloudWatch logs for detailed error information.")
-  # Get the job name to help locate logs
-  if hasattr(data_prep_job, "job_name"):
-    print(f"Job name: {data_prep_job.job_name}")
-  raise
+run_data_preparation(script_processor, input_prefix, output_prefix, data_prep_script)
 
 # Execute Model Training Script
 print("Starting Model Training Job...")
