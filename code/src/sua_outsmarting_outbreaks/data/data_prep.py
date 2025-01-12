@@ -15,6 +15,8 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
 )
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
+from code.src.sua_outsmarting_outbreaks.utils.aws_utils import get_tags
+
 # Configure logger
 logger = setup_logger(__name__)
 
@@ -43,12 +45,12 @@ def upload_to_s3(local_path: Path, bucket: str, key: str) -> None:
 
 def preprocess_data(local_only: bool = False) -> None:
     """Preprocess the data for training and testing.
-    
+
     Args:
         local_only: If True, only process local files without S3 interaction
     """
     data_dir = ensure_data_dir()
-    
+
     if not local_only:
         # Initialize AWS resources
         s3_client = boto3.client("s3")
@@ -56,22 +58,22 @@ def preprocess_data(local_only: bool = False) -> None:
         role = get_execution_role()
         data_bucket_name = get_data_bucket_name()
         user_bucket_name = get_user_bucket_name()
-        
+
         # Define common tags
-        tags = [{"Key": "team", "Value": username}]
-        
+        tags = get_tags()
+
         logger.info(f"Using input bucket: {data_bucket_name}")
         logger.info(f"Using team bucket: {user_bucket_name}")
-        
+
         # Load and process datasets
         train, test, toilets, waste_management, water_sources = load_datasets(data_bucket_name)
-        
+
         # Combine train and test datasets
         hospital_data = pd.concat([train, test])
-        
+
         # Process the data
         merged_data = process_data(hospital_data, toilets, waste_management, water_sources)
-        
+
         # Save results
         save_processed_data(merged_data, user_bucket_name)
 
@@ -114,10 +116,10 @@ def find_nearest(
 
 def load_datasets(data_bucket: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
     """Load all required datasets from S3.
-    
+
     Args:
         data_bucket: S3 bucket containing the data files
-        
+
     Returns:
         Tuple of DataFrames (train, test, toilets, waste_management, water_sources)
     """
@@ -186,13 +188,13 @@ def preprocess_supplementary_data(df: pd.DataFrame, prefix: str) -> pd.DataFrame
 
 def process_data(hospital_data: pd.DataFrame, toilets_df: pd.DataFrame, waste_df: pd.DataFrame, water_df: pd.DataFrame) -> pd.DataFrame:
     """Process and merge all datasets.
-    
+
     Args:
         hospital_data: DataFrame with hospital data
         toilets_df: DataFrame with toilet data
         waste_df: DataFrame with waste management data
         water_df: DataFrame with water source data
-        
+
     Returns:
         DataFrame with all data merged
     """
@@ -225,7 +227,7 @@ logger.info("Uploading processed datasets to S3...")
 TRAIN_CUTOFF_YEAR = 2023
 def save_processed_data(merged_data: pd.DataFrame, user_bucket: str) -> None:
     """Save processed train and test datasets to S3.
-    
+
     Args:
         merged_data: DataFrame containing processed data
         user_bucket: S3 bucket to save results
@@ -238,7 +240,7 @@ def save_processed_data(merged_data: pd.DataFrame, user_bucket: str) -> None:
 
     logger.info(f"Saving processed train dataset to {train_output_path}")
     processed_train.to_csv(train_output_path, index=False)
-    
+
     logger.info(f"Saving processed test dataset to {test_output_path}")
     processed_test.to_csv(test_output_path, index=False)
 

@@ -29,6 +29,8 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
 )
 from sua_outsmarting_outbreaks.utils.config import settings
 
+from code.src.sua_outsmarting_outbreaks.utils.aws_utils import get_tags
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
@@ -62,7 +64,7 @@ def initialize_aws_resources() -> tuple[sagemaker.Session, str, str, str, str]:
 sagemaker_session, username, role, data_bucket_name, user_bucket_name = initialize_aws_resources()
 
 # Define common tags
-tags = [{"Key": "team", "Value": username}]
+tags = get_tags()
 
 input_prefix = f"s3://{data_bucket_name}/"
 output_prefix = f"s3://{user_bucket_name}/output/"

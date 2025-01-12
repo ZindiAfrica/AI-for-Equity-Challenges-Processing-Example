@@ -294,8 +294,9 @@ def main() -> None:
         "sagemaker:DescribeProcessingJob",
         "logs:DescribeLogStreams",
         "logs:GetLogEvents",
-        "logs:CreateLogStream", 
-        "logs:PutLogEvents"
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "ecr:GetAuthorizationToken"
       ])
     logger.info(f"Role {role} has required SageMaker and CloudWatch Logs permissions")
   except botocore.exceptions.ClientError as e:

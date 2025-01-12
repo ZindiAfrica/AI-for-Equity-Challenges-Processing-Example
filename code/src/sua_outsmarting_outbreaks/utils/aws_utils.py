@@ -46,9 +46,33 @@ def initialize_aws_resources() -> tuple[str, str, str, str, list[dict[str, str]]
     user_bucket_name = get_user_bucket_name()
 
     # Define common tags
-    tags = [{"Key": "team", "Value": username}]
+    tags = get_tags()
 
     return username, role, data_bucket_name, user_bucket_name, tags
+
+
+def get_tags(additional_tags: list[dict[str, str]] = None) -> list[dict[str, str]]:
+  """Get common tags for AWS resources, merging with additional tags if provided.
+
+  Args:
+      additional_tags (list, optional): Additional tags to merge with default tags.
+
+  Returns:
+      list: Merged list of unique tags for AWS resources.
+
+  Example:
+      >>> get_tags([{"Key": "project", "Value": "outbreak"}])
+      [{'Key': 'team', 'Value': 'john-doe'}, {'Key': 'project', 'Value': 'outbreak'}]
+
+  """
+  default_tags = [{"Key": "team", "Value": get_user_name()}]
+  tag_dict = {tag["Key"]: tag["Value"] for tag in default_tags}
+
+  if additional_tags:
+    for tag in additional_tags:
+      tag_dict[tag["Key"]] = tag["Value"]
+
+  return [{"Key": key, "Value": value} for key, value in tag_dict.items()]
 
 
 def get_user_registry_name() -> str:
