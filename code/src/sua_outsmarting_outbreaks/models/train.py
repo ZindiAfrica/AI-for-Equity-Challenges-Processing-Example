@@ -6,15 +6,25 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
+from sua_outsmarting_outbreaks.utils.aws_utils import (
+    get_data_bucket_name,
+    get_execution_role,
+    get_user_bucket_name,
+    get_user_name,
+)
+
 # Initialize S3 client and get team bucket
 s3_client = boto3.client("s3")
-workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
-bucket_name = f"{workspace_name}-team-bucket"
+
+username = get_user_name()
+role = get_execution_role()
+data_bucket_name = get_data_bucket_name()
+user_bucket_name = get_user_bucket_name()
 
 # Define common tags
-tags = [{"Key": "team", "Value": workspace_name}]
+tags = [{"Key": "team", "Value": username}]
 
-print(f"\nUsing team bucket: {bucket_name}")
+print(f"\nUsing team bucket: {user_bucket_name}")
 print("Using instance: ml.g4dn.8xlarge")
 print("- NVIDIA T4 GPU with 16GB memory")
 print("- 32 vCPUs and 128GB RAM")
@@ -25,7 +35,7 @@ print("- Cost: $2.72/hr (on-demand) or $0.816/hr (spot)")
 
 # Load preprocessed datasets from S3
 print("Downloading preprocessed datasets from S3...")
-train_data_path = f"s3://{bucket_name}/processed_train.csv"
+train_data_path = f"s3://{user_bucket_name}/processed_train.csv"
 train_df = pd.read_csv(train_data_path)
 
 # Specify the target column
@@ -54,8 +64,8 @@ model_path = "random_forest_model.joblib"
 joblib.dump(model, model_path)
 
 # Upload the trained model to S3
-model_s3_path = f"s3://{bucket_name}/models/random_forest_model.joblib"
+model_s3_path = f"s3://{user_bucket_name}/models/random_forest_model.joblib"
 print("Uploading the trained model to S3...")
-s3_client.upload_file(model_path, bucket_name, "models/random_forest_model.joblib")
+s3_client.upload_file(model_path, user_bucket_name, "models/random_forest_model.joblib")
 
 print(f"Trained model saved to {model_s3_path}")

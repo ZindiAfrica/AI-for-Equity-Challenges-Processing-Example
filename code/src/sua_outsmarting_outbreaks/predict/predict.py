@@ -1,29 +1,40 @@
 # Import necessary libraries
-import os
 import boto3
 import joblib
 import pandas as pd
 from sklearn.preprocessing import LabelEncoder
 
+from sua_outsmarting_outbreaks.utils.aws_utils import (
+    get_data_bucket_name,
+    get_execution_role,
+    get_user_bucket_name,
+    get_user_name,
+)
+
 # Initialize S3 client and use team bucket
 s3_client = boto3.client("s3")
-workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
-# Use the team bucket from environment variable or fall back to default format
-bucket_name = os.environ.get("BUCKET_NAME", f"{workspace_name}-team-bucket")
+
+username = get_user_name()
+role = get_execution_role()
+data_bucket_name = get_data_bucket_name()
+user_bucket_name = get_user_bucket_name()
 
 # Define common tags
-tags = [{"Key": "team", "Value": workspace_name}]
+tags = [{"Key": "team", "Value": username}]
+
+# Define common tags
+tags = [{"Key": "team", "Value": username}]
 
 # Load preprocessed test dataset from S3
 print("Downloading preprocessed test dataset from S3...")
-test_data_path = f"s3://{bucket_name}/processed_test.csv"
+test_data_path = f"s3://{user_bucket_name}/processed_test.csv"
 test_df = pd.read_csv(test_data_path)
 
 # Load the trained model from S3
-model_s3_path = f"s3://{bucket_name}/models/random_forest_model.joblib"
+model_s3_path = f"s3://{user_bucket_name}/models/random_forest_model.joblib"
 local_model_path = "random_forest_model.joblib"
 print("Downloading trained model from S3...")
-s3_client.download_file(bucket_name, "models/random_forest_model.joblib", local_model_path)
+s3_client.download_file(user_bucket_name, "models/random_forest_model.joblib", local_model_path)
 
 # Load the model
 model = joblib.load(local_model_path)
@@ -57,8 +68,8 @@ submission_path = "Predictions.csv"
 submission.to_csv(submission_path, index=False)
 
 # Upload predictions to S3
-predictions_s3_path = f"s3://{bucket_name}/predictions/Predictions.csv"
+predictions_s3_path = f"s3://{user_bucket_name}/predictions/Predictions.csv"
 print("Uploading predictions to S3...")
-s3_client.upload_file(submission_path, bucket_name, "predictions/Predictions.csv")
+s3_client.upload_file(submission_path, user_bucket_name, "predictions/Predictions.csv")
 
 print(f"Predictions saved to {predictions_s3_path}")

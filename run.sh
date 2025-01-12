@@ -29,14 +29,12 @@ install_dependencies_python() {
     echo "Dependencies installed successfully"
 }
 
-
 build_docker() {
     echo "Building Docker image..."
     cd "$APP_DIR"
     source .venv/bin/activate
     python build_and_run_aws.py --build-only
 }
-
 
 test_python() {
     echo "Running Python tests..."
@@ -59,9 +57,6 @@ format_python() {
     ruff format .
 }
 
-
-
-
 deploy_sagemaker() {
     echo "Deploying to AWS SageMaker..."
     cd "$APP_DIR"
@@ -69,12 +64,10 @@ deploy_sagemaker() {
     python build_and_run_aws.py --deploy-only
 }
 
-
 go_to_directory_src() {
     cd "$APP_DIR"
     exec $SHELL
 }
-
 
 run_pipeline() {
     local debug=""
@@ -94,7 +87,7 @@ run_pipeline() {
     echo "Running ML pipeline${debug:+ in debug mode}..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    
+
     if [ -n "$debug" ]; then
         echo "Executing command: python -m sua_outsmarting_outbreaks.debug_entry"
         python -m sua_outsmarting_outbreaks.debug_entry
@@ -169,10 +162,10 @@ help() {
 show_menu() {
     PS3=$'\nPlease select an option (1-15) or "q" to quit: '
     REPLY=""
-    
+
     # Set timeout of 5 seconds
     TMOUT=5
-    
+
     # Trap timeout and exit
     trap 'echo -e "\nTimeout after 5 seconds of inactivity. Exiting..."; exit 0' ALRM
     options=(
@@ -193,12 +186,12 @@ show_menu() {
         do
             # Reset timeout for next iteration
             TMOUT=5
-            
+
             # Handle direct q input
             if [[ "$REPLY" =~ ^[qQ]$ ]]; then
                 exit 0
             fi
-            
+
             case $opt in
             "Help")
                 help

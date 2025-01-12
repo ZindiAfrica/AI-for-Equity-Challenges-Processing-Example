@@ -1,22 +1,29 @@
 # Import necessary libraries
-import os
 import boto3
 import pandas as pd
 from scipy.spatial import cKDTree
 
+from sua_outsmarting_outbreaks.utils.aws_utils import (
+    get_data_bucket_name,
+    get_execution_role,
+    get_user_bucket_name,
+    get_user_name,
+)
+
 # Initialize S3 client and get team bucket
 s3_client = boto3.client("s3")
-bucket_name = os.environ.get("SRC_BUCKET_NAME", "sua-outsmarting-outbreaks-challenge-comp")
 
-# Get workspace name for team bucket and tagging
-workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
-out_bucket_name = os.environ.get("BUCKET_NAME", f"{workspace_name}-team-bucket")
+username = get_user_name()
+role = get_execution_role()
+data_bucket_name = get_data_bucket_name()
+user_bucket_name = get_user_bucket_name()
 
 # Define common tags
-tags = [{"Key": "team", "Value": workspace_name}]
+tags = [{"Key": "team", "Value": username}]
 
-print(f"\nUsing input bucket: {bucket_name}")
-print(f"Using team bucket: {out_bucket_name}")
+print(f"\nUsing input bucket: {data_bucket_name}")
+print(f"Using team bucket: {user_bucket_name}")
+
 
 # Configure instance type based on data size
 # Using ml.m5.2xlarge ($0.46/hr on-demand, $0.138/hr spot) for optimal memory/cost ratio
@@ -38,14 +45,14 @@ def find_nearest(hospital_df, location_df, lat_col, lon_col, id_col):
 # Load datasets with error handling
 print("Downloading datasets from S3...")
 try:
-    train = pd.read_csv(f"s3://{bucket_name}/Train.csv")
-    test = pd.read_csv(f"s3://{bucket_name}/Test.csv")
-    toilets = pd.read_csv(f"s3://{bucket_name}/toilets.csv")
-    waste_management = pd.read_csv(f"s3://{bucket_name}/waste_management.csv")
-    water_sources = pd.read_csv(f"s3://{bucket_name}/water_sources.csv")
+    train = pd.read_csv(f"s3://{data_bucket_name}/Train.csv")
+    test = pd.read_csv(f"s3://{data_bucket_name}/Test.csv")
+    toilets = pd.read_csv(f"s3://{data_bucket_name}/toilets.csv")
+    waste_management = pd.read_csv(f"s3://{data_bucket_name}/waste_management.csv")
+    water_sources = pd.read_csv(f"s3://{data_bucket_name}/water_sources.csv")
 except FileNotFoundError as e:
     print(f"Error: Required input file not found: {str(e)}")
-    print(f"Please ensure all required files exist in s3://{bucket_name}/")
+    print(f"Please ensure all required files exist in s3://{data_bucket_name}/")
     raise
 except pd.errors.EmptyDataError:
     print("Error: One or more input files are empty")
@@ -110,8 +117,8 @@ print("Uploading processed datasets to S3...")
 processed_train = merged_data[merged_data["Year"] < 2023]
 processed_test = merged_data[merged_data["Year"] == 2023]
 
-train_output_path = f"s3://{out_bucket_name}/processed_train.csv"
-test_output_path = f"s3://{out_bucket_name}/processed_test.csv"
+train_output_path = f"s3://{user_bucket_name}/processed_train.csv"
+test_output_path = f"s3://{user_bucket_name}/processed_test.csv"
 
 processed_train.to_csv(train_output_path, index=False)
 processed_test.to_csv(test_output_path, index=False)

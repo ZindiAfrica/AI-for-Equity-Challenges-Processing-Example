@@ -27,14 +27,23 @@ These should have a suffix that describes what is.
 For example, if there are multiple lambdas in a
 project, there could be multiple build functions for each lambda.
 
-There should also be a `all` suffix if there is more than one function for that step that could be 
-run, but only if their for that step. If the is only one function for that step, then it should 
+There should also be a `all` suffix if there is more than one function for that step that could be
+run, but only if their for that step.
+
+If the is only one function for that step, then it should
 not have the `all` suffix.
 
-At the end of the step. It should bring you back to the menu. It should print the menu out again.
+At the end of the step.
+
+It should bring you back to the menu.
+
+It should print the menu out again.
 If nothing happens for 5s it should quit the script.
 
-If run passing the specific command to run. It should not give the menu and it should directly quit.
+If run is passed a specific command to run.
+
+It should not give the menu and it should directly
+quit.
 
 Pressing q should exit the script.
 
@@ -45,7 +54,7 @@ Pressing q should exit the script.
   multiple things that could be built, there could be multiple build functions.
 - test_<define>(): Execute test suite if available. This could be multiple test functions for
   different
-  components. Also flags could be used to run specific tests.
+  components. Also, flags could be used to run specific tests.
 - package_<define>(): Create deployment package if needed. If there are multiple things that could
   be packaged, there could be multiple package functions.
 - deploy_<define>(): Deploy infrastructure if required. This could be multiple deploy functions for
@@ -53,6 +62,8 @@ Pressing q should exit the script.
 - go_to_directory_<define>(): Open shell in project directory. This could be multiple
   go_to_directory
   functions for different components.
+- lint_<define>(): Lint code if needed. If there are multiple things that could be linted, there
+  could be multiple lint functions.
 - all(): Run all steps in sequence
 - quit(): Exit script
 

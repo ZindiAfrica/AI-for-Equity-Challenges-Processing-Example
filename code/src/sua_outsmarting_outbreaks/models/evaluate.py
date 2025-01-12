@@ -7,6 +7,13 @@ import pandas as pd
 from sklearn.metrics import mean_absolute_error
 from sklearn.preprocessing import LabelEncoder
 
+from sua_outsmarting_outbreaks.utils.aws_utils import (
+    get_data_bucket_name,
+    get_execution_role,
+    get_user_bucket_name,
+    get_user_name,
+)
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s", handlers=[logging.StreamHandler(sys.stdout)]
@@ -18,28 +25,36 @@ logger = logging.getLogger(__name__)
 # ----------------------------------------
 logger.info("\nInitializing AWS resources...")
 s3_client = boto3.client("s3")
-workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
-bucket_name = f"{workspace_name}-team-bucket"
-logger.info(f"Using S3 bucket: {bucket_name}")
+
+
+username = get_user_name()
+role = get_execution_role()
+data_bucket_name = get_data_bucket_name()
+user_bucket_name = get_user_bucket_name()
 
 # Define common tags
-tags = [{"Key": "team", "Value": workspace_name}]
+tags = [{"Key": "team", "Value": username}]
+
+logger.info(f"Using S3 bucket: {user_bucket_name}")
+
+# Define common tags
+tags = [{"Key": "team", "Value": username}]
 
 # ----------------------------------------
 # Load Test Dataset
 # ----------------------------------------
 logger.info("\nStarting model evaluation process...")
 logger.info("Downloading preprocessed test dataset from S3...")
-test_data_path = f"s3://{bucket_name}/processed_test.csv"
+test_data_path = f"s3://{user_bucket_name}/processed_test.csv"
 logger.info(f"Reading test data from: {test_data_path}")
 test_df = pd.read_csv(test_data_path)
 logger.info(f"Test dataset shape: {test_df.shape}")
 
 # Load the trained model from S3
-model_s3_path = f"s3://{bucket_name}/models/random_forest_model.joblib"
+model_s3_path = f"s3://{user_bucket_name}/models/random_forest_model.joblib"
 local_model_path = "random_forest_model.joblib"
 logger.info("Downloading trained model from S3...")
-s3_client.download_file(bucket_name, "models/random_forest_model.joblib", local_model_path)
+s3_client.download_file(user_bucket_name, "models/random_forest_model.joblib", local_model_path)
 logger.info("Loading model into memory...")
 model = joblib.load(local_model_path)
 logger.info("Model loaded successfully")
@@ -101,8 +116,8 @@ with open(metrics_path, "w") as f:
     f.write(str(evaluation_metrics))
 
 # Upload to S3
-metrics_s3_path = f"s3://{bucket_name}/evaluation/evaluation_metrics.json"
+metrics_s3_path = f"s3://{user_bucket_name}/evaluation/evaluation_metrics.json"
 logger.info(f"Uploading metrics to {metrics_s3_path}")
-s3_client.upload_file(metrics_path, bucket_name, "evaluation/evaluation_metrics.json")
+s3_client.upload_file(metrics_path, user_bucket_name, "evaluation/evaluation_metrics.json")
 
 logger.info("\nEvaluation process completed successfully")
