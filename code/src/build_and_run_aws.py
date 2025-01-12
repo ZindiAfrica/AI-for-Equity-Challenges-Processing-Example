@@ -194,7 +194,7 @@ def main():
 
     # Run the processing job
     processor.run(
-        code="code/notebooks/outsmarting_sagemaker_execute.py",
+        code="sua_outsmarting_outbreaks/pipeline.py",
         inputs=[
             ProcessingInput(
                 source="s3://sua-outsmarting-outbreaks-challenge-comp",

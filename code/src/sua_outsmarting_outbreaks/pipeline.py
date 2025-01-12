@@ -26,10 +26,10 @@ input_prefix = f"s3://{bucket_name}/"
 output_prefix = f"s3://{out_bucket_name}/output/"
 
 # Define the scripts for each stage (local paths expected for `code` argument)
-data_prep_script = "sua_outsmarting_outbreaks/data/data_prep.py"
-model_training_script = "sua_outsmarting_outbreaks/models/train.py"
-model_evaluation_script = "sua_outsmarting_outbreaks/models/evaluate.py"
-model_prediction_script = "sua_outsmarting_outbreaks/predict/predict.py"
+data_prep_script = "code/src/sua_outsmarting_outbreaks/data/data_prep.py"
+model_training_script = "code/src/sua_outsmarting_outbreaks/models/train.py"
+model_evaluation_script = "code/src/sua_outsmarting_outbreaks/models/evaluate.py"
+model_prediction_script = "code/src/sua_outsmarting_outbreaks/predict/predict.py"
 
 # Specify framework details
 framework = "sklearn"
