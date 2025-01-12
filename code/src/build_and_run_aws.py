@@ -68,8 +68,8 @@ def build_and_push_docker_image(image_name, account_id, region, image_tag):
 
     # Build the Docker image
     try:
-        dockerfile_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "Dockerfile")
-        build_context = os.path.dirname(os.path.dirname(__file__))
+        dockerfile_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "code", "Dockerfile")
+        build_context = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "code")
         subprocess.run(["docker", "build", "-t", f"{image_name}:{image_tag}", "-f", dockerfile_path, build_context], check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error building Docker image: {e}")
