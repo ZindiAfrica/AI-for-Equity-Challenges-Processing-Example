@@ -10,6 +10,9 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_user_name,
 )
 
+# Configure logger
+logger = setup_logger(__name__)
+
 # Initialize S3 client and get team bucket
 s3_client = boto3.client("s3")
 
