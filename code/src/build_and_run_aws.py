@@ -99,6 +99,7 @@ def validate_docker_args(*args: str) -> None:
   # Allow ECR URIs like: 123456789012.dkr.ecr.region.amazonaws.com/repo:tag
   tag_pattern = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
   path_pattern = re.compile(r"^[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9/_-]+:[a-zA-Z0-9._-]+$|^[a-zA-Z0-9/._-]+$")
+  registry_pattern = re.compile(r"^https?://[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/?$")
 
   for arg in args:
     if not isinstance(arg, str):
@@ -195,6 +196,11 @@ def build_and_push_docker_image(
   registry = token["authorizationData"][0]["proxyEndpoint"]
 
   try:
+    # Strip any trailing slash from registry URL
+    registry = registry.rstrip('/')
+    if registry_pattern.match(registry):
+        # Remove https:// prefix for docker login
+        registry = registry.replace('https://', '')
     validate_docker_args("login", "-u", username, "-p", password, registry)
     subprocess.run([docker_exe, "login", "-u", username, "-p", password, registry], check=True)
   except (subprocess.CalledProcessError, ValueError) as e:
