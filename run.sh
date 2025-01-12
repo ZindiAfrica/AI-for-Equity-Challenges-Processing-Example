@@ -8,12 +8,12 @@ export APP_DIR="$SCRIPT_DIR/code/src"
 
 # Required functions with component suffixes
 install_dependencies_python() {
-    # Only one install function so no _all needed
     echo "Installing Python dependencies..."
     cd "$APP_DIR"
     uv venv
     source .venv/bin/activate
     uv pip install -e ".[dev]"
+    uv pip install pytest pytest-cov
     pre-commit install
     echo "Dependencies installed successfully"
 }
