@@ -61,9 +61,10 @@ def check_aws_environment() -> None:
 
 def get_account_id() -> str:
     """Get the AWS account ID for the current session.
-    
+
     Returns:
         str: The AWS account ID
+
     """
     sts = boto3.client("sts")
     return sts.get_caller_identity()["Account"]
@@ -71,20 +72,21 @@ def get_account_id() -> str:
 
 def build_and_push_docker_image(
     image_name: str,
-    account_id: str, 
+    account_id: str,
     region: str,
     image_tag: str,
 ) -> str:
     """Build and push Docker image to ECR.
-    
+
     Args:
         image_name: Name of the Docker image
         account_id: AWS account ID
         region: AWS region
         image_tag: Tag for the Docker image
-        
+
     Returns:
         str: The full ECR repository URI for the pushed image
+
     """
     # Check if Docker daemon is running
     try:
