@@ -1,25 +1,37 @@
+import os
+
 import boto3
 
 
 def get_user_name():
-    """Get the workspace name for the current user"""
+    """Get the username for the current user"""
     sts = boto3.client("sts")
     caller_identity = sts.get_caller_identity()
     arn_parts = caller_identity["Arn"].split("/")
     username = arn_parts[-1] if len(arn_parts) > 1 else "default"
-    return username
+    return os.environ.get("USER_NAME", username)
 
 
-def get_registry_name():
-    """Get the workspace name for the current user"""
+def get_user_registry_name():
+    """Get the registry name for the current user"""
     username = get_user_name()
-    return f"{username}-workspace"
+    return os.environ.get("USER_REGISTRY_NAME", f"{username}-workspace")
 
 
-def get_bucket_name():
-    """Get the workspace name for the current user"""
+def get_user_bucket_name():
+    """Get the bucket name for the current user"""
     username = get_user_name()
-    return f"{username}-team-bucket"
+    return os.environ.get("USER_BUCKET_NAME", f"{username}-team-bucket")
+
+
+def get_data_bucket_name():
+    """Get the source bucket name for the current user"""
+    return os.environ.get("DATA_BUCKET_NAME", "sua-outsmarting-outbreaks-challenge-comp")
+
+
+def get_user_docker_image_tag():
+    """Get the source bucket name for the current user"""
+    return os.environ.get("DOCKER_IMAGE_TAG", "outsmarting-pipeline")
 
 
 def get_execution_role():
