@@ -3,13 +3,13 @@ import boto3
 import pandas as pd
 from scipy.spatial import cKDTree
 
-from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
     get_execution_role,
     get_user_bucket_name,
     get_user_name,
 )
+from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
 # Configure logger
 logger = setup_logger(__name__)
