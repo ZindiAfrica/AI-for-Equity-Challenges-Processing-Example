@@ -161,7 +161,7 @@ help() {
 
 # Main execution
 if [ $# -eq 0 ]; then
-    PS3="Please select an option (1-15): "
+    PS3=$'\nPlease select an option (1-15) or "q" to quit: '
     options=(
         "Help"
         "Install All Dependencies"
@@ -184,62 +184,48 @@ if [ $# -eq 0 ]; then
         case $opt in
             "Help")
                 help
-                break
                 ;;
             "Install All Dependencies")
                 install_dependencies_all
-                break
                 ;;
             "Install Python Dependencies")
                 install_dependencies_python
-                break
                 ;;
             "Build All")
                 build_all
-                break
                 ;;
             "Build Docker Image")
                 build_docker
-                break
                 ;;
             "Test All")
                 test_all
-                break
                 ;;
             "Run Python Tests")
                 test_python
-                break
                 ;;
             "Package All")
                 package_all
-                break
                 ;;
             "Package Docker Image")
                 package_docker
-                break
                 ;;
             "Deploy All")
                 deploy_all
-                break
                 ;;
             "Deploy to SageMaker")
                 deploy_sagemaker
-                break
                 ;;
             "Run Pipeline")
                 run_pipeline
-                break
                 ;;
             "Run All Steps")
                 all
-                break
                 ;;
             "Go to Source Directory")
                 go_to_directory_src
-                break
                 ;;
-            "Quit")
-                exit 0
+            "Quit"|"q"|"Q")
+                quit
                 ;;
             *)
                 echo "Invalid option $REPLY"
