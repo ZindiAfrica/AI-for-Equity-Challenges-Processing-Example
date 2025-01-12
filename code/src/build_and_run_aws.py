@@ -134,7 +134,7 @@ def build_and_push_docker_image(
             "Dockerfile",
         )
         build_context = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "code")
-        
+
         validate_docker_args("build", "-t", f"{image_name}:{image_tag}", "-f", dockerfile_path, build_context)
         subprocess.run(
             [docker_exe, "build", "-t", f"{image_name}:{image_tag}", "-f", dockerfile_path, build_context],
