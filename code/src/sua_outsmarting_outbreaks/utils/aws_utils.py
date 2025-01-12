@@ -1,36 +1,38 @@
-import os
+from typing import Dict, List
 
 import boto3
+import os
+from typing import Optional
 
 
-def get_user_name():
+def get_user_name() -> str:
     """Get the username for the current user"""
     sts = boto3.client("sts")
-    caller_identity = sts.get_caller_identity()
-    arn_parts = caller_identity["Arn"].split("/")
-    username = arn_parts[-1] if len(arn_parts) > 1 else "default"
+    caller_identity: Dict[str, str] = sts.get_caller_identity()
+    arn_parts: List[str] = caller_identity["Arn"].split("/")
+    username: str = arn_parts[-1] if len(arn_parts) > 1 else "default"
     return os.environ.get("USER_NAME", username)
 
 
-def get_user_registry_name():
+def get_user_registry_name() -> str:
     """Get the registry name for the current user"""
-    username = get_user_name()
+    username: str = get_user_name()
     return os.environ.get("USER_REGISTRY_NAME", f"{username}-workspace")
 
 
-def get_user_bucket_name():
+def get_user_bucket_name() -> str:
     """Get the bucket name for the current user"""
-    username = get_user_name()
+    username: str = get_user_name()
     return os.environ.get("USER_BUCKET_NAME", f"{username}-team-bucket")
 
 
-def get_data_bucket_name():
+def get_data_bucket_name() -> str:
     """Get the source bucket name for the current user"""
     return os.environ.get("DATA_BUCKET_NAME", "sua-outsmarting-outbreaks-challenge-comp")
 
 
-def get_user_docker_image_tag():
-    """Get the source bucket name for the current user"""
+def get_user_docker_image_tag() -> str:
+    """Get the docker image tag for the current user"""
     return os.environ.get("DOCKER_IMAGE_TAG", "outsmarting-pipeline")
 
 
