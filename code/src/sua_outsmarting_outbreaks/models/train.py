@@ -5,13 +5,12 @@ It includes data loading, feature engineering, model training and model artifact
 
 Example:
     This script is typically run as part of the SageMaker processing job:
-
     >>> python -m sua_outsmarting_outbreaks.models.train
-
 """
 
 import logging
 import sys
+from typing import Tuple
 
 import boto3
 import joblib
@@ -19,15 +18,6 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler(sys.stdout)],
-)
-logger = logging.getLogger(__name__)
-
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
     get_execution_role,
