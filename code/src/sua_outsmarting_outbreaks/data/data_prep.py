@@ -51,14 +51,14 @@ try:
     waste_management = pd.read_csv(f"s3://{data_bucket_name}/waste_management.csv")
     water_sources = pd.read_csv(f"s3://{data_bucket_name}/water_sources.csv")
 except FileNotFoundError as e:
-    print(f"Error: Required input file not found: {str(e)}")
+    print(f"Error: Required input file not found: {e!s}")
     print(f"Please ensure all required files exist in s3://{data_bucket_name}/")
     raise
 except pd.errors.EmptyDataError:
     print("Error: One or more input files are empty")
     raise
 except Exception as e:
-    print(f"Error loading input data: {str(e)}")
+    print(f"Error loading input data: {e!s}")
     raise
 
 # Combine train and test datasets
