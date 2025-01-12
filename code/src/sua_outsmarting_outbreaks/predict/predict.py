@@ -11,6 +11,11 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_user_name,
 )
 
+from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
+
+# Configure logger
+logger = setup_logger(__name__)
+
 # Initialize S3 client and use team bucket
 s3_client = boto3.client("s3")
 
@@ -22,18 +27,15 @@ user_bucket_name = get_user_bucket_name()
 # Define common tags
 tags = [{"Key": "team", "Value": username}]
 
-# Define common tags
-tags = [{"Key": "team", "Value": username}]
-
 # Load preprocessed test dataset from S3
-print("Downloading preprocessed test dataset from S3...")
+logger.info("Downloading preprocessed test dataset from S3...")
 test_data_path = f"s3://{user_bucket_name}/processed_test.csv"
 test_df = pd.read_csv(test_data_path)
 
 # Load the trained model from S3
 model_s3_path = f"s3://{user_bucket_name}/models/random_forest_model.joblib"
 local_model_path = "random_forest_model.joblib"
-print("Downloading trained model from S3...")
+logger.info("Downloading trained model from S3...")
 s3_client.download_file(user_bucket_name, "models/random_forest_model.joblib", local_model_path)
 
 # Load the model
@@ -56,7 +58,7 @@ for col in model.feature_names_in_:
 X_test = X_test[model.feature_names_in_]
 
 # Make predictions
-print("Making predictions on test data...")
+logger.info("Making predictions on test data...")
 predictions = model.predict(X_test)
 
 # Create the final DataFrame with ID and predictions
@@ -69,7 +71,7 @@ submission.to_csv(submission_path, index=False)
 
 # Upload predictions to S3
 predictions_s3_path = f"s3://{user_bucket_name}/predictions/Predictions.csv"
-print("Uploading predictions to S3...")
+logger.info("Uploading predictions to S3...")
 s3_client.upload_file(submission_path, user_bucket_name, "predictions/Predictions.csv")
 
-print(f"Predictions saved to {predictions_s3_path}")
+logger.info(f"Predictions saved to {predictions_s3_path}")

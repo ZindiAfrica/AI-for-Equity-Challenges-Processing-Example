@@ -42,13 +42,14 @@ user_bucket_name = get_user_bucket_name()
 # Define common tags
 tags = [{"Key": "team", "Value": username}]
 
-print(f"\nUsing team bucket: {user_bucket_name}")
-print("Using instance: ml.g4dn.8xlarge")
-print("- NVIDIA T4 GPU with 16GB memory")
-print("- 32 vCPUs and 128GB RAM")
-print("- Network: 50 Gigabit")
-print("- EBS: 9500 MBps bandwidth, 40K IOPS")
-print("- Cost: $2.72/hr (on-demand) or $0.816/hr (spot)")
+logger.info(f"Using team bucket: {user_bucket_name}")
+logger.info("Using instance specifications:")
+logger.info("- Instance type: ml.g4dn.8xlarge")
+logger.info("- GPU: NVIDIA T4 with 16GB memory")
+logger.info("- CPU/RAM: 32 vCPUs, 128GB RAM")
+logger.info("- Network: 50 Gigabit")
+logger.info("- Storage: 9500 MBps EBS bandwidth, 40K IOPS")
+logger.info("- Cost: $2.72/hr (on-demand) or $0.816/hr (spot)")
 
 
 def load_training_data(bucket_name: str) -> pd.DataFrame:

@@ -97,12 +97,12 @@ def build_and_push_docker_image(
     try:
         subprocess.run(["docker", "info"], check=True, capture_output=True)
     except subprocess.CalledProcessError:
-        print("Error: Docker daemon is not running. Please start Docker and try again.")
-        print("On macOS, launch Docker Desktop from Applications.")
+        logger.error("Docker daemon is not running. Please start Docker and try again.")
+        logger.error("On macOS, launch Docker Desktop from Applications.")
         sys.exit(1)
     except FileNotFoundError:
-        print("Error: Docker is not installed. Please install Docker and try again.")
-        print("Visit https://docs.docker.com/get-docker/ for installation instructions.")
+        logger.error("Docker is not installed. Please install Docker and try again.")
+        logger.error("Visit https://docs.docker.com/get-docker/ for installation instructions.")
         sys.exit(1)
 
     # Build the Docker image
