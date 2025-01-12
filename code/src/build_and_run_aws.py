@@ -5,15 +5,11 @@ import subprocess
 import sys
 import warnings
 from pathlib import Path
+from typing import Optional
 
+import boto3
+import sagemaker
 from dotenv import load_dotenv
-
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s - %(message)s",
-)
-logger = logging.getLogger(__name__)
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
@@ -83,6 +79,7 @@ def build_and_push_docker_image(
     account_id: str,
     region: str,
     image_tag: str,
+    docker_path: str = "/usr/local/bin/docker",
 ) -> str:
     """Build and push Docker image to ECR.
 
@@ -146,7 +143,8 @@ def build_and_push_docker_image(
     return ecr_repo
 
 
-def main():
+def main() -> None:
+    """Execute the main AWS pipeline build and run process."""
     # Load environment variables from .env file
     env_path = Path(__file__).parent / ".env"
     if env_path.exists():
