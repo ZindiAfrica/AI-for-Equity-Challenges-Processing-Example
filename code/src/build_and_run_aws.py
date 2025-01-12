@@ -10,7 +10,6 @@ import sagemaker
 from dotenv import load_dotenv
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
-from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_execution_role,
     get_user_bucket_name,
@@ -20,6 +19,7 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
 )
 from sua_outsmarting_outbreaks.utils.config import settings
 from sua_outsmarting_outbreaks.utils.constants import MAX_RUNTIME_SECONDS
+from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
 # Configure logger
 logger = setup_logger(__name__)
