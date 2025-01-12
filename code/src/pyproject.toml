@@ -71,6 +71,7 @@ ignore = [
     "D203",    # Incompatible with D211
     "D213",    # Incompatible with D212
     "COM812",  # May conflict with formatter
+    "S603",    # `subprocess` call: check for execution of untrusted input
 ]
 fixable = ["ALL"]
 unfixable = []
