@@ -293,8 +293,11 @@ def main() -> None:
         "sagemaker:CreateProcessingJob",
         "sagemaker:DescribeProcessingJob",
         "logs:DescribeLogStreams",
+        "logs:GetLogEvents",
+        "logs:CreateLogStream", 
+        "logs:PutLogEvents"
       ])
-    logger.info(f"Role ${role} has required SageMaker permissions")
+    logger.info(f"Role {role} has required SageMaker and CloudWatch Logs permissions")
   except botocore.exceptions.ClientError as e:
     logger.warning(f"Role may not have required permissions: {e}")
 
