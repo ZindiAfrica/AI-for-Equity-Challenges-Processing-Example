@@ -96,8 +96,9 @@ def validate_docker_args(*args: str) -> None:
   """
   # Define allowed patterns for different arg types
   import re
+  # Allow ECR URIs like: 123456789012.dkr.ecr.region.amazonaws.com/repo:tag
   tag_pattern = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
-  path_pattern = re.compile(r"^[a-zA-Z0-9/._-]+$")
+  path_pattern = re.compile(r"^[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9/_-]+:[a-zA-Z0-9._-]+$|^[a-zA-Z0-9/._-]+$")
 
   for arg in args:
     if not isinstance(arg, str):
