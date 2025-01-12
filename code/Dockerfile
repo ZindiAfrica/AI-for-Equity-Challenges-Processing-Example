@@ -11,17 +11,14 @@ RUN apt-get update && apt-get install -y \
 # Set up working directory
 WORKDIR /app
 
-# Copy project configuration
-COPY pyproject.toml .
+# Copy project configuration and code
+COPY src/ .
 
 # Install uv and Python dependencies
 RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
     uv pip install --system -e ".[dev]" && \
     rm -rf ~/.cache/uv && \
     echo 'export PATH="/root/.local/bin:$PATH"' >> /etc/profile
-
-# Copy the application code
-COPY notebooks/ notebooks/
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
