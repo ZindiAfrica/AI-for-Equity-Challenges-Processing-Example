@@ -3,8 +3,13 @@ import os
 import subprocess
 import sys
 
-import boto3
-import sagemaker
+try:
+    import boto3
+    import sagemaker
+except ImportError:
+    print("Required packages are missing. Please install them with:")
+    print("pip install boto3 sagemaker")
+    sys.exit(1)
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
 from sua_outsmarting_outbreaks.utils.aws_utils import get_bucket_name
