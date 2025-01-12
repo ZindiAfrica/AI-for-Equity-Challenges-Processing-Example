@@ -2,6 +2,10 @@ import base64
 import os
 import subprocess
 import sys
+import warnings
+
+# Suppress specific pydantic warning
+warnings.filterwarnings('ignore', message='Field name "json" in "MonitoringDatasetFormat" shadows an attribute in parent "Base"')
 
 try:
     import boto3
