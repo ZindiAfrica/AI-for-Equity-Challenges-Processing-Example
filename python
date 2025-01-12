@@ -1,0 +1,15 @@
+# AWS Settings
+AWS_ACCESS_KEY_ID=your_access_key_here
+AWS_SECRET_ACCESS_KEY=your_secret_key_here
+AWS_DEFAULT_REGION=us-east-2
+
+# Project Settings
+WORKSPACE_NAME=your_workspace_name
+BUCKET_NAME=your_bucket_name
+
+# Model Settings
+TARGET_COLUMN=Total
+MODEL_PATH=models/random_forest_model.joblib
+
+# Logging
+LOG_LEVEL=INFO
