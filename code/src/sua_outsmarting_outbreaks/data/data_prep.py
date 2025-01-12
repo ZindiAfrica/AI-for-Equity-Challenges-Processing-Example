@@ -62,6 +62,18 @@ def preprocess_data(local_only: bool = False) -> None:
         
         logger.info(f"Using input bucket: {data_bucket_name}")
         logger.info(f"Using team bucket: {user_bucket_name}")
+        
+        # Load and process datasets
+        train, test, toilets, waste_management, water_sources = load_datasets(data_bucket_name)
+        
+        # Combine train and test datasets
+        hospital_data = pd.concat([train, test])
+        
+        # Process the data
+        merged_data = process_data(hospital_data, toilets, waste_management, water_sources)
+        
+        # Save results
+        save_processed_data(merged_data, user_bucket_name)
 
 
 # Configure instance type based on data size
@@ -100,18 +112,27 @@ def find_nearest(
     return nearest
 
 
-# Load datasets with error handling
-logger.info("Downloading datasets from S3...")
-try:
-    train = pd.read_csv(f"s3://{data_bucket_name}/Train.csv")
-    test = pd.read_csv(f"s3://{data_bucket_name}/Test.csv")
-    toilets = pd.read_csv(f"s3://{data_bucket_name}/toilets.csv")
-    waste_management = pd.read_csv(f"s3://{data_bucket_name}/waste_management.csv")
-    water_sources = pd.read_csv(f"s3://{data_bucket_name}/water_sources.csv")
-except FileNotFoundError as e:
-    logger.error(f"Error: Required input file not found: {e!s}")
-    logger.error(f"Please ensure all required files exist in s3://{data_bucket_name}/")
-    raise
+def load_datasets(data_bucket: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame, pd.DataFrame]:
+    """Load all required datasets from S3.
+    
+    Args:
+        data_bucket: S3 bucket containing the data files
+        
+    Returns:
+        Tuple of DataFrames (train, test, toilets, waste_management, water_sources)
+    """
+    logger.info("Downloading datasets from S3...")
+    try:
+        train = pd.read_csv(f"s3://{data_bucket}/Train.csv")
+        test = pd.read_csv(f"s3://{data_bucket}/Test.csv")
+        toilets = pd.read_csv(f"s3://{data_bucket}/toilets.csv")
+        waste_management = pd.read_csv(f"s3://{data_bucket}/waste_management.csv")
+        water_sources = pd.read_csv(f"s3://{data_bucket}/water_sources.csv")
+        return train, test, toilets, waste_management, water_sources
+    except FileNotFoundError as e:
+        logger.error(f"Error: Required input file not found: {e!s}")
+        logger.error(f"Please ensure all required files exist in s3://{data_bucket}/")
+        raise
 except pd.errors.EmptyDataError:
     logger.error("Error: One or more input files are empty")
     raise
@@ -192,14 +213,24 @@ for df, prefix, id_col in datasets:
 # Save processed datasets to S3
 logger.info("Uploading processed datasets to S3...")
 TRAIN_CUTOFF_YEAR = 2023
-processed_train = merged_data[merged_data["Year"] < TRAIN_CUTOFF_YEAR]
-processed_test = merged_data[merged_data["Year"] == TRAIN_CUTOFF_YEAR]
+def save_processed_data(merged_data: pd.DataFrame, user_bucket: str) -> None:
+    """Save processed train and test datasets to S3.
+    
+    Args:
+        merged_data: DataFrame containing processed data
+        user_bucket: S3 bucket to save results
+    """
+    processed_train = merged_data[merged_data["Year"] < TRAIN_CUTOFF_YEAR]
+    processed_test = merged_data[merged_data["Year"] == TRAIN_CUTOFF_YEAR]
 
-train_output_path = f"s3://{user_bucket_name}/processed_train.csv"
-test_output_path = f"s3://{user_bucket_name}/processed_test.csv"
+    train_output_path = f"s3://{user_bucket}/processed_train.csv"
+    test_output_path = f"s3://{user_bucket}/processed_test.csv"
 
-processed_train.to_csv(train_output_path, index=False)
-processed_test.to_csv(test_output_path, index=False)
+    logger.info(f"Saving processed train dataset to {train_output_path}")
+    processed_train.to_csv(train_output_path, index=False)
+    
+    logger.info(f"Saving processed test dataset to {test_output_path}")
+    processed_test.to_csv(test_output_path, index=False)
 
 logger.info(f"Processed train dataset saved to {train_output_path}")
 logger.info(f"Processed test dataset saved to {test_output_path}")
