@@ -35,6 +35,10 @@ def get_user_docker_image_tag() -> str:
     """Get the docker image tag for the current user"""
     return os.environ.get("DOCKER_IMAGE_TAG", "outsmarting-pipeline")
 
+def get_script_processor_type() -> str:
+    """Get the SageMaker script processor instance type"""
+    return os.environ.get("SCRIPT_PROCESSOR_TYPE", "ml.m5.2xlarge")
+
 
 def get_execution_role():
     """
