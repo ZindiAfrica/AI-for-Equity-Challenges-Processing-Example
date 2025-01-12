@@ -6,9 +6,9 @@ SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 export APP_NAME="sua-outsmarting-outbreaks"
 export APP_DIR="$SCRIPT_DIR/code/src"
 
-# Required functions
-install_dependencies() {
-    echo "Installing dependencies..."
+# Required functions with component suffixes
+install_dependencies_python() {
+    echo "Installing Python dependencies..."
     cd "$APP_DIR"
     uv venv
     source .venv/bin/activate
@@ -17,40 +17,64 @@ install_dependencies() {
     echo "Dependencies installed successfully"
 }
 
-build() {
+install_dependencies_all() {
+    install_dependencies_python
+}
+
+build_docker() {
     echo "Building Docker image..."
     cd "$APP_DIR"
     source .venv/bin/activate
     python build_and_run_aws.py --build-only
 }
 
-test() {
-    echo "Running tests..."
+build_all() {
+    build_docker
+}
+
+test_python() {
+    echo "Running Python tests..."
     cd "$APP_DIR"
     source .venv/bin/activate
     python -m pytest tests/
 }
 
-package() {
-    echo "Creating deployment package..."
+test_all() {
+    test_python
+}
+
+package_docker() {
+    echo "Creating Docker deployment package..."
     cd "$APP_DIR"
     source .venv/bin/activate
     python build_and_run_aws.py --package-only
 }
 
-deploy() {
-    echo "Deploying to AWS..."
+package_all() {
+    package_docker
+}
+
+deploy_sagemaker() {
+    echo "Deploying to AWS SageMaker..."
     cd "$APP_DIR"
     source .venv/bin/activate
     python build_and_run_aws.py --deploy-only
 }
 
-go_to_directory() {
+deploy_all() {
+    deploy_sagemaker
+}
+
+go_to_directory_src() {
     cd "$APP_DIR"
     exec $SHELL
 }
 
-run() {
+go_to_directory_all() {
+    go_to_directory_src
+}
+
+run_pipeline() {
     local debug=""
     while [[ $# -gt 0 ]]; do
         case "$1" in
@@ -79,12 +103,16 @@ run() {
 }
 
 all() {
-    install_dependencies
-    build
-    test
-    package
-    deploy
-    run
+    install_dependencies_all
+    build_all
+    test_all
+    package_all
+    deploy_all
+    run_pipeline
+}
+
+quit() {
+    exit 0
 }
 
 help() {
@@ -113,17 +141,22 @@ help() {
 
 # Main execution
 if [ $# -eq 0 ]; then
-    PS3="Please select an option (1-10): "
+    PS3="Please select an option (1-15): "
     options=(
         "Help"
-        "Install Dependencies" 
-        "Build"
-        "Test"
-        "Package"
-        "Deploy"
+        "Install All Dependencies"
+        "Install Python Dependencies"
+        "Build All"
+        "Build Docker Image"
+        "Test All"
+        "Run Python Tests"
+        "Package All"
+        "Package Docker Image"
+        "Deploy All"
+        "Deploy to SageMaker"
         "Run Pipeline"
         "Run All Steps"
-        "Go to Directory"
+        "Go to Source Directory"
         "Quit"
     )
     select opt in "${options[@]}"
@@ -133,36 +166,56 @@ if [ $# -eq 0 ]; then
                 help
                 break
                 ;;
-            "Install Dependencies")
-                install_dependencies
+            "Install All Dependencies")
+                install_dependencies_all
                 break
                 ;;
-            "Build")
-                build
+            "Install Python Dependencies")
+                install_dependencies_python
                 break
                 ;;
-            "Test")
-                test
+            "Build All")
+                build_all
                 break
                 ;;
-            "Package")
-                package
+            "Build Docker Image")
+                build_docker
                 break
                 ;;
-            "Deploy")
-                deploy
+            "Test All")
+                test_all
+                break
+                ;;
+            "Run Python Tests")
+                test_python
+                break
+                ;;
+            "Package All")
+                package_all
+                break
+                ;;
+            "Package Docker Image")
+                package_docker
+                break
+                ;;
+            "Deploy All")
+                deploy_all
+                break
+                ;;
+            "Deploy to SageMaker")
+                deploy_sagemaker
                 break
                 ;;
             "Run Pipeline")
-                run
+                run_pipeline
                 break
                 ;;
             "Run All Steps")
                 all
                 break
                 ;;
-            "Go to Directory")
-                go_to_directory
+            "Go to Source Directory")
+                go_to_directory_src
                 break
                 ;;
             "Quit")
@@ -179,29 +232,44 @@ else
             help
             ;;
         "install")
-            install_dependencies
+            install_dependencies_all
+            ;;
+        "install-python")
+            install_dependencies_python
             ;;
         "build")
-            build
+            build_all
+            ;;
+        "build-docker")
+            build_docker
             ;;
         "test")
-            test
+            test_all
+            ;;
+        "test-python")
+            test_python
             ;;
         "package")
-            package
+            package_all
+            ;;
+        "package-docker")
+            package_docker
             ;;
         "deploy")
-            deploy
+            deploy_all
+            ;;
+        "deploy-sagemaker")
+            deploy_sagemaker
             ;;
         "run")
             shift
-            run "$@"
+            run_pipeline "$@"
             ;;
         "all")
             all
             ;;
         "shell")
-            go_to_directory
+            go_to_directory_src
             ;;
         *)
             help
