@@ -1,5 +1,5 @@
 # Build stage
-FROM python:3.10-slim as builder
+FROM python:3.10-slim AS builder
 
 # Install build dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -10,20 +10,25 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Set up working directory
 WORKDIR /app
 
+# Install uv and dependencies
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+
+ENV PATH="/root/.local/bin:${PATH}"
+
 # Copy only requirements first to leverage Docker cache
 COPY src/pyproject.toml .
 
 # Install uv and dependencies
-RUN curl -LsSf https://astral.sh/uv/install.sh | sh && \
-    uv pip install --system -e ".[dev]" && \
-    rm -rf ~/.cache/uv
+RUN uv pip install --system -e ".[dev]"
 
 # Final stage
 FROM python:3.10-slim
 
+ARG AWS_DEFAULT_REGION=us-east-2
+
 ENV PATH="/root/.local/bin:${PATH}"
 ENV PYTHONUNBUFFERED=1
-ENV AWS_DEFAULT_REGION=${AWS_DEFAULT_REGION:-us-east-2}
+ENV AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
 
 WORKDIR /app
 
