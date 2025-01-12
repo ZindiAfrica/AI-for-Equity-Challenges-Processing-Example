@@ -19,6 +19,11 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 from sua_outsmarting_outbreaks.utils.aws_utils import (
+    get_data_bucket_name,
+    get_execution_role,
+    get_user_bucket_name,
+    get_user_name,
+)
 
 # Configure logging
 logging.basicConfig(
@@ -27,11 +32,6 @@ logging.basicConfig(
     handlers=[logging.StreamHandler(sys.stdout)],
 )
 logger = logging.getLogger(__name__)
-    get_data_bucket_name,
-    get_execution_role,
-    get_user_bucket_name,
-    get_user_name,
-)
 
 # Initialize S3 client and get team bucket
 s3_client = boto3.client("s3")
