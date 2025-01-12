@@ -15,6 +15,8 @@ print(f"\nUsing team bucket: {bucket_name}")
 print("Using instance: ml.g4dn.8xlarge")
 print("- NVIDIA T4 GPU with 16GB memory")
 print("- 32 vCPUs and 128GB RAM")
+print("- Network: 50 Gigabit")
+print("- EBS: 9500 MBps bandwidth, 40K IOPS")
 print("- Cost: $2.72/hr (on-demand) or $0.816/hr (spot)")
 
 

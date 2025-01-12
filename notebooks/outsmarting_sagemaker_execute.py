@@ -47,7 +47,7 @@ script_processor = ScriptProcessor(
     command=["python3"],
     role=role,
     instance_count=1,
-    instance_type="ml.r5a.2xlarge",
+    instance_type="ml.m5.2xlarge",  # $0.46/hr on-demand, $0.138/hr spot
     sagemaker_session=sagemaker_session,
     tags=tags
 )

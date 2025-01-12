@@ -16,6 +16,9 @@ print(f"Using team bucket: {out_bucket_name}")
 
 # Configure instance type based on data size
 # Using ml.m5.2xlarge ($0.46/hr on-demand, $0.138/hr spot) for optimal memory/cost ratio
+# - 8 vCPU, 32 GiB RAM
+# - Up to 10 Gigabit network
+# - 2300 MBps EBS bandwidth
 
 
 # Helper function to find nearest locations
