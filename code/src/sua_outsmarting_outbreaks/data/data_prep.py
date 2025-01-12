@@ -3,6 +3,7 @@ import boto3
 import pandas as pd
 from scipy.spatial import cKDTree
 
+from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
     get_execution_role,
