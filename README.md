@@ -4,11 +4,24 @@ This repository contains example code for running ML pipelines on AWS using Sage
 
 ## Documentation
 
+For detailed documentation, please see the files in the docs folder.
+
 Choose your preferred method to run the pipeline:
+
+### How to run
 
 1. [Using AWS SageMaker Studio](docs/sagemaker-studio-guide.md) (Recommended)
 2. [Local Development with AWS Console](docs/local-development-guide.md)
 3. [Troubleshooting Guide](docs/troubleshooting-guide.md)
+
+### For infrastructure details:
+- [Project Structure](./docs/structure.md)
+- [Module Dependencies](./docs/dependencies.md)
+- [Billing & Cost Management](./docs/billing.md)
+
+## Quick Setup
+
+See the [Quick Start Guide](./docs/quickstart.md) for detailed instructions.
 
 ## Repository Structure
 
@@ -73,6 +86,24 @@ chmod 600 ~/.git-credentials
 - Check the [documentation](https://github.com/ZindiAfrica/AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources)
 - Contact competition organizers
 - Review AWS service quotas
+
+### Core Dependencies
+
+```mermaid
+```
+
+### Module Coupling Analysis
+
+#### Tightly Coupled Modules
+
+## Project Structure
+
+### Documentation
+- [docs/](./docs/) - User and administrator documentation
+
+
+### Scripts
+- [scripts/](./scripts/) - Management and utility scripts
 
 ## License
 
