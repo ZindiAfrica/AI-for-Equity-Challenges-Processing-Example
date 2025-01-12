@@ -8,8 +8,8 @@ from sklearn.preprocessing import LabelEncoder
 # Initialize S3 client and use team bucket
 s3_client = boto3.client("s3")
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
-# Use the team bucket format - do not create new buckets
-bucket_name = f"{workspace_name}-team-bucket"
+# Use the team bucket from environment variable or fall back to default format
+bucket_name = os.environ.get("BUCKET_NAME", f"{workspace_name}-team-bucket")
 
 # Define common tags
 tags = [{"Key": "team", "Value": workspace_name}]

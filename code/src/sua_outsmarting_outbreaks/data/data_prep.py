@@ -10,7 +10,7 @@ bucket_name = os.environ.get("SRC_BUCKET_NAME", "sua-outsmarting-outbreaks-chall
 
 # Get workspace name for team bucket and tagging
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
-out_bucket_name = f"{workspace_name}-team-bucket"
+out_bucket_name = os.environ.get("BUCKET_NAME", f"{workspace_name}-team-bucket")
 
 # Define common tags
 tags = [{"Key": "team", "Value": workspace_name}]

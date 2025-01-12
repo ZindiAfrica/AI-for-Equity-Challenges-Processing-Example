@@ -155,7 +155,7 @@ def main():
 
     # Initialize SageMaker session with workspace-specific bucket
     sagemaker_session = sagemaker.Session()
-    bucket_name = get_bucket_name()
+    bucket_name = os.environ.get("BUCKET_NAME", get_bucket_name())
     sagemaker_session.default_bucket = lambda: bucket_name
 
     # Verify role has required permissions

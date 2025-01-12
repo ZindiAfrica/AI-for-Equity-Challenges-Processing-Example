@@ -21,7 +21,7 @@ tags = [{"Key": "team", "Value": username}]
 
 # Define the S3 bucket for input and output data
 bucket_name = os.environ.get("SRC_BUCKET_NAME", "sua-outsmarting-outbreaks-challenge-comp")
-out_bucket_name = "comp-user-5ow9bw-team-bucket"
+out_bucket_name = os.environ.get("BUCKET_NAME", f"{workspace_name}-team-bucket")
 input_prefix = f"s3://{bucket_name}/"
 output_prefix = f"s3://{out_bucket_name}/output/"
 
