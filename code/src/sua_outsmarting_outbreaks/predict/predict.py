@@ -1,4 +1,5 @@
 # Import necessary libraries
+import os
 import boto3
 import joblib
 import pandas as pd

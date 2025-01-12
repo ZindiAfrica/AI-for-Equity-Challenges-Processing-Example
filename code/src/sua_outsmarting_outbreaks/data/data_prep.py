@@ -1,11 +1,12 @@
 # Import necessary libraries
+import os
 import boto3
 import pandas as pd
 from scipy.spatial import cKDTree
 
 # Initialize S3 client and get team bucket
 s3_client = boto3.client("s3")
-bucket_name = "sua-outsmarting-outbreaks-challenge-comp"
+bucket_name = os.environ.get("SRC_BUCKET_NAME", "sua-outsmarting-outbreaks-challenge-comp")
 
 # Get workspace name for team bucket and tagging
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]

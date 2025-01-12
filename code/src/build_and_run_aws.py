@@ -197,7 +197,7 @@ def main():
         code="sua_outsmarting_outbreaks/pipeline.py",
         inputs=[
             ProcessingInput(
-                source="s3://sua-outsmarting-outbreaks-challenge-comp",
+                source=f"s3://{os.environ.get('SRC_BUCKET_NAME', 'sua-outsmarting-outbreaks-challenge-comp')}",
                 destination="/opt/ml/processing/input",
             )
         ],
