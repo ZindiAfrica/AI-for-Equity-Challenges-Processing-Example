@@ -99,7 +99,8 @@ def validate_docker_args(*args: str) -> None:
   import re
   # Allow ECR URIs like: 123456789012.dkr.ecr.region.amazonaws.com/repo:tag
   tag_pattern = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
-  path_pattern = re.compile(r"^[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9/_-]+:[a-zA-Z0-9._-]+$|^[a-zA-Z0-9/._-]+$")
+  path_pattern = re.compile(
+    r"^[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9/_-]+:[a-zA-Z0-9._-]+$|^[a-zA-Z0-9/._-]+$")
 
   for arg in args:
     if not isinstance(arg, str):
@@ -146,7 +147,8 @@ def build_and_push_docker_image(
   # Define validation patterns
   import re
   tag_pattern = re.compile(r"^[a-zA-Z0-9][a-zA-Z0-9._-]*$")
-  path_pattern = re.compile(r"^[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9/_-]+:[a-zA-Z0-9._-]+$|^[a-zA-Z0-9/._-]+$")
+  path_pattern = re.compile(
+    r"^[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/[a-zA-Z0-9/_-]+:[a-zA-Z0-9._-]+$|^[a-zA-Z0-9/._-]+$")
   registry_pattern = re.compile(r"^https?://[0-9]+\.dkr\.ecr\.[a-z0-9-]+\.amazonaws\.com/?$")
   # Get validated docker executable path
   docker_exe = get_docker_executable()
@@ -204,8 +206,8 @@ def build_and_push_docker_image(
     # Strip any trailing slash from registry URL
     registry = registry.rstrip('/')
     if registry_pattern.match(registry):
-        # Remove https:// prefix for docker login
-        registry = registry.replace('https://', '')
+      # Remove https:// prefix for docker login
+      registry = registry.replace('https://', '')
     validate_docker_args("login", "-u", username, "-p", password, registry)
     subprocess.run([docker_exe, "login", "-u", username, "-p", password, registry], check=True)
   except (subprocess.CalledProcessError, ValueError) as e:
@@ -238,7 +240,8 @@ def main() -> None:
   parser = argparse.ArgumentParser()
   parser.add_argument("--debug", action="store_true", help="Enable debug mode")
   parser.add_argument("--build-only", action="store_true", help="Only build and push Docker image")
-  parser.add_argument("--deploy-only", action="store_true", help="Only deploy to SageMaker without rebuilding")
+  parser.add_argument("--deploy-only", action="store_true",
+                      help="Only deploy to SageMaker without rebuilding")
   args = parser.parse_args()
 
   # Check AWS environment first
@@ -284,9 +287,14 @@ def main() -> None:
   # Verify role has required permissions
   iam = boto3.client("iam")
   try:
-    iam.simulate_principal_policy(PolicySourceArn=role,
-                                  ActionNames=["sagemaker:CreateProcessingJob"])
-    logger.info("Role has required SageMaker permissions")
+    iam.simulate_principal_policy(
+      PolicySourceArn=role,
+      ActionNames=[
+        "sagemaker:CreateProcessingJob",
+        "sagemaker:DescribeProcessingJob",
+        "logs:DescribeLogStreams",
+      ])
+    logger.info(f"Role ${role} has required SageMaker permissions")
   except botocore.exceptions.ClientError as e:
     logger.warning(f"Role may not have required permissions: {e}")
 
