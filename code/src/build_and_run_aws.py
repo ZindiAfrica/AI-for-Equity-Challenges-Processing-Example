@@ -1,6 +1,7 @@
 import base64
 import os
 import subprocess
+import sys
 
 import boto3
 import sagemaker
@@ -41,12 +42,32 @@ def get_account_id():
 
 
 def build_and_push_docker_image(image_name, account_id, region, image_tag):
+    # Check if Docker daemon is running
+    try:
+        subprocess.run(["docker", "info"], check=True, capture_output=True)
+    except subprocess.CalledProcessError:
+        print("Error: Docker daemon is not running. Please start Docker and try again.")
+        print("On macOS, launch Docker Desktop from Applications.")
+        sys.exit(1)
+    except FileNotFoundError:
+        print("Error: Docker is not installed. Please install Docker and try again.")
+        print("Visit https://docs.docker.com/get-docker/ for installation instructions.")
+        sys.exit(1)
+
     # Build the Docker image
-    subprocess.run(["docker", "build", "-t", f"{image_name}:{image_tag}", "."], check=True)
+    try:
+        subprocess.run(["docker", "build", "-t", f"{image_name}:{image_tag}", "."], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error building Docker image: {e}")
+        sys.exit(1)
 
     # Tag the image for ECR
     ecr_repo = f"{account_id}.dkr.ecr.{region}.amazonaws.com/{image_name}:{image_tag}"
-    subprocess.run(["docker", "tag", f"{image_name}:{image_tag}", ecr_repo], check=True)
+    try:
+        subprocess.run(["docker", "tag", f"{image_name}:{image_tag}", ecr_repo], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error tagging Docker image: {e}")
+        sys.exit(1)
 
     # Get ECR login token and login
     ecr = boto3.client("ecr")
