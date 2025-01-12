@@ -7,6 +7,7 @@ import warnings
 from pathlib import Path
 
 import boto3
+import botocore
 import sagemaker
 from dotenv import load_dotenv
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
