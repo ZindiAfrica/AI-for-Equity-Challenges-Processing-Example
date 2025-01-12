@@ -10,6 +10,7 @@ from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProces
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
     get_execution_role,
+    get_script_processor_type,
     get_user_bucket_name,
     get_user_name,
 )
