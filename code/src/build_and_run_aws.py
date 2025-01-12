@@ -67,7 +67,7 @@ def main():
     check_aws_environment()
 
     # Import helpers
-    from utils.aws_utils import get_execution_role
+    from sua_outsmarting_outbreaks.utils.aws_utils import get_execution_role
 
     # Initialize AWS clients
     region = "us-east-2"
