@@ -4,6 +4,11 @@ import os
 
 import boto3
 
+from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
+
+# Configure logger
+logger = setup_logger(__name__)
+
 
 def get_user_name() -> str:
     """Get the username for the current user.
@@ -112,13 +117,13 @@ def get_execution_role() -> str:
         'arn:aws:iam::123456789012:role/service-role/AmazonSageMaker-ExecutionRole'
 
     """
-    print("\nAttempting to get execution role...")
+    logger.info("Attempting to get execution role...")
     try:
         # Try to get SageMaker execution role
         import sagemaker
 
         role = sagemaker.get_execution_role()
-        print(f"Successfully got SageMaker execution role: {role}")
+        logger.info(f"Successfully got SageMaker execution role: {role}")
         return role
     except Exception as e:
         logger.error(f"Failed to get SageMaker role: {e}")
@@ -127,7 +132,7 @@ def get_execution_role() -> str:
         # If not running in SageMaker, use the current user/role
         sts = boto3.client("sts")
         caller_identity = sts.get_caller_identity()
-        print(f"Current caller identity: {caller_identity['Arn']}")
+        logger.info(f"Current caller identity: {caller_identity['Arn']}")
 
         # Extract the full path after user/ or role/
         arn = caller_identity["Arn"]
@@ -140,22 +145,22 @@ def get_execution_role() -> str:
 
         username = path_parts[0] if path_parts else "default"
 
-        print(f"Got username {username}")
+        logger.info(f"Got username {username}")
 
         # Check if current credentials are for a role
         if ":role/" in arn:
-            print(f"It's a role, returning the ARN: {arn}")
+            logger.info(f"It's a role, returning the ARN: {arn}")
             return arn
 
         # Try to assume SageMaker role for comp-user pattern
         if "comp-user-" in username:
             try:
-                print(f"Matching comp-user pattern: {username}")
+                logger.info(f"Matching comp-user pattern: {username}")
                 # Extract the comp-user ID portion
                 user_id = username.split("comp-user-")[1]
                 role_name = f"SageMakerRole-comp-user-{user_id}"
                 role_arn = f"arn:aws:iam::{caller_identity['Account']}:role/{role_name}"
-                print(f"Attempting to assume role: {role_arn}")
+                logger.info(f"Attempting to assume role: {role_arn}")
 
                 # Attempt to assume role with longer session duration
                 sts.assume_role(
@@ -165,7 +170,7 @@ def get_execution_role() -> str:
                 )
 
                 # Use the temporary credentials
-                print("Successfully assumed SageMaker execution role")
+                logger.info("Successfully assumed SageMaker execution role")
                 return role_arn
             except Exception as e:
                 logger.error(f"Failed to assume SageMaker role, falling back to user credentials: {e}")
