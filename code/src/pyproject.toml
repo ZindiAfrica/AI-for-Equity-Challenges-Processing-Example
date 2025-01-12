@@ -67,9 +67,10 @@ select = [
 ignore = [
     "D100",    # Missing docstring in public module
     "D104",    # Missing docstring in public package
-    "ANN101",  # Missing type annotation for self
-    "ANN102",  # Missing type annotation for cls
     "PLR0913", # Too many arguments to function call
+    "D203",    # Incompatible with D211
+    "D213",    # Incompatible with D212
+    "COM812",  # May conflict with formatter
 ]
 fixable = ["ALL"]
 unfixable = []
