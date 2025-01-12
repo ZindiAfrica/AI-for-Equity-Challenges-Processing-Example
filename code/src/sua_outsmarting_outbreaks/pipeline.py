@@ -20,7 +20,7 @@ role = get_execution_role()
 tags = [{"Key": "team", "Value": username}]
 
 # Define the S3 bucket for input and output data
-bucket_name = "sua-outsmarting-outbreaks-challenge-comp"
+bucket_name = os.environ.get("SRC_BUCKET_NAME", "sua-outsmarting-outbreaks-challenge-comp")
 out_bucket_name = "comp-user-5ow9bw-team-bucket"
 input_prefix = f"s3://{bucket_name}/"
 output_prefix = f"s3://{out_bucket_name}/output/"
