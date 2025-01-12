@@ -46,12 +46,6 @@ test_python() {
 }
 
 
-package_docker() {
-    echo "Creating Docker deployment package..."
-    cd "$APP_DIR"
-    source .venv/bin/activate
-    python build_and_run_aws.py --package-only
-}
 
 
 deploy_sagemaker() {
@@ -168,7 +162,6 @@ show_menu() {
         "Install Python Dependencies"
         "Build Docker Image"
         "Run Python Tests"
-        "Package Docker Image" 
         "Deploy to SageMaker"
         "Run Pipeline"
         "Run All Steps"
@@ -200,10 +193,6 @@ show_menu() {
                 ;;
             "Run Python Tests")
                 test_python
-                show_menu
-                ;;
-            "Package Docker Image")
-                package_docker
                 show_menu
                 ;;
             "Deploy to SageMaker")
@@ -261,12 +250,6 @@ else
             ;;
         "test-python")
             test_python
-            ;;
-        "package")
-            package_all
-            ;;
-        "package-docker")
-            package_docker
             ;;
         "deploy")
             deploy_all
