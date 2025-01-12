@@ -4,6 +4,8 @@ import sagemaker
 from sagemaker.image_uris import retrieve as retrieve_image_uri
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
 
+from sua_outsmarting_outbreaks.utils.aws_utils import get_execution_role
+
 # Initialize SageMaker session with explicit bucket
 sagemaker_session = sagemaker.Session()
 sagemaker_session.default_bucket = lambda: "comp-user-5ow9bw-team-bucket"
@@ -11,9 +13,6 @@ sagemaker_session.default_bucket = lambda: "comp-user-5ow9bw-team-bucket"
 # Get username for tagging
 sts = boto3.client("sts")
 username = sts.get_caller_identity()["Arn"].split("/")[-1]
-
-# Get the appropriate execution role
-from sua_outsmarting_outbreaks.utils.aws_utils import get_execution_role
 
 role = get_execution_role()
 

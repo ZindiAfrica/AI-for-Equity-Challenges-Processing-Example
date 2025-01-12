@@ -75,7 +75,7 @@ def get_execution_role():
                 print(f"Attempting to assume role: {role_arn}")
 
                 # Attempt to assume role with longer session duration
-                assumed_role = sts.assume_role(
+                sts.assume_role(
                     RoleArn=role_arn,
                     RoleSessionName="sagemaker-execution-session",
                     DurationSeconds=3600,  # 1 hour session
