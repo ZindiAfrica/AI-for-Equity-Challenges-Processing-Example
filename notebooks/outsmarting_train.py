@@ -6,10 +6,16 @@ from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
-# Initialize S3 client and get workspace name
+# Initialize S3 client and get team bucket
 s3_client = boto3.client("s3")
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
 bucket_name = f"{workspace_name}-team-bucket"
+
+print(f"\nUsing team bucket: {bucket_name}")
+print("Using instance: ml.g4dn.8xlarge")
+print("- NVIDIA T4 GPU with 16GB memory")
+print("- 32 vCPUs and 128GB RAM")
+print("- Cost: $2.176/hr (on-demand) or $0.653/hr (spot)")
 
 
 # Load preprocessed datasets from S3

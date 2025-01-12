@@ -75,10 +75,33 @@ To add new dependencies:
 
 ## Resource Configuration
 
-The pipeline uses:
-- GPU instance: ml.g4dn.8xlarge
-- 100GB storage volume
-- Maximum runtime: 24 hours
+The pipeline uses optimized instances for each stage:
+
+Data Preparation:
+- Instance: ml.m5.2xlarge ($0.519/hr)
+- Storage: 100GB EBS volume
+- Network: Up to 10 Gigabit
+- Runtime: ~2 hours
+
+Training:
+- Instance: ml.g4dn.8xlarge ($2.176/hr)
+- GPU: NVIDIA T4 (16GB)
+- Memory: 128GB RAM
+- Storage: 100GB EBS volume
+- Network: 50 Gigabit
+- Runtime: ~4-6 hours
+
+Evaluation/Prediction:
+- Instance: ml.m5.xlarge ($0.672/hr)
+- Memory: 16GB RAM
+- Storage: 100GB EBS volume
+- Network: Up to 10 Gigabit
+- Runtime: ~1 hour
+
+Cost Optimization:
+- Uses Spot instances when possible (up to 70% savings)
+- Automatic shutdown after completion
+- Maximum runtime limit: 24 hours
 
 ## Monitoring
 

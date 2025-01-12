@@ -3,10 +3,19 @@ import boto3
 import pandas as pd
 from scipy.spatial import cKDTree
 
-# Initialize S3 client
+# Initialize S3 client and get team bucket
 s3_client = boto3.client("s3")
 bucket_name = "sua-outsmarting-outbreaks-challenge-comp"
-out_bucket_name = "comp-user-5ow9bw-team-bucket"
+
+# Get workspace name for team bucket
+workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
+out_bucket_name = f"{workspace_name}-team-bucket"
+
+print(f"\nUsing input bucket: {bucket_name}")
+print(f"Using team bucket: {out_bucket_name}")
+
+# Configure instance type based on data size
+# Using m5.2xlarge ($0.519/hr) for optimal memory/cost ratio
 
 
 # Helper function to find nearest locations
