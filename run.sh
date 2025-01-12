@@ -45,6 +45,20 @@ test_python() {
     python -m pytest tests/
 }
 
+lint_python() {
+    echo "Running Python linter..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    ruff check .
+}
+
+format_python() {
+    echo "Formatting Python code..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    ruff format .
+}
+
 
 
 
@@ -121,6 +135,10 @@ help() {
     echo "  test                     - Run all tests"
     echo "  test-python             - Run Python tests only"
     echo ""
+    echo "Code Quality:"
+    echo "  lint                     - Run Python linter"
+    echo "  format                   - Format Python code"
+    echo ""
     echo "Packaging:"
     echo "  package                  - Package all components"
     echo "  package-docker          - Package Docker image only"
@@ -162,6 +180,8 @@ show_menu() {
         "Install Python Dependencies"
         "Build Docker Image"
         "Run Python Tests"
+        "Lint Python Code"
+        "Format Python Code"
         "Deploy to SageMaker"
         "Run Pipeline"
         "Run All Steps"
@@ -193,6 +213,14 @@ show_menu() {
                 ;;
             "Run Python Tests")
                 test_python
+                show_menu
+                ;;
+            "Lint Python Code")
+                lint_python
+                show_menu
+                ;;
+            "Format Python Code")
+                format_python
                 show_menu
                 ;;
             "Deploy to SageMaker")
@@ -250,6 +278,12 @@ else
             ;;
         "test-python")
             test_python
+            ;;
+        "lint")
+            lint_python
+            ;;
+        "format")
+            format_python
             ;;
         "deploy")
             deploy_all
