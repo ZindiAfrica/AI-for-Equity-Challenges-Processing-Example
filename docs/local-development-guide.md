@@ -78,13 +78,13 @@ To add new dependencies:
 The pipeline uses optimized instances for each stage:
 
 Data Preparation:
-- Instance: ml.m5.2xlarge ($0.519/hr)
+- Instance: m5.2xlarge ($0.519/hr)
 - Storage: 100GB EBS volume
 - Network: Up to 10 Gigabit
 - Runtime: ~2 hours
 
 Training:
-- Instance: ml.g4dn.8xlarge ($2.176/hr)
+- Instance: g4dn.8xlarge ($2.176/hr)
 - GPU: NVIDIA T4 (16GB)
 - Memory: 128GB RAM
 - Storage: 100GB EBS volume
@@ -92,7 +92,7 @@ Training:
 - Runtime: ~4-6 hours
 
 Evaluation/Prediction:
-- Instance: ml.m5.xlarge ($0.672/hr)
+- Instance: m5.xlarge ($0.672/hr)
 - Memory: 16GB RAM
 - Storage: 100GB EBS volume
 - Network: Up to 10 Gigabit
