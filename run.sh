@@ -8,6 +8,7 @@ export APP_DIR="$SCRIPT_DIR/code/src"
 
 # Required functions with component suffixes
 install_dependencies_python() {
+    # Only one install function so no _all needed
     echo "Installing Python dependencies..."
     cd "$APP_DIR"
     uv venv
@@ -17,9 +18,6 @@ install_dependencies_python() {
     echo "Dependencies installed successfully"
 }
 
-install_dependencies_all() {
-    install_dependencies_python
-}
 
 build_docker() {
     echo "Building Docker image..."
@@ -28,9 +26,6 @@ build_docker() {
     python build_and_run_aws.py --build-only
 }
 
-build_all() {
-    build_docker
-}
 
 test_python() {
     echo "Running Python tests..."
@@ -39,9 +34,6 @@ test_python() {
     python -m pytest tests/
 }
 
-test_all() {
-    test_python
-}
 
 package_docker() {
     echo "Creating Docker deployment package..."
@@ -50,9 +42,6 @@ package_docker() {
     python build_and_run_aws.py --package-only
 }
 
-package_all() {
-    package_docker
-}
 
 deploy_sagemaker() {
     echo "Deploying to AWS SageMaker..."
@@ -61,18 +50,12 @@ deploy_sagemaker() {
     python build_and_run_aws.py --deploy-only
 }
 
-deploy_all() {
-    deploy_sagemaker
-}
 
 go_to_directory_src() {
     cd "$APP_DIR"
     exec $SHELL
 }
 
-go_to_directory_all() {
-    go_to_directory_src
-}
 
 run_pipeline() {
     local debug=""
@@ -103,11 +86,11 @@ run_pipeline() {
 }
 
 all() {
-    install_dependencies_all
-    build_all
-    test_all
-    package_all
-    deploy_all
+    install_dependencies_python
+    build_docker
+    test_python
+    package_docker
+    deploy_sagemaker
     run_pipeline
 }
 
@@ -159,20 +142,22 @@ help() {
     echo "  $0                     # Interactive mode"
 }
 
-# Main execution
-if [ $# -eq 0 ]; then
+# Function to display menu
+show_menu() {
     PS3=$'\nPlease select an option (1-15) or "q" to quit: '
+    REPLY=""
+    
+    # Set timeout of 5 seconds
+    TMOUT=5
+    
+    # Trap timeout and exit
+    trap 'echo -e "\nTimeout after 5 seconds of inactivity. Exiting..."; exit 0' ALRM
     options=(
         "Help"
-        "Install All Dependencies"
         "Install Python Dependencies"
-        "Build All"
         "Build Docker Image"
-        "Test All"
         "Run Python Tests"
-        "Package All"
-        "Package Docker Image"
-        "Deploy All"
+        "Package Docker Image" 
         "Deploy to SageMaker"
         "Run Pipeline"
         "Run All Steps"
@@ -181,58 +166,59 @@ if [ $# -eq 0 ]; then
     )
     select opt in "${options[@]}"
     do
+        # Reset timeout for next iteration
+        TMOUT=5
         case $opt in
             "Help")
                 help
                 ;;
-            "Install All Dependencies")
-                install_dependencies_all
-                ;;
             "Install Python Dependencies")
                 install_dependencies_python
-                ;;
-            "Build All")
-                build_all
+                show_menu
                 ;;
             "Build Docker Image")
                 build_docker
-                ;;
-            "Test All")
-                test_all
+                show_menu
                 ;;
             "Run Python Tests")
                 test_python
-                ;;
-            "Package All")
-                package_all
+                show_menu
                 ;;
             "Package Docker Image")
                 package_docker
-                ;;
-            "Deploy All")
-                deploy_all
+                show_menu
                 ;;
             "Deploy to SageMaker")
                 deploy_sagemaker
+                show_menu
                 ;;
             "Run Pipeline")
                 run_pipeline
+                show_menu
                 ;;
             "Run All Steps")
                 all
+                show_menu
                 ;;
             "Go to Source Directory")
                 go_to_directory_src
+                show_menu
                 ;;
             "Quit"|"q"|"Q")
-                quit
+                exit 0
                 ;;
             *)
                 echo "Invalid option $REPLY"
                 ;;
         esac
     done
+}
+
+# Main execution
+if [ $# -eq 0 ]; then
+    show_menu
 else
+    # Direct command execution - no menu return
     case "$1" in
         "help")
             help
