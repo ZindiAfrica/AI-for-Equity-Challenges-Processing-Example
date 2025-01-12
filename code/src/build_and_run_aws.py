@@ -5,7 +5,6 @@ import subprocess
 import boto3
 import sagemaker
 from sagemaker.processing import ProcessingInput, ProcessingOutput, ScriptProcessor
-
 from utils.aws_utils import get_bucket_name
 
 

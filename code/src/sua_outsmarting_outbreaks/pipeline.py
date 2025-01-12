@@ -14,6 +14,7 @@ username = sts.get_caller_identity()["Arn"].split("/")[-1]
 
 # Get the appropriate execution role
 from utils.aws_utils import get_execution_role
+
 role = get_execution_role()
 
 # Define common tags
@@ -49,7 +50,7 @@ script_processor = ScriptProcessor(
     instance_count=1,
     instance_type="ml.m5.2xlarge",  # $0.46/hr on-demand, $0.138/hr spot
     sagemaker_session=sagemaker_session,
-    tags=tags
+    tags=tags,
 )
 
 # Execute Data Preparation Script
@@ -66,7 +67,7 @@ except Exception as e:
     print(f"Data Preparation Job failed: {str(e)}")
     print("Please check CloudWatch logs for detailed error information.")
     # Get the job name to help locate logs
-    if hasattr(data_prep_job, 'job_name'):
+    if hasattr(data_prep_job, "job_name"):
         print(f"Job name: {data_prep_job.job_name}")
     raise
 
