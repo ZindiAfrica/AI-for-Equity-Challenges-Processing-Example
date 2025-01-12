@@ -74,6 +74,7 @@ def get_docker_executable() -> str:
 
     Raises:
         RuntimeError: If docker executable is not found
+
     """
     docker_path = shutil.which("docker")
     if not docker_path:
