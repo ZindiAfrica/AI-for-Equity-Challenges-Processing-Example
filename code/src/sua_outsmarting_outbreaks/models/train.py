@@ -149,8 +149,8 @@ def train_model(
     """Train a RandomForest regression model.
 
     Args:
-        X: Feature matrix
-        y: Target vector
+        features: Feature matrix
+        target: Target vector
         test_size: Validation split ratio
         random_state: Random seed for reproducibility
 
@@ -183,10 +183,10 @@ def train_model(
             random_state=random_state,
         )
 
-        model.fit(X_train, y_train)
+        model.fit(features_train, target_train)
 
         # Validate model performance
-        val_score = model.score(X_val, y_val)
+        val_score = model.score(features_val, target_val)
         logger.info(f"Validation R² score: {val_score:.4f}")
 
         if val_score < 0:
