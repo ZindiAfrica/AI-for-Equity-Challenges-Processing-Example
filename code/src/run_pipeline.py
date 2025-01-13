@@ -48,23 +48,37 @@ def main() -> None:
         logging.getLogger().setLevel(logging.DEBUG)
 
     try:
-        if args.stage in ("prepare", "all"):
+        if args.stage == "prepare":
             logger.info("Running data preparation...")
             preprocess_data(
                 local_data_dir=args.local_data,
                 output_dir=args.output_dir
             )
-
-        if args.stage in ("train", "all"):
+        elif args.stage == "train":
             logger.info("Running model training...")
             train_model(data_dir=args.output_dir)
-
-        if args.stage in ("evaluate", "all"):
+        elif args.stage == "evaluate":
             logger.info("Running model evaluation...")
             evaluate_model(data_dir=args.output_dir)
-
-        if args.stage in ("predict", "all"):
+        elif args.stage == "predict":
             logger.info("Running predictions...")
+            generate_predictions(data_dir=args.output_dir)
+        elif args.stage == "all":
+            logger.info("Running full pipeline...")
+            
+            # First prepare the data
+            preprocess_data(
+                local_data_dir=args.local_data,
+                output_dir=args.output_dir
+            )
+            
+            # Then train the model
+            train_model(data_dir=args.output_dir)
+            
+            # Then evaluate
+            evaluate_model(data_dir=args.output_dir)
+            
+            # Finally predict
             generate_predictions(data_dir=args.output_dir)
 
     except Exception as e:
