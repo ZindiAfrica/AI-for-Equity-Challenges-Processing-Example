@@ -242,23 +242,23 @@ show_menu() {
                 show_menu
                 ;;
             "Run Data Preparation")
-                run_prepare
+                run_prepare "$@"
                 show_menu
                 ;;
             "Run Model Training")
-                run_train
+                run_train "$@"
                 show_menu
                 ;;
             "Run Model Evaluation")
-                run_evaluate
+                run_evaluate "$@"
                 show_menu
                 ;;
             "Run Predictions")
-                run_predict
+                run_predict "$@"
                 show_menu
                 ;;
             "Run Full Pipeline")
-                run_pipeline
+                run_pipeline "$@"
                 show_menu
                 ;;
             "Run All Steps")
