@@ -71,7 +71,7 @@ def main() -> None:
             logger.info("Running model training...")
             train_df = pd.read_csv(Path(args.data_dir) / "processed_train.csv")
             X, y = prepare_features(train_df, "Total", ["ID", "Location"])
-            train_model(features=X, target=y, data_dir=str(output_dir))
+            train_model(features=X, target=y, data_dir=args.data_dir)
 
         if args.stage in ("evaluate", "all"):
             logger.info("Running model evaluation...")
