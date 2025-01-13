@@ -9,6 +9,7 @@ Example:
 
 """
 
+from pathlib import Path
 import boto3
 import joblib
 import pandas as pd
@@ -26,6 +27,10 @@ from sua_outsmarting_outbreaks.utils.logging_utils import (
     ModelError,
     setup_logger,
 )
+
+# Constants
+TEST_SIZE = 0.2
+RANDOM_STATE = 42
 
 # Configure logger
 logger = setup_logger(__name__)
@@ -169,10 +174,7 @@ def train_model(data_dir: str | None = None) -> RandomForestRegressor:
     """Train a RandomForest regression model.
 
     Args:
-        features: Feature matrix
-        target: Target vector
-        test_size: Validation split ratio
-        random_state: Random seed for reproducibility
+        data_dir: Optional path to local data directory
 
     Returns:
         Trained RandomForestRegressor model
@@ -182,6 +184,9 @@ def train_model(data_dir: str | None = None) -> RandomForestRegressor:
         ValueError: If input data is invalid
 
     """
+    # Prepare features and target
+    features = X
+    target = y
     if X.empty or y.empty:
         raise ValueError("Input data cannot be empty")
 
@@ -190,8 +195,8 @@ def train_model(data_dir: str | None = None) -> RandomForestRegressor:
         features_train, features_val, target_train, target_val = train_test_split(
             features,
             target,
-            test_size=test_size,
-            random_state=random_state,
+            test_size=TEST_SIZE,
+            random_state=RANDOM_STATE,
         )
 
         logger.info("Training RandomForestRegressor model...")
@@ -200,7 +205,7 @@ def train_model(data_dir: str | None = None) -> RandomForestRegressor:
             max_depth=None,
             min_samples_split=2,
             min_samples_leaf=1,
-            random_state=random_state,
+            random_state=RANDOM_STATE,
         )
 
         model.fit(features_train, target_train)
