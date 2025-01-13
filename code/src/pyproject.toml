@@ -16,6 +16,8 @@ dependencies = [
     "pytest>=8.3.4",
     "pydantic-settings>=2.1.0",
     "click>=8.1.7",
+    "fsspec>=2024.1.0",
+    "s3fs>=2024.1.0",
 ]
 
 [project.scripts]

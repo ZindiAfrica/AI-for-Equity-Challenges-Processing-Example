@@ -4,6 +4,7 @@ import click
 from pathlib import Path
 
 from sua_outsmarting_outbreaks.data.data_prep import preprocess_data
+from sua_outsmarting_outbreaks.data.download import download_data
 from sua_outsmarting_outbreaks.models.train import train_model
 from sua_outsmarting_outbreaks.models.evaluate import evaluate_model
 from sua_outsmarting_outbreaks.predict.predict import generate_predictions
@@ -15,6 +16,13 @@ logger = setup_logger(__name__)
 def cli():
     """CLI for running the ML pipeline locally or on AWS."""
     pass
+
+@cli.command()
+@click.argument('output_dir', type=click.Path())
+def download(output_dir):
+    """Download training data from S3."""
+    logger.info(f"Downloading data to {output_dir}")
+    download_data(output_dir)
 
 @cli.command()
 @click.option('--local-data', type=click.Path(), help='Local directory for input data')
