@@ -36,7 +36,7 @@ def parse_args() -> argparse.Namespace:
         help="Directory containing input data files",
     )
     parser.add_argument(
-        "--output-dir", 
+        "--output-dir",
         type=str,
         default=str(DEFAULT_OUTPUT_DIR),
         help="Directory for output files",
@@ -69,12 +69,12 @@ def main() -> None:
 
         if args.stage in ("data-prep", "all"):
             logger.info("Running data preparation...")
-            logger.debug(f"Input files in {args.data_dir}:")
-            for f in Path(args.data_dir).glob('*.csv'):
+            logger.debug(f"Input files in {data_dir}:")
+            for f in Path(data_dir).glob('*.csv'):
                 logger.debug(f"- {f.name}")
-            
+
             preprocess_data(
-                local_data_dir=args.data_dir,
+                local_data_dir=data_dir,
                 output_dir=str(output_dir)
             )
 
@@ -82,21 +82,21 @@ def main() -> None:
             logger.info("Running model training...")
             train_path = output_dir / "processed_train.csv"
             logger.info(f"Looking for training data at: {train_path}")
-            
+
             if not train_path.exists():
                 logger.error(f"Training data not found at {train_path}")
                 logger.debug("Output directory contents:")
-                for f in Path(args.output_dir).glob('*'):
+                for f in Path(output_dir).glob('*'):
                     logger.debug(f"- {f.name}")
                 raise FileNotFoundError(f"Training data not found at {train_path}")
-                
+
             train_df = pd.read_csv(train_path)
             logger.info(f"Loaded training data with shape: {train_df.shape}")
-            
+
             X, y = prepare_features(train_df, "Total", ["ID", "Location"])
             logger.info(f"Prepared features X: {X.shape}, y: {y.shape}")
-            
-            train_model(features=X, target=y, data_dir=args.output_dir)
+
+            train_model(features=X, target=y, data_dir=output_dir)
 
         if args.stage in ("evaluate", "all"):
             logger.info("Running model evaluation...")
