@@ -16,15 +16,7 @@ from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 # Configure logger
 logger = setup_logger(__name__)
 
-def get_data_dir() -> Path:
-    """Get the data directory path."""
-    return Path(__file__).parent.parent.parent.parent / "data"
-
-def ensure_data_dir() -> Path:
-    """Ensure the data directory exists."""
-    data_dir = get_data_dir()
-    data_dir.mkdir(parents=True, exist_ok=True)
-    return data_dir
+from sua_outsmarting_outbreaks.utils.directory_utils import get_data_dir, ensure_dir
 
 def download_from_s3(bucket: str, key: str, local_path: Path) -> None:
     """Download a file from S3."""
