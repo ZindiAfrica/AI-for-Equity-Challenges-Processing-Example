@@ -9,6 +9,7 @@ from scipy.spatial import cKDTree
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
+    get_data_source,
     get_execution_role,
     get_user_bucket_name,
     get_user_name,
@@ -219,16 +220,23 @@ def process_data(hospital_data: pd.DataFrame, toilets_df: pd.DataFrame, waste_df
         (water_sources, "water", "water_Month_Year_lat_lon"),
     ]
 
-for df, prefix, id_col in datasets:
-    nearest = find_nearest(
-        merged_data,
-        df,
-        f"{prefix}_Transformed_Latitude",
-        f"{prefix}_Transformed_Longitude",
-        id_col,
-    )
-    nearest_df = pd.DataFrame(list(nearest.items()), columns=["ID", id_col])
-    merged_data = merged_data.merge(nearest_df, on="ID").merge(df, on=id_col)
+    # Process and merge each dataset
+    for df, prefix, id_col in [
+        (toilets, "toilet", "toilet_Month_Year_lat_lon"),
+        (waste_management, "waste", "waste_Month_Year_lat_lon"),
+        (water_sources, "water", "water_Month_Year_lat_lon"),
+    ]:
+        nearest = find_nearest(
+            hospital_data,
+            df,
+            f"{prefix}_Transformed_Latitude",
+            f"{prefix}_Transformed_Longitude",
+            id_col,
+        )
+        nearest_df = pd.DataFrame(list(nearest.items()), columns=["ID", id_col])
+        hospital_data = hospital_data.merge(nearest_df, on="ID").merge(df, on=id_col)
+
+    return hospital_data
 
 # Save processed datasets to S3
 logger.info("Uploading processed datasets to S3...")

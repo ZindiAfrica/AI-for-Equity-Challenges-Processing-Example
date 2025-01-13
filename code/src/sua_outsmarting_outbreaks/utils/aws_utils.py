@@ -1,6 +1,7 @@
 """AWS utility functions for SageMaker pipeline management."""
 
 import os
+from pathlib import Path
 
 import boto3
 import botocore
