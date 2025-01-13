@@ -60,8 +60,17 @@ def main() -> None:
     output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
+        # Log paths for debugging
+        logger.info(f"Data directory: {Path(args.data_dir).resolve()}")
+        logger.info(f"Output directory: {Path(args.output_dir).resolve()}")
+        logger.info(f"Current working directory: {Path.cwd()}")
+
         if args.stage in ("data-prep", "all"):
             logger.info("Running data preparation...")
+            logger.debug(f"Input files in {args.data_dir}:")
+            for f in Path(args.data_dir).glob('*.csv'):
+                logger.debug(f"- {f.name}")
+            
             preprocess_data(
                 local_data_dir=args.data_dir,
                 output_dir=str(output_dir)
@@ -69,8 +78,22 @@ def main() -> None:
 
         if args.stage in ("train", "all"):
             logger.info("Running model training...")
-            train_df = pd.read_csv(Path(args.output_dir) / "processed_train.csv")
+            train_path = Path(args.output_dir) / "processed_train.csv"
+            logger.info(f"Looking for training data at: {train_path}")
+            
+            if not train_path.exists():
+                logger.error(f"Training data not found at {train_path}")
+                logger.debug("Output directory contents:")
+                for f in Path(args.output_dir).glob('*'):
+                    logger.debug(f"- {f.name}")
+                raise FileNotFoundError(f"Training data not found at {train_path}")
+                
+            train_df = pd.read_csv(train_path)
+            logger.info(f"Loaded training data with shape: {train_df.shape}")
+            
             X, y = prepare_features(train_df, "Total", ["ID", "Location"])
+            logger.info(f"Prepared features X: {X.shape}, y: {y.shape}")
+            
             train_model(features=X, target=y, data_dir=args.output_dir)
 
         if args.stage in ("evaluate", "all"):
