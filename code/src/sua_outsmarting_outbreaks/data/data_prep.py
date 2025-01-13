@@ -16,7 +16,7 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
 )
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
-from code.src.sua_outsmarting_outbreaks.utils.aws_utils import get_tags
+from sua_outsmarting_outbreaks.utils.aws_utils import get_tags
 
 # Configure logger
 logger = setup_logger(__name__)
