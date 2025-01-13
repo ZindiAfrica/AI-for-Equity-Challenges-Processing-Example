@@ -1,6 +1,5 @@
 """Data preparation module for preprocessing training and test data."""
 
-import os
 from pathlib import Path
 
 import boto3
@@ -11,12 +10,11 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
     get_data_source,
     get_execution_role,
+    get_tags,
     get_user_bucket_name,
     get_user_name,
 )
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
-
-from sua_outsmarting_outbreaks.utils.aws_utils import get_tags
 
 # Configure logger
 logger = setup_logger(__name__)
@@ -50,9 +48,10 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
     Args:
         local_data_dir: Optional local directory containing input data files
         output_dir: Optional local directory for output files
+
     """
     data_path, is_local = get_data_source(local_data_dir)
-    
+
     # Initialize AWS resources
     s3_client = boto3.client("s3")
     username = get_user_name()
@@ -141,6 +140,7 @@ def load_datasets(data_bucket: str) -> tuple[pd.DataFrame, pd.DataFrame, pd.Data
 
     Returns:
         Tuple of DataFrames (train, test, toilets, waste_management, water_sources)
+
     """
     logger.info("Downloading datasets from S3...")
     try:
@@ -216,6 +216,7 @@ def process_data(hospital_data: pd.DataFrame, toilets_df: pd.DataFrame, waste_df
 
     Returns:
         DataFrame with all data merged
+
     """
     # Preprocess each dataset
     water_sources = preprocess_water_sources(water_df)
@@ -257,6 +258,7 @@ def save_processed_data(merged_data: pd.DataFrame, user_bucket: str) -> None:
     Args:
         merged_data: DataFrame containing processed data
         user_bucket: S3 bucket to save results
+
     """
     processed_train = merged_data[merged_data["Year"] < TRAIN_CUTOFF_YEAR]
     processed_test = merged_data[merged_data["Year"] == TRAIN_CUTOFF_YEAR]

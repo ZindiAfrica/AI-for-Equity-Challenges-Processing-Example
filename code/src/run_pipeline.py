@@ -3,11 +3,10 @@
 import argparse
 import logging
 import sys
-from pathlib import Path
 
 from sua_outsmarting_outbreaks.data.data_prep import preprocess_data
-from sua_outsmarting_outbreaks.models.train import train_model
 from sua_outsmarting_outbreaks.models.evaluate import evaluate_model
+from sua_outsmarting_outbreaks.models.train import train_model
 from sua_outsmarting_outbreaks.predict.predict import generate_predictions
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
@@ -81,7 +80,7 @@ def main() -> None:
             generate_predictions(data_dir=args.output_dir)
         elif args.stage == "all":
             logger.info("Running full pipeline...")
-            
+
             if args.use_s3:
                 logger.info("Using S3 storage for data")
                 # First prepare the data

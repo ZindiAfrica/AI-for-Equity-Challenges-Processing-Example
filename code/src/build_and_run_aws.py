@@ -204,10 +204,10 @@ def build_and_push_docker_image(
 
   try:
     # Strip any trailing slash from registry URL
-    registry = registry.rstrip('/')
+    registry = registry.rstrip("/")
     if registry_pattern.match(registry):
       # Remove https:// prefix for docker login
-      registry = registry.replace('https://', '')
+      registry = registry.replace("https://", "")
     validate_docker_args("login", "-u", username, "-p", password, registry)
     subprocess.run([docker_exe, "login", "-u", username, "-p", password, registry], check=True)
   except (subprocess.CalledProcessError, ValueError) as e:
