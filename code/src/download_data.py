@@ -56,14 +56,6 @@ def download_data(output_dir: str) -> None:
     logger.info(f"All files downloaded to {output_path}")
 
 if __name__ == "__main__":
-    import argparse
-    parser = argparse.ArgumentParser(description="Download training data from S3")
-    parser.add_argument("--output-dir", help="Directory to save downloaded files", default=None)
-    args = parser.parse_args()
-
-    try:
-        output_dir = args.output_dir if args.output_dir else str(get_data_dir())
-        download_data(output_dir)
-    except Exception as e:
-        logger.error(f"Failed to download data: {e}")
-        raise
+    logger.warning("Please use run.sh to download data:")
+    logger.warning("  ./run.sh download        # Download training data")
+    sys.exit(1)

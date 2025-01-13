@@ -114,4 +114,7 @@ def main() -> None:
         sys.exit(1)
 
 if __name__ == "__main__":
-    main()
+    logger.warning("Please use run.sh to execute the pipeline:")
+    logger.warning("  ./run.sh run-aws        # Run on AWS")
+    logger.warning("  ./run.sh run-local      # Run locally")
+    sys.exit(1)
