@@ -19,8 +19,10 @@ def download_data(output_dir: str) -> None:
         output_dir: Local directory to save files
 
     """
-    # Convert to absolute path if relative
-    output_path = Path(output_dir).resolve()
+    # Get the project root directory (3 levels up from this script)
+    project_root = Path(__file__).parent.parent.parent
+    # Convert output_dir to absolute path relative to project root
+    output_path = (project_root / output_dir).resolve()
     output_path.mkdir(parents=True, exist_ok=True)
 
     logger.info(f"Downloading data to {output_path}")
