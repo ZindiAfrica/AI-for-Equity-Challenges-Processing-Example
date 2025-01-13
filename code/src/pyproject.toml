@@ -15,7 +15,11 @@ dependencies = [
     "scipy>=1.15.0",
     "pytest>=8.3.4",
     "pydantic-settings>=2.1.0",
+    "click>=8.1.7",
 ]
+
+[project.scripts]
+sua-pipeline = "sua_outsmarting_outbreaks.cli:cli"
 
 [project.optional-dependencies]
 dev = [

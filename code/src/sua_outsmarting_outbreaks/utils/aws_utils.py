@@ -118,6 +118,19 @@ def get_data_bucket_name() -> str:
     """
     return os.environ.get("DATA_BUCKET_NAME", "sua-outsmarting-outbreaks-challenge-comp")
 
+def get_data_source(local_data_dir: str | None = None) -> tuple[str, bool]:
+    """Get the data source location and type.
+    
+    Args:
+        local_data_dir: Optional local directory path for data
+        
+    Returns:
+        Tuple of (path, is_local) where path is either local path or S3 URI
+    """
+    if local_data_dir:
+        return str(Path(local_data_dir).resolve()), True
+    return f"s3://{get_data_bucket_name()}/", False
+
 
 def get_user_docker_image_tag() -> str:
     """Get the Docker image tag for the current user.

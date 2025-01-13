@@ -43,15 +43,23 @@ def upload_to_s3(local_path: Path, bucket: str, key: str) -> None:
     s3_client = boto3.client("s3")
     s3_client.upload_file(str(local_path), bucket, key)
 
-def preprocess_data(local_only: bool = False) -> None:
+def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = None) -> None:
     """Preprocess the data for training and testing.
 
     Args:
-        local_only: If True, only process local files without S3 interaction
+        local_data_dir: Optional local directory containing input data files
+        output_dir: Optional local directory for output files
     """
-    data_dir = ensure_data_dir()
-
-    if not local_only:
+    data_path, is_local = get_data_source(local_data_dir)
+    
+    if is_local:
+        logger.info(f"Loading data from local directory: {data_path}")
+        train = pd.read_csv(Path(data_path) / "Train.csv")
+        test = pd.read_csv(Path(data_path) / "Test.csv")
+        toilets = pd.read_csv(Path(data_path) / "toilets.csv")
+        waste_management = pd.read_csv(Path(data_path) / "waste_management.csv")
+        water_sources = pd.read_csv(Path(data_path) / "water_sources.csv")
+    else:
         # Initialize AWS resources
         s3_client = boto3.client("s3")
         username = get_user_name()
