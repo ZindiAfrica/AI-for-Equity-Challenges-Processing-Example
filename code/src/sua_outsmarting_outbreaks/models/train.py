@@ -92,7 +92,11 @@ def load_training_data(bucket_name: str) -> pd.DataFrame:
 
 
 # Load training data
-train_df = load_training_data(user_bucket_name)
+if data_dir:
+    train_df = pd.read_csv(Path(data_dir) / "processed_train.csv")
+    logger.info(f"Loaded local training data with shape: {train_df.shape}")
+else:
+    train_df = load_training_data(user_bucket_name)
 
 # Specify the target column
 target_column = "Total"
@@ -145,12 +149,7 @@ def prepare_features(
 X, y = prepare_features(train_df, target_column, ["ID", "Location"])
 
 
-def train_model(
-    features: pd.DataFrame,
-    target: pd.Series,
-    test_size: float = 0.2,
-    random_state: int = 42,
-) -> RandomForestRegressor:
+def train_model(data_dir: str | None = None) -> RandomForestRegressor:
     """Train a RandomForest regression model.
 
     Args:
@@ -211,8 +210,9 @@ model = train_model(X, y)
 
 def save_model(
     model: RandomForestRegressor,
-    bucket_name: str,
+    bucket_name: str | None = None,
     model_name: str = "random_forest_model.joblib",
+    output_dir: str | None = None,
 ) -> None:
     """Save trained model locally and upload to S3.
 
@@ -226,16 +226,23 @@ def save_model(
     logger.info("Saving model locally...")
     joblib.dump(model, model_name)
 
-    # Upload to S3
-    model_s3_path = f"s3://{bucket_name}/models/{model_name}"
-    logger.info(f"Uploading model to {model_s3_path}...")
-
-    try:
-        s3_client.upload_file(model_name, bucket_name, f"models/{model_name}")
+    if output_dir:
+        # Save to local output directory
+        output_path = Path(output_dir) / model_name
+        logger.info(f"Saving model to {output_path}...")
+        joblib.dump(model, output_path)
         logger.info("Model saved successfully")
-    except Exception as e:
-        logger.error(f"Failed to upload model: {e!s}")
-        raise
+    else:
+        # Upload to S3
+        model_s3_path = f"s3://{bucket_name}/models/{model_name}"
+        logger.info(f"Uploading model to {model_s3_path}...")
+
+        try:
+            s3_client.upload_file(model_name, bucket_name, f"models/{model_name}")
+            logger.info("Model saved successfully")
+        except Exception as e:
+            logger.error(f"Failed to upload model: {e!s}")
+            raise
 
 
 # Save the trained model
