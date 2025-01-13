@@ -78,47 +78,74 @@ download_data() {
     python download_data.py "$@"
 }
 
-run_prepare() {
-    echo "Running data preparation step..."
+run_prepare_local() {
+    echo "Running data preparation step locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python run_pipeline.py --stage prepare "$@"
+    python run_pipeline.py --stage prepare --local "$@"
 }
 
-run_train() {
-    echo "Running model training step..."
+run_train_local() {
+    echo "Running model training step locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python run_pipeline.py --stage train "$@"
+    python run_pipeline.py --stage train --local "$@"
 }
 
-run_evaluate() {
-    echo "Running model evaluation step..."
+run_evaluate_local() {
+    echo "Running model evaluation step locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python run_pipeline.py --stage evaluate "$@"
+    python run_pipeline.py --stage evaluate --local "$@"
 }
 
-run_predict() {
-    echo "Running prediction step..."
+run_predict_local() {
+    echo "Running prediction step locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    if [ $# -eq 0 ]; then
-        python run_pipeline.py --stage prepare
-    else
-        python run_pipeline.py --stage prepare "$@"
-    fi
+    python run_pipeline.py --stage predict --local "$@"
 }
 
-run_pipeline() {
-    echo "Running full pipeline..."
+run_pipeline_local() {
+    echo "Running full pipeline locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    if [ $# -eq 0 ]; then
-        python run_pipeline.py --stage all
-    else
-        python run_pipeline.py --stage all "$@"
-    fi
+    python run_pipeline.py --stage all --local "$@"
+}
+
+run_prepare_aws() {
+    echo "Running data preparation step on AWS..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    python pipeline.py --stage prepare "$@"
+}
+
+run_train_aws() {
+    echo "Running model training step on AWS..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    python pipeline.py --stage train "$@"
+}
+
+run_evaluate_aws() {
+    echo "Running model evaluation step on AWS..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    python pipeline.py --stage evaluate "$@"
+}
+
+run_predict_aws() {
+    echo "Running prediction step on AWS..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    python pipeline.py --stage predict "$@"
+}
+
+run_pipeline_aws() {
+    echo "Running full pipeline on AWS..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    python pipeline.py --stage all "$@"
 }
 
 all() {
@@ -165,7 +192,8 @@ help() {
     echo "  deploy-sagemaker        - Deploy to SageMaker only"
     echo ""
     echo "Execution:"
-    echo "  run [options]            - Run the ML pipeline"
+    echo "  run-local [options]     - Run the ML pipeline locally"
+    echo "  run-aws [options]       - Run the ML pipeline on AWS"
     echo "  all                      - Run all steps in sequence"
     echo ""
     echo "Development:"
@@ -201,11 +229,16 @@ show_menu() {
         "Lint Python Code"
         "Format Python Code"
         "Deploy to SageMaker"
-        "Run Data Preparation"
-        "Run Model Training"
-        "Run Model Evaluation"
-        "Run Predictions"
-        "Run Full Pipeline"
+        "Run Data Preparation (Local)"
+        "Run Model Training (Local)"
+        "Run Model Evaluation (Local)"
+        "Run Predictions (Local)"
+        "Run Full Pipeline (Local)"
+        "Run Data Preparation (AWS)"
+        "Run Model Training (AWS)"
+        "Run Model Evaluation (AWS)"
+        "Run Predictions (AWS)"
+        "Run Full Pipeline (AWS)"
         "Run All Steps"
         "Go to Source Directory"
         "Quit"
@@ -253,24 +286,44 @@ show_menu() {
                 download_data "$@"
                 show_menu
                 ;;
-            "Run Data Preparation")
-                run_prepare
+            "Run Data Preparation (Local)")
+                run_prepare_local
                 show_menu
                 ;;
-            "Run Model Training")
-                run_train
+            "Run Model Training (Local)")
+                run_train_local
                 show_menu
                 ;;
-            "Run Model Evaluation")
-                run_evaluate
+            "Run Model Evaluation (Local)")
+                run_evaluate_local
                 show_menu
                 ;;
-            "Run Predictions")
-                run_predict
+            "Run Predictions (Local)")
+                run_predict_local
                 show_menu
                 ;;
-            "Run Full Pipeline")
-                run_pipeline
+            "Run Full Pipeline (Local)")
+                run_pipeline_local
+                show_menu
+                ;;
+            "Run Data Preparation (AWS)")
+                run_prepare_aws
+                show_menu
+                ;;
+            "Run Model Training (AWS)")
+                run_train_aws
+                show_menu
+                ;;
+            "Run Model Evaluation (AWS)")
+                run_evaluate_aws
+                show_menu
+                ;;
+            "Run Predictions (AWS)")
+                run_predict_aws
+                show_menu
+                ;;
+            "Run Full Pipeline (AWS)")
+                run_pipeline_aws
                 show_menu
                 ;;
             "Run All Steps")
@@ -333,29 +386,49 @@ else
         "deploy-sagemaker")
             deploy_sagemaker
             ;;
-        "run-evaluate")
+        "run-evaluate-local")
             shift
-            run_evaluate "$@"
+            run_evaluate_local "$@"
+            ;;
+        "run-evaluate-aws")
+            shift
+            run_evaluate_aws "$@"
             ;;
         "download")
             shift
             download_data "$@"
             ;;
-        "run-prepare")
+        "run-prepare-local")
             shift
-            run_prepare "$@"
+            run_prepare_local "$@"
             ;;
-        "run-train")
+        "run-prepare-aws")
             shift
-            run_train "$@"
+            run_prepare_aws "$@"
             ;;
-        "run-predict")
+        "run-train-local")
             shift
-            run_predict "$@"
+            run_train_local "$@"
             ;;
-        "run")
+        "run-train-aws")
             shift
-            run_pipeline "$@"
+            run_train_aws "$@"
+            ;;
+        "run-predict-local")
+            shift
+            run_predict_local "$@"
+            ;;
+        "run-predict-aws")
+            shift
+            run_predict_aws "$@"
+            ;;
+        "run-local")
+            shift
+            run_pipeline_local "$@"
+            ;;
+        "run-aws")
+            shift
+            run_pipeline_aws "$@"
             ;;
         "all")
             all
