@@ -18,8 +18,9 @@ from sklearn.preprocessing import LabelEncoder
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     initialize_aws_resources,
+    get_script_processor_type,
 )
-from sua_outsmarting_outbreaks.utils.constants import G4DN_8XLARGE_SPECS
+from sua_outsmarting_outbreaks.utils.constants import INSTANCE_SPECS
 from sua_outsmarting_outbreaks.utils.logging_utils import (
     DataError,
     ModelError,
@@ -33,14 +34,20 @@ logger = setup_logger(__name__)
 s3_client = boto3.client("s3")
 username, role, data_bucket_name, user_bucket_name, tags = initialize_aws_resources()
 
+instance_type = get_script_processor_type()
+instance_specs = INSTANCE_SPECS.get(instance_type)
+
 logger.info(f"Using team bucket: {user_bucket_name}")
 logger.info("Using instance specifications:")
-logger.info(f"- Instance type: {G4DN_8XLARGE_SPECS['instance_type']}")
-logger.info(f"- GPU: {G4DN_8XLARGE_SPECS['gpu']}")
-logger.info(f"- CPU/RAM: {G4DN_8XLARGE_SPECS['cpu_ram']}")
-logger.info(f"- Network: {G4DN_8XLARGE_SPECS['network']}")
-logger.info(f"- Storage: {G4DN_8XLARGE_SPECS['storage']}")
-logger.info(f"- Cost: ${G4DN_8XLARGE_SPECS['cost']['on_demand']}/hr (on-demand) or ${G4DN_8XLARGE_SPECS['cost']['spot']}/hr (spot)")
+logger.info(f"- Instance type: {instance_type}")
+if instance_specs:
+    logger.info(f"- GPU: {instance_specs['gpu']}")
+    logger.info(f"- CPU/RAM: {instance_specs['cpu_ram']}")
+    logger.info(f"- Network: {instance_specs['network']}")
+    logger.info(f"- Storage: {instance_specs['storage']}")
+    logger.info(f"- Cost: ${instance_specs['cost']['on_demand']}/hr (on-demand) or ${instance_specs['cost']['spot']}/hr (spot)")
+else:
+    logger.warning(f"No specifications found for instance type: {instance_type}")
 
 
 def load_training_data(bucket_name: str) -> pd.DataFrame:
