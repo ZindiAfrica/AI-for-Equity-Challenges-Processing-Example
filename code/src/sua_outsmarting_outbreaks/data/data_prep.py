@@ -77,16 +77,33 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
                 if not p.exists():
                     raise FileNotFoundError(f"Required file not found: {p}")
 
+            logger.debug(f"Attempting to read files from: {data_path}")
+            logger.debug(f"Directory contents: {list(data_path.glob('*.csv'))}")
+
             train = pd.read_csv(train_path)
             logger.debug(f"Train path: {train_path}")
+            logger.debug(f"Train columns: {train.columns.tolist()}")
+            logger.debug(f"Train head:\n{train.head()}")
+
             test = pd.read_csv(test_path)
             logger.debug(f"Test path: {test_path}")
+            logger.debug(f"Test columns: {test.columns.tolist()}")
+            logger.debug(f"Test head:\n{test.head()}")
+
             toilets = pd.read_csv(toilets_path)
             logger.debug(f"Toilets path: {toilets_path}")
+            logger.debug(f"Toilets columns: {toilets.columns.tolist()}")
+            logger.debug(f"Toilets head:\n{toilets.head()}")
+
             waste_management = pd.read_csv(waste_path)
-            logger.debug(f"Water management path: {waste_path}")
+            logger.debug(f"Waste management path: {waste_path}")
+            logger.debug(f"Waste management columns: {waste_management.columns.tolist()}")
+            logger.debug(f"Waste management head:\n{waste_management.head()}")
+
             water_sources = pd.read_csv(water_path)
             logger.debug(f"Water sources path: {water_path}")
+            logger.debug(f"Water sources columns: {water_sources.columns.tolist()}")
+            logger.debug(f"Water sources head:\n{water_sources.head()}")
 
             logger.info(f"Loaded training data shape: {train.shape}")
             logger.info(f"Loaded test data shape: {test.shape}")
