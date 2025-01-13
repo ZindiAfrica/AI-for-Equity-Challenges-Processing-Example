@@ -80,7 +80,7 @@ run_prepare() {
 
 run_train() {
     echo "Running model training step..."
-    cd "$APP_DIR" 
+    cd "$APP_DIR"
     source .venv/bin/activate
     python run_pipeline.py --stage train "$@"
 }
@@ -96,7 +96,11 @@ run_predict() {
     echo "Running prediction step..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python run_pipeline.py --stage predict "$@"
+    if [ $# -eq 0 ]; then
+        python run_pipeline.py --stage prepare
+    else
+        python run_pipeline.py --stage prepare "$@"
+    fi
 }
 
 run_pipeline() {
@@ -191,7 +195,7 @@ show_menu() {
         "Deploy to SageMaker"
         "Run Data Preparation"
         "Run Model Training"
-        "Run Model Evaluation" 
+        "Run Model Evaluation"
         "Run Predictions"
         "Run Full Pipeline"
         "Run All Steps"
@@ -241,7 +245,7 @@ show_menu() {
                 run_prepare
                 show_menu
                 ;;
-            "Run Model Training") 
+            "Run Model Training")
                 run_train
                 show_menu
                 ;;
