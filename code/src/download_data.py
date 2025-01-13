@@ -19,8 +19,11 @@ def download_data(output_dir: str) -> None:
         output_dir: Local directory to save files
 
     """
-    output_path = Path(output_dir)
+    # Convert to absolute path if relative
+    output_path = Path(output_dir).resolve()
     output_path.mkdir(parents=True, exist_ok=True)
+
+    logger.info(f"Downloading data to {output_path}")
 
     s3_client = boto3.client("s3")
     data_bucket = get_data_bucket_name()
