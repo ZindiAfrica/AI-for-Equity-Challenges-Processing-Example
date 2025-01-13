@@ -1,4 +1,4 @@
-# Using AWS Console and Local Development
+# Local Development Guide
 
 ## Prerequisites
 
@@ -40,6 +40,12 @@ ruff format .
 
 ## Setup Instructions
 
+1. Clone the repository:
+```bash
+git clone https://github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+cd AI-for-Equity-Challenges-Processing-Example
+```
+
 2. Configure AWS credentials in your environment:
 ```bash
 # Set up AWS credentials
@@ -73,6 +79,31 @@ To add new dependencies:
 1. Add them to pyproject.toml
 2. Reinstall the package: `uv pip install -e ".[dev]"`
 
+## Development Workflow
+
+1. Create a new feature branch:
+```bash
+git checkout -b feature/your-feature-name
+```
+
+2. Make your changes and run tests:
+```bash
+pytest
+ruff check .
+ruff format .
+```
+
+3. Commit your changes:
+```bash
+git add .
+git commit -m "feat: your feature description"
+```
+
+4. Push and create a pull request:
+```bash
+git push origin feature/your-feature-name
+```
+
 ## Resource Configuration
 
 The pipeline uses optimized instances for each stage:
@@ -102,6 +133,34 @@ Cost Optimization:
 - Uses Spot instances when possible (up to 70% savings)
 - Automatic shutdown after completion
 - Maximum runtime limit: 24 hours
+- Resource monitoring and alerts
+- Cost allocation tags
+
+## Local Testing
+
+1. Run unit tests:
+```bash
+pytest tests/
+```
+
+2. Run integration tests:
+```bash
+pytest tests/integration/
+```
+
+3. Test Docker build:
+```bash
+docker compose build
+docker compose up dev
+```
+
+4. Test pipeline stages locally:
+```bash
+python -m sua_outsmarting_outbreaks.run_local --stage data-prep
+python -m sua_outsmarting_outbreaks.run_local --stage train
+python -m sua_outsmarting_outbreaks.run_local --stage evaluate
+python -m sua_outsmarting_outbreaks.run_local --stage predict
+```
 
 ## Monitoring
 
@@ -109,3 +168,6 @@ Monitor job progress in:
 1. SageMaker Studio interface
 2. SageMaker console -> Processing jobs
 3. CloudWatch logs
+4. CloudWatch metrics
+5. Cost Explorer
+6. AWS Health Dashboard
