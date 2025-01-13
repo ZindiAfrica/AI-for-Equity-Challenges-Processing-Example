@@ -277,9 +277,3 @@ model = train_model(features=X, target=y)
 
 # Save the trained model
 save_model(model, user_bucket_name)
-
-
-
-
-# Save the trained model
-save_model(model, user_bucket_name)
