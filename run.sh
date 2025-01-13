@@ -71,6 +71,13 @@ go_to_directory_src() {
     exec $SHELL
 }
 
+download_data() {
+    echo "Downloading training data..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    python download_data.py "$@"
+}
+
 run_prepare() {
     echo "Running data preparation step..."
     cd "$APP_DIR"
@@ -187,6 +194,7 @@ show_menu() {
     trap 'echo -e "\nTimeout after 5 seconds of inactivity. Exiting..."; exit 0' ALRM
     options=(
         "Help"
+        "Download Data"
         "Install Python Dependencies"
         "Build Docker Image"
         "Run Python Tests"
@@ -239,6 +247,10 @@ show_menu() {
                 ;;
             "Deploy to SageMaker")
                 deploy_sagemaker
+                show_menu
+                ;;
+            "Download Data")
+                download_data "$@"
                 show_menu
                 ;;
             "Run Data Preparation")
@@ -324,6 +336,10 @@ else
         "run-evaluate")
             shift
             run_evaluate "$@"
+            ;;
+        "download")
+            shift
+            download_data "$@"
             ;;
         "run-prepare")
             shift
