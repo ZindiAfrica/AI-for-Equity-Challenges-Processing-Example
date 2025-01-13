@@ -75,44 +75,28 @@ run_prepare() {
     echo "Running data preparation step..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    if [ $# -eq 0 ]; then
-        sua-pipeline prepare
-    else
-        sua-pipeline prepare "$@"
-    fi
+    python run_pipeline.py --stage prepare "$@"
 }
 
 run_train() {
     echo "Running model training step..."
     cd "$APP_DIR" 
     source .venv/bin/activate
-    if [ $# -eq 0 ]; then
-        sua-pipeline train
-    else
-        sua-pipeline train "$@"
-    fi
+    python run_pipeline.py --stage train "$@"
 }
 
 run_evaluate() {
     echo "Running model evaluation step..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    if [ $# -eq 0 ]; then
-        sua-pipeline evaluate
-    else
-        sua-pipeline evaluate "$@"
-    fi
+    python run_pipeline.py --stage evaluate "$@"
 }
 
 run_predict() {
     echo "Running prediction step..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    if [ $# -eq 0 ]; then
-        sua-pipeline predict
-    else
-        sua-pipeline predict "$@"
-    fi
+    python run_pipeline.py --stage predict "$@"
 }
 
 run_pipeline() {
@@ -120,9 +104,9 @@ run_pipeline() {
     cd "$APP_DIR"
     source .venv/bin/activate
     if [ $# -eq 0 ]; then
-        python build_and_run_aws.py
+        python run_pipeline.py --stage all
     else
-        python build_and_run_aws.py "$@"
+        python run_pipeline.py --stage all "$@"
     fi
 }
 
