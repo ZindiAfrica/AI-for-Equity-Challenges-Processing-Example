@@ -40,7 +40,7 @@ test_python() {
     echo "Running Python tests..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python -m pytest tests/
+    python -m pytest
 }
 
 lint_python() {
