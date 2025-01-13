@@ -55,14 +55,15 @@ def main() -> None:
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    # Ensure output directory exists
-    output_dir = Path(args.output_dir)
+    # Convert relative paths to absolute
+    data_dir = Path(args.data_dir).resolve()
+    output_dir = Path(args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
         # Log paths for debugging
-        logger.info(f"Data directory: {Path(args.data_dir).resolve()}")
-        logger.info(f"Output directory: {Path(args.output_dir).resolve()}")
+        logger.info(f"Data directory: {data_dir}")
+        logger.info(f"Output directory: {output_dir}")
         logger.info(f"Current working directory: {Path.cwd()}")
 
         if args.stage in ("data-prep", "all"):
@@ -78,7 +79,7 @@ def main() -> None:
 
         if args.stage in ("train", "all"):
             logger.info("Running model training...")
-            train_path = Path(args.output_dir) / "processed_train.csv"
+            train_path = output_dir / "processed_train.csv"
             logger.info(f"Looking for training data at: {train_path}")
             
             if not train_path.exists():
