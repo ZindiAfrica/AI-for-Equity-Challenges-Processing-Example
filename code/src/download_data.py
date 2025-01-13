@@ -8,6 +8,7 @@ import boto3
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
 )
+from sua_outsmarting_outbreaks.utils.directory_utils import ensure_dir, get_relative_to_project
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
 logger = setup_logger(__name__)
@@ -21,11 +22,7 @@ def download_data(output_dir: str) -> None:
         output_dir: Local directory to save files
 
     """
-    # Get the project root directory (3 levels up from this script)
-    project_root = Path(__file__).parent.parent.parent
-    # Convert output_dir to absolute path relative to project root
-    output_path = (project_root / output_dir).resolve()
-    output_path.mkdir(parents=True, exist_ok=True)
+    output_path = ensure_dir(get_relative_to_project(output_dir))
 
     logger.info(f"Downloading data to {output_path}")
 
