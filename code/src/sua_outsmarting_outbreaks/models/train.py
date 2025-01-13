@@ -114,6 +114,13 @@ def prepare_features(
     xaxis = df.drop(columns=[target_col, *exclude_cols], errors="ignore")
     yaxis = df[target_col]
 
+    # Remove rows with NaN in target variable
+    mask = yaxis.notna()
+    xaxis = xaxis[mask]
+    yaxis = yaxis[mask]
+    
+    logger.info(f"Removed {(~mask).sum()} rows with NaN in target variable")
+
     # Handle categorical features
     categorical_cols = xaxis.select_dtypes(include=["object"]).columns
     logger.info(f"Found {len(categorical_cols)} categorical columns")
