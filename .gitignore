@@ -415,3 +415,4 @@ code/src/data/toilets.csv
 code/src/data/Train.csv
 code/src/data/waste_management.csv
 code/src/data/water_sources.csv
+*.csv
