@@ -34,6 +34,11 @@ def parse_args() -> argparse.Namespace:
         help="Local directory for output files",
     )
     parser.add_argument(
+        "--use-s3",
+        action="store_true",
+        help="Use S3 storage instead of local filesystem (default: False)",
+    )
+    parser.add_argument(
         "--debug",
         action="store_true",
         help="Enable debug mode",
@@ -50,10 +55,21 @@ def main() -> None:
     try:
         if args.stage == "prepare":
             logger.info("Running data preparation...")
-            preprocess_data(
-                local_data_dir=args.local_data,
-                output_dir=args.output_dir
-            )
+            if args.use_s3:
+                logger.info("Using S3 storage for data")
+                preprocess_data(
+                    local_data_dir=None,
+                    output_dir=None
+                )
+            else:
+                logger.info("Using local filesystem for data (use --use-s3 flag to use S3 instead)")
+                if not args.local_data or not args.output_dir:
+                    logger.error("When using local mode, --local-data and --output-dir are required")
+                    sys.exit(1)
+                preprocess_data(
+                    local_data_dir=args.local_data,
+                    output_dir=args.output_dir
+                )
         elif args.stage == "train":
             logger.info("Running model training...")
             train_model(data_dir=args.output_dir)
@@ -66,20 +82,32 @@ def main() -> None:
         elif args.stage == "all":
             logger.info("Running full pipeline...")
             
-            # First prepare the data
-            preprocess_data(
-                local_data_dir=args.local_data,
-                output_dir=args.output_dir
-            )
-            
-            # Then train the model
-            train_model(data_dir=args.output_dir)
-            
-            # Then evaluate
-            evaluate_model(data_dir=args.output_dir)
-            
-            # Finally predict
-            generate_predictions(data_dir=args.output_dir)
+            if args.use_s3:
+                logger.info("Using S3 storage for data")
+                # First prepare the data
+                preprocess_data(local_data_dir=None, output_dir=None)
+                # Then train the model
+                train_model(data_dir=None)
+                # Then evaluate
+                evaluate_model(data_dir=None)
+                # Finally predict
+                generate_predictions(data_dir=None)
+            else:
+                logger.info("Using local filesystem for data (use --use-s3 flag to use S3 instead)")
+                if not args.local_data or not args.output_dir:
+                    logger.error("When using local mode, --local-data and --output-dir are required")
+                    sys.exit(1)
+                # First prepare the data
+                preprocess_data(
+                    local_data_dir=args.local_data,
+                    output_dir=args.output_dir
+                )
+                # Then train the model
+                train_model(data_dir=args.output_dir)
+                # Then evaluate
+                evaluate_model(data_dir=args.output_dir)
+                # Finally predict
+                generate_predictions(data_dir=args.output_dir)
 
     except Exception as e:
         logger.error(f"Pipeline failed: {e}")
