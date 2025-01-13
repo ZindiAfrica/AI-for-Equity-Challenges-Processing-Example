@@ -55,9 +55,10 @@ def main() -> None:
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
-    # Convert relative paths to absolute
-    data_dir = Path(args.data_dir).resolve()
-    output_dir = Path(args.output_dir).resolve()
+    # Convert relative paths to absolute from project root
+    project_root = Path(__file__).parent.parent.parent.parent
+    data_dir = (project_root / args.data_dir).resolve()
+    output_dir = (project_root / args.output_dir).resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
