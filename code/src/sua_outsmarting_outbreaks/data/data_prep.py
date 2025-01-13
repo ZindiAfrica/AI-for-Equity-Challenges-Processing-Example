@@ -62,15 +62,32 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
     # Load datasets from either local or S3
     if is_local:
         logger.info(f"Loading data from local directory: {data_path}")
-        train = pd.read_csv(Path(data_path) / "Train.csv")
-        test = pd.read_csv(Path(data_path) / "Test.csv")
-        toilets = pd.read_csv(Path(data_path) / "toilets.csv")
-        waste_management = pd.read_csv(Path(data_path) / "waste_management.csv")
-        water_sources = pd.read_csv(Path(data_path) / "water_sources.csv")
-        
-        # Fill missing values in target column
-        train['Total'] = train['Total'].fillna(0)
-        test['Total'] = test['Total'].fillna(0)
+        try:
+            train = pd.read_csv(Path(data_path) / "Train.csv")
+            test = pd.read_csv(Path(data_path) / "Test.csv")
+            toilets = pd.read_csv(Path(data_path) / "toilets.csv")
+            waste_management = pd.read_csv(Path(data_path) / "waste_management.csv")
+            water_sources = pd.read_csv(Path(data_path) / "water_sources.csv")
+            
+            logger.info(f"Loaded training data shape: {train.shape}")
+            logger.info(f"Loaded test data shape: {test.shape}")
+            
+            if 'Total' not in train.columns:
+                raise ValueError(f"'Total' column not found in Train.csv. Available columns: {train.columns.tolist()}")
+            
+            # Fill missing values in target column
+            train['Total'] = train['Total'].fillna(0)
+            test['Total'] = test['Total'].fillna(0)
+            
+        except FileNotFoundError as e:
+            logger.error(f"Could not find required data file: {e}")
+            raise
+        except pd.errors.EmptyDataError:
+            logger.error("One or more data files are empty")
+            raise
+        except Exception as e:
+            logger.error(f"Error loading data: {e}")
+            raise
     else:
         # Load from S3 data bucket
         train, test, toilets, waste_management, water_sources = load_datasets(data_bucket_name)

@@ -17,8 +17,8 @@ from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 logger = setup_logger(__name__)
 
 # Default paths
-DEFAULT_DATA_DIR = Path(__file__).parent.parent.parent.parent / "data"
-DEFAULT_OUTPUT_DIR = Path(__file__).parent.parent.parent.parent / "output"
+DEFAULT_DATA_DIR = Path(__file__).parent.parent.parent / "data"
+DEFAULT_OUTPUT_DIR = Path(__file__).parent.parent.parent / "output"
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
