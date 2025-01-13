@@ -127,6 +127,7 @@ def get_data_source(local_data_dir: str | None = None) -> tuple[str, bool]:
         
     Returns:
         Tuple of (path, is_local) where path is either local path or S3 URI
+
     """
     if local_data_dir:
         return str(Path(local_data_dir).resolve()), True
