@@ -78,28 +78,28 @@ training_job.wait()
 print("Model Training Job completed.")
 
 # Execute Model Evaluation Script
-print("Starting Model Evaluation Job...")
-evaluation_job = script_processor.run(
-    code=model_evaluation_script,
-    inputs=[
-        ProcessingInput(
-            source=output_prefix + "data_prep/processed_test.csv",
-            destination="/opt/ml/processing/input/test",
-        ),
-        ProcessingInput(
-            source=output_prefix + "training/random_forest_model.joblib",
-            destination="/opt/ml/processing/input/model",
-        ),
-    ],
-    outputs=[
-        ProcessingOutput(
-            source="/opt/ml/processing/output",
-            destination=output_prefix + "evaluation/",
-        )
-    ],
-)
-evaluation_job.wait()
-print("Model Evaluation Job completed.")
+# print("Starting Model Evaluation Job...")
+# evaluation_job = script_processor.run(
+#     code=model_evaluation_script,
+#     inputs=[
+#         ProcessingInput(
+#             source=output_prefix + "data_prep/processed_test.csv",
+#             destination="/opt/ml/processing/input/test",
+#         ),
+#         ProcessingInput(
+#             source=output_prefix + "training/random_forest_model.joblib",
+#             destination="/opt/ml/processing/input/model",
+#         ),
+#     ],
+#     outputs=[
+#         ProcessingOutput(
+#             source="/opt/ml/processing/output",
+#             destination=output_prefix + "evaluation/",
+#         )
+#     ],
+# )
+# evaluation_job.wait()
+# print("Model Evaluation Job completed.")
 
 # Execute Model Prediction Script
 print("Starting Model Prediction Job...")
