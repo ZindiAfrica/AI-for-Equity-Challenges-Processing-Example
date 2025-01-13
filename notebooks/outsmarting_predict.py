@@ -9,10 +9,11 @@ s3_client = boto3.client("s3")
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
 # Use the team bucket format - do not create new buckets
 bucket_name = f"{workspace_name}-team-bucket"
+prefix = 'data_prep'
 
 # Load preprocessed test dataset from S3
 print("Downloading preprocessed test dataset from S3...")
-test_data_path = f"s3://{bucket_name}/processed_test.csv"
+test_data_path = f"s3://{bucket_name}/{prefix}/processed_test.csv"
 test_df = pd.read_csv(test_data_path)
 
 # Load the trained model from S3
