@@ -54,6 +54,11 @@ target_column = "Total"
 logger.info("Preparing test data for evaluation...")
 X_test = test_df.drop(columns=[target_column, "ID", "Location"], errors="ignore")
 y_test = test_df[target_column]
+
+# Handle missing values
+X_test = X_test.fillna(0)  # Fill NaN values with 0 in features
+y_test = y_test.fillna(0)  # Fill NaN values with 0 in target
+
 logger.info(f"Features shape: {X_test.shape}, Target shape: {y_test.shape}")
 
 # ----------------------------------------
