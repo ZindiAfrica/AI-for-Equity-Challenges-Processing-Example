@@ -12,7 +12,7 @@ def find_nearest_locations(
     lat_col: str,
     lon_col: str,
     id_col: str,
-    max_distance: float = None
+    max_distance: float | None = None
 ) -> dict[str, str]:
     """Find nearest locations using KD-tree spatial indexing.
     

@@ -52,7 +52,7 @@ def initialize_aws_resources() -> tuple[str, str, str, str, list[dict[str, str]]
     return username, role, data_bucket_name, user_bucket_name, tags
 
 
-def get_tags(additional_tags: list[dict[str, str]] = None) -> list[dict[str, str]]:
+def get_tags(additional_tags: list[dict[str, str]] | None = None) -> list[dict[str, str]]:
   """Get common tags for AWS resources, merging with additional tags if provided.
 
   Args:

@@ -1,9 +1,13 @@
 """Visualization utilities for data analysis."""
 
-
 import matplotlib.pyplot as plt
 import pandas as pd
 
+# Constants
+MIN_YEAR = 2019
+MAX_YEAR = 2023
+MIN_MONTH = 1
+MAX_MONTH = 12
 
 def plot_locations(
     hospital_data: pd.DataFrame,
@@ -12,24 +16,24 @@ def plot_locations(
     toilets: pd.DataFrame,
     year: int = 2022,
     month: int = 1,
-    month_name: str = "January"
+    month_name: str = "January",
 ) -> None:
     """Plot facility locations on a map for a specific time period.
-    
+
     Args:
         hospital_data: DataFrame with hospital locations
         water_sources: DataFrame with water source locations
         waste_management: DataFrame with waste management locations
         toilets: DataFrame with toilet locations
         year: Year to plot (2019-2023)
-        month: Month number (1-12) 
+        month: Month number (1-12)
         month_name: Month name for plot title
 
     """
-    if year < 2019 or year > 2023:
+    if year < MIN_YEAR or year > MAX_YEAR:
         raise ValueError("Year must be between 2019 and 2023")
 
-    if month < 1 or month > 12:
+    if month < MIN_MONTH or month > MAX_MONTH:
         raise ValueError("Month must be between 1 and 12")
 
     valid_months = ["January", "February", "March", "April", "May", "June",
@@ -58,5 +62,5 @@ def plot_locations(
     plt.xlabel("Longitude")
     plt.ylabel("Latitude")
     plt.legend()
-    plt.grid(True)
+    plt.grid(visible=True)
     plt.show()
