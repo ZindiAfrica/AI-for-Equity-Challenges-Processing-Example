@@ -127,6 +127,43 @@ def load_data(data_dir: str | None = None) -> pd.DataFrame:
         train_df = load_training_data(user_bucket_name)
     return train_df
 
+def save_model(
+    model: RandomForestRegressor,
+    bucket_name: str | None = None,
+    model_name: str = "random_forest_model.joblib",
+    output_dir: str | None = None,
+) -> None:
+    """Save trained model locally and upload to S3.
+
+    Args:
+        model: Trained model to save
+        bucket_name: S3 bucket name
+        model_name: Name of model file
+        output_dir: Optional local directory for output files
+
+    """
+    # Save locally first
+    logger.info("Saving model locally...")
+    joblib.dump(model, model_name)
+
+    if output_dir:
+        # Save to local output directory
+        output_path = Path(output_dir) / model_name
+        logger.info(f"Saving model to {output_path}...")
+        joblib.dump(model, output_path)
+        logger.info("Model saved successfully")
+    else:
+        # Upload to S3
+        model_s3_path = f"s3://{bucket_name}/models/{model_name}"
+        logger.info(f"Uploading model to {model_s3_path}...")
+
+        try:
+            s3_client.upload_file(model_name, bucket_name, f"models/{model_name}")
+            logger.info("Model saved successfully")
+        except Exception as e:
+            logger.error(f"Failed to upload model: {e!s}")
+            raise
+
 # Load training data
 train_df = load_data(data_dir=None)
 
@@ -242,41 +279,6 @@ model = train_model(features=X, target=y)
 save_model(model, user_bucket_name)
 
 
-def save_model(
-    model: RandomForestRegressor,
-    bucket_name: str | None = None,
-    model_name: str = "random_forest_model.joblib",
-    output_dir: str | None = None,
-) -> None:
-    """Save trained model locally and upload to S3.
-
-    Args:
-        model: Trained model to save
-        bucket_name: S3 bucket name
-        model_name: Name of model file
-
-    """
-    # Save locally first
-    logger.info("Saving model locally...")
-    joblib.dump(model, model_name)
-
-    if output_dir:
-        # Save to local output directory
-        output_path = Path(output_dir) / model_name
-        logger.info(f"Saving model to {output_path}...")
-        joblib.dump(model, output_path)
-        logger.info("Model saved successfully")
-    else:
-        # Upload to S3
-        model_s3_path = f"s3://{bucket_name}/models/{model_name}"
-        logger.info(f"Uploading model to {model_s3_path}...")
-
-        try:
-            s3_client.upload_file(model_name, bucket_name, f"models/{model_name}")
-            logger.info("Model saved successfully")
-        except Exception as e:
-            logger.error(f"Failed to upload model: {e!s}")
-            raise
 
 
 # Save the trained model
