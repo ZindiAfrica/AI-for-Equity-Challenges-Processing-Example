@@ -64,7 +64,7 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
         data_path = Path(data_path).resolve()
         logger.info(f"Loading data from local directory: {data_path}")
         logger.debug(f"Directory contents: {list(data_path.glob('*.csv'))}")
-    
+
         try:
             train_path = data_path / "Train.csv"
             test_path = data_path / "Test.csv"
@@ -78,18 +78,23 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
                     raise FileNotFoundError(f"Required file not found: {p}")
 
             train = pd.read_csv(train_path)
+            logger.debug(f"Train path: {train_path}")
             test = pd.read_csv(test_path)
+            logger.debug(f"Test path: {test_path}")
             toilets = pd.read_csv(toilets_path)
+            logger.debug(f"Toilets path: {toilets_path}")
             waste_management = pd.read_csv(waste_path)
+            logger.debug(f"Water management path: {waste_path}")
             water_sources = pd.read_csv(water_path)
-        
+            logger.debug(f"Water sources path: {water_path}")
+
             logger.info(f"Loaded training data shape: {train.shape}")
             logger.info(f"Loaded test data shape: {test.shape}")
-            
+            logger.debug(f"Train contents: {train}")
             # Fill missing values in target column
             train['Total'] = train['Total'].fillna(0)
             test['Total'] = test['Total'].fillna(0)
-            
+
         except FileNotFoundError as e:
             logger.error(f"Could not find required data file: {e}")
             raise
