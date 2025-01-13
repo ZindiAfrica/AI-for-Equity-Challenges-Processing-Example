@@ -2,43 +2,52 @@
 
 This repository contains example code for running ML pipelines on AWS using SageMaker. It demonstrates how to work with the infrastructure defined in the [ZindiAwsComp](https://github.com/ZindiAfrica/ZindiAwsComp) repository.
 
+## Quick Start
+
+1. Clone the repository and install dependencies:
+```bash
+git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+cd sua-outsmarting-outbreaks
+./run.sh
+```
+
+2. Select your preferred execution method:
+- Run locally: `./run.sh run-local`
+- Run on AWS: `./run.sh run-aws`
+
 ## Documentation
 
 For detailed documentation, please see the files in the docs folder.
 
-Choose your preferred method to run the pipeline:
-
-### How to run
+### Running Options
 
 1. [Using AWS SageMaker Studio](docs/sagemaker-studio-guide.md) (Recommended)
-2. [Local Development with AWS Console](docs/local-development-guide.md)
-3. [Troubleshooting Guide](docs/troubleshooting-guide.md)
+2. [Local Development](docs/local-development-guide.md)
+3. [Docker Development](docs/docker-development-guide.md)
+4. [Troubleshooting Guide](docs/troubleshooting-guide.md)
 
-### For infrastructure details:
+### Infrastructure Details
 - [Project Structure](./docs/structure.md)
 - [Module Dependencies](./docs/dependencies.md)
 - [Billing & Cost Management](./docs/billing.md)
-
-## Quick Setup
-
-See the [Quick Start Guide](./docs/quickstart.md) for detailed instructions.
 
 ## Repository Structure
 
 ```
 .
-├── notebooks/                     # Example Jupyter notebooks
-│   ├── outsmarting_data_prep.py  # Data preprocessing script
-│   ├── outsmarting_train.py      # Model training script
-│   ├── outsmarting_eval.py       # Model evaluation script
-│   └── outsmarting_predict.py    # Prediction generation script
-├── docs/                         # Detailed documentation
-│   ├── sagemaker-studio-guide.md # AWS SageMaker Studio setup and usage
-│   ├── local-development-guide.md # Local development instructions
-│   └── troubleshooting-guide.md  # Common issues and solutions
-├── Dockerfile                    # Container definition for SageMaker
-├── build_and_run_aws.py         # Script to build Docker image and execute pipeline on AWS
-└── pyproject.toml              # Python dependencies and build configuration
+├── code/
+│   ├── src/                      # Main source code
+│   │   ├── sua_outsmarting_outbreaks/
+│   │   │   ├── data/            # Data processing modules
+│   │   │   ├── models/          # ML model modules
+│   │   │   ├── predict/         # Prediction modules
+│   │   │   └── utils/           # Utility functions
+│   │   ├── tests/               # Test suite
+│   │   └── pyproject.toml       # Dependencies and build config
+│   ├── data/                    # Data directory
+│   └── Dockerfile               # Container definition
+├── docs/                        # Documentation
+└── run.sh                      # Main execution script
 ```
 
 ## GitHub Authentication Setup
