@@ -61,13 +61,14 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
 
     # Load datasets from either local or S3
     if is_local:
+        data_path = Path(data_path)
         logger.info(f"Loading data from local directory: {data_path}")
         try:
-            train = pd.read_csv(Path(data_path) / "Train.csv")
-            test = pd.read_csv(Path(data_path) / "Test.csv")
-            toilets = pd.read_csv(Path(data_path) / "toilets.csv")
-            waste_management = pd.read_csv(Path(data_path) / "waste_management.csv")
-            water_sources = pd.read_csv(Path(data_path) / "water_sources.csv")
+            train = pd.read_csv(data_path / "Train.csv")
+            test = pd.read_csv(data_path / "Test.csv")
+            toilets = pd.read_csv(data_path / "toilets.csv")
+            waste_management = pd.read_csv(data_path / "waste_management.csv")
+            water_sources = pd.read_csv(data_path / "water_sources.csv")
             
             logger.info(f"Loaded training data shape: {train.shape}")
             logger.info(f"Loaded test data shape: {test.shape}")
