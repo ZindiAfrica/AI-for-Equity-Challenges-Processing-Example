@@ -13,7 +13,7 @@ logger = setup_logger(__name__)
 
 def download_data(output_dir: str) -> None:
     """Download training data from S3 to local directory.
-    
+
     Args:
         output_dir: Local directory to save files
 

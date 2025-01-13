@@ -121,10 +121,10 @@ def get_data_bucket_name() -> str:
 
 def get_data_source(local_data_dir: str | None = None) -> tuple[str, bool]:
     """Get the data source location and type.
-    
+
     Args:
         local_data_dir: Optional local directory path for data
-        
+
     Returns:
         Tuple of (path, is_local) where path is either local path or S3 URI
 

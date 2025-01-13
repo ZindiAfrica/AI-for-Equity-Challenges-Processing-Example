@@ -15,15 +15,15 @@ def find_nearest_locations(
     max_distance: float | None = None
 ) -> dict[str, str]:
     """Find nearest locations using KD-tree spatial indexing.
-    
+
     Args:
         source_df: DataFrame containing source points
         target_df: DataFrame containing target points to find nearest from
         lat_col: Name of latitude column
-        lon_col: Name of longitude column 
+        lon_col: Name of longitude column
         id_col: Name of ID column to return
         max_distance: Optional maximum distance threshold
-        
+
     Returns:
         Dictionary mapping source IDs to nearest target IDs
 
@@ -50,13 +50,13 @@ def calculate_distances(
     lon_col: str = "Transformed_Longitude"
 ) -> np.ndarray:
     """Calculate distances between all source and target points.
-    
+
     Args:
         source_df: DataFrame with source points
         target_df: DataFrame with target points
         lat_col: Name of latitude column
         lon_col: Name of longitude column
-        
+
     Returns:
         Array of distances between each source-target pair
 
