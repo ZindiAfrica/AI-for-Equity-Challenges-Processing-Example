@@ -25,7 +25,6 @@ def download_data(output_dir: str) -> None:
 
     s3_client = boto3.client('s3')
     data_bucket = get_data_bucket_name()
-    user_bucket = get_user_bucket_name()
 
     # List and download all files from data bucket
     logger.info(f"Listing files in {data_bucket}...")
@@ -38,30 +37,12 @@ def download_data(output_dir: str) -> None:
     for filename in data_files:
         logger.info(f"Downloading {filename} from data bucket...")
         try:
-            s3_client.download_file(
-                data_bucket,
-                filename,
-                str(output_path / filename)
-            )
-        except Exception as e:
-            logger.warning(f"Could not download {filename}: {e}")
-
-    # List and download all files from user bucket
-    logger.info(f"Listing files in {user_bucket}...")
-    user_files = []
-    for page in paginator.paginate(Bucket=user_bucket):
-        if 'Contents' in page:
-            user_files.extend(obj['Key'] for obj in page['Contents'])
-    
-    for filename in user_files:
-        logger.info(f"Downloading {filename} from user bucket...")
-        try:
             # Create subdirectories if needed
             file_path = output_path / filename
             file_path.parent.mkdir(parents=True, exist_ok=True)
             
             s3_client.download_file(
-                user_bucket,
+                data_bucket,
                 filename,
                 str(file_path)
             )
