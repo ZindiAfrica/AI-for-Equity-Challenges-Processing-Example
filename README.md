@@ -4,16 +4,60 @@ This repository contains example code for running ML pipelines on AWS using Sage
 
 ## Quick Start
 
-1. Clone the repository and install dependencies:
+1. Clone the repository:
 ```bash
 git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
 cd sua-outsmarting-outbreaks
+```
+
+2. Run the setup script:
+```bash
 ./run.sh
 ```
 
-2. Select your preferred execution method:
-- Run locally: `./run.sh run-local`
-- Run on AWS: `./run.sh run-aws`
+This will present an interactive menu with the following options:
+
+- Install Python Dependencies
+- Build Docker Image
+- Run Python Tests
+- Lint Python Code
+- Format Python Code
+- Deploy to SageMaker
+- Download Data
+- Run Pipeline Stages:
+  - Data Preparation (Local/AWS)
+  - Model Training (Local/AWS)
+  - Model Evaluation (Local/AWS)
+  - Predictions (Local/AWS)
+  - Full Pipeline (Local/AWS)
+- Go to Source Directory
+- Quit
+
+3. Direct Command Usage:
+```bash
+# Install dependencies
+./run.sh install-python
+
+# Run specific pipeline stages locally
+./run.sh run-prepare-local
+./run.sh run-train-local
+./run.sh run-evaluate-local
+./run.sh run-predict-local
+
+# Run on AWS
+./run.sh run-prepare-aws
+./run.sh run-train-aws
+./run.sh run-evaluate-aws
+./run.sh run-predict-aws
+
+# Run full pipeline
+./run.sh run-local  # Run entire pipeline locally
+./run.sh run-aws    # Run entire pipeline on AWS
+```
+
+4. Environment Configuration:
+- Copy `.env.example` to `.env` and customize settings
+- AWS credentials can be set via environment variables or AWS CLI profile
 
 ## Documentation
 
