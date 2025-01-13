@@ -61,20 +61,30 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
 
     # Load datasets from either local or S3
     if is_local:
-        data_path = Path(data_path)
+        data_path = Path(data_path).resolve()
         logger.info(f"Loading data from local directory: {data_path}")
+        logger.debug(f"Directory contents: {list(data_path.glob('*.csv'))}")
+    
         try:
-            train = pd.read_csv(data_path / "Train.csv")
-            test = pd.read_csv(data_path / "Test.csv")
-            toilets = pd.read_csv(data_path / "toilets.csv")
-            waste_management = pd.read_csv(data_path / "waste_management.csv")
-            water_sources = pd.read_csv(data_path / "water_sources.csv")
-            
+            train_path = data_path / "Train.csv"
+            test_path = data_path / "Test.csv"
+            toilets_path = data_path / "toilets.csv"
+            waste_path = data_path / "waste_management.csv"
+            water_path = data_path / "water_sources.csv"
+
+            # Check if files exist
+            for p in [train_path, test_path, toilets_path, waste_path, water_path]:
+                if not p.exists():
+                    raise FileNotFoundError(f"Required file not found: {p}")
+
+            train = pd.read_csv(train_path)
+            test = pd.read_csv(test_path)
+            toilets = pd.read_csv(toilets_path)
+            waste_management = pd.read_csv(waste_path)
+            water_sources = pd.read_csv(water_path)
+        
             logger.info(f"Loaded training data shape: {train.shape}")
             logger.info(f"Loaded test data shape: {test.shape}")
-            
-            if 'Total' not in train.columns:
-                raise ValueError(f"'Total' column not found in Train.csv. Available columns: {train.columns.tolist()}")
             
             # Fill missing values in target column
             train['Total'] = train['Total'].fillna(0)

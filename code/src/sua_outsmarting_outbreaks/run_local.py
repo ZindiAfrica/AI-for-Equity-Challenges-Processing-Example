@@ -59,6 +59,9 @@ def main() -> None:
     project_root = Path(__file__).parent.parent.parent.parent
     data_dir = (project_root / args.data_dir).resolve()
     output_dir = (project_root / args.output_dir).resolve()
+
+    # Ensure directories exist
+    data_dir.mkdir(parents=True, exist_ok=True)
     output_dir.mkdir(parents=True, exist_ok=True)
 
     try:
