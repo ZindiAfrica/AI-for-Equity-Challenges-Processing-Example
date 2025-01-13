@@ -10,6 +10,19 @@ VOLUME_SIZE_GB = settings.sagemaker.volume_size
 SPOT_INSTANCE = settings.sagemaker.use_spot
 MAX_WAIT_TIME = settings.sagemaker.max_wait
 
+# Instance specifications for ml.g4dn.8xlarge
+G4DN_8XLARGE_SPECS = {
+    "instance_type": "ml.g4dn.8xlarge",
+    "gpu": "NVIDIA T4 with 16GB memory",
+    "cpu_ram": "32 vCPUs, 128GB RAM",
+    "network": "50 Gigabit",
+    "storage": "9500 MBps EBS bandwidth, 40K IOPS",
+    "cost": {
+        "on_demand": 2.72,
+        "spot": 0.816
+    }
+}
+
 # Framework settings
 SKLEARN_VERSION = settings.model.framework_version
 AWS_REGION = settings.aws.region

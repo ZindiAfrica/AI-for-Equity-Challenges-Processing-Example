@@ -19,6 +19,7 @@ from sklearn.preprocessing import LabelEncoder
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     initialize_aws_resources,
 )
+from sua_outsmarting_outbreaks.utils.constants import G4DN_8XLARGE_SPECS
 from sua_outsmarting_outbreaks.utils.logging_utils import (
     DataError,
     ModelError,
@@ -34,12 +35,12 @@ username, role, data_bucket_name, user_bucket_name, tags = initialize_aws_resour
 
 logger.info(f"Using team bucket: {user_bucket_name}")
 logger.info("Using instance specifications:")
-logger.info("- Instance type: ml.g4dn.8xlarge")
-logger.info("- GPU: NVIDIA T4 with 16GB memory")
-logger.info("- CPU/RAM: 32 vCPUs, 128GB RAM")
-logger.info("- Network: 50 Gigabit")
-logger.info("- Storage: 9500 MBps EBS bandwidth, 40K IOPS")
-logger.info("- Cost: $2.72/hr (on-demand) or $0.816/hr (spot)")
+logger.info(f"- Instance type: {G4DN_8XLARGE_SPECS['instance_type']}")
+logger.info(f"- GPU: {G4DN_8XLARGE_SPECS['gpu']}")
+logger.info(f"- CPU/RAM: {G4DN_8XLARGE_SPECS['cpu_ram']}")
+logger.info(f"- Network: {G4DN_8XLARGE_SPECS['network']}")
+logger.info(f"- Storage: {G4DN_8XLARGE_SPECS['storage']}")
+logger.info(f"- Cost: ${G4DN_8XLARGE_SPECS['cost']['on_demand']}/hr (on-demand) or ${G4DN_8XLARGE_SPECS['cost']['spot']}/hr (spot)")
 
 
 def load_training_data(bucket_name: str) -> pd.DataFrame:
