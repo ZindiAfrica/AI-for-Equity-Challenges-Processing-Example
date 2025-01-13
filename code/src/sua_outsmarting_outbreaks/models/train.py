@@ -30,24 +30,40 @@ from sua_outsmarting_outbreaks.utils.logging_utils import (
 # Configure logger
 logger = setup_logger(__name__)
 
-# Initialize AWS resources
-s3_client = boto3.client("s3")
-username, role, data_bucket_name, user_bucket_name, tags = initialize_aws_resources()
+import platform
 
-instance_type = get_script_processor_type()
-instance_specs = INSTANCE_SPECS.get(instance_type)
+# Get system info
+system_info = {
+    'machine': platform.machine(),
+    'processor': platform.processor(),
+    'system': platform.system(),
+    'version': platform.version()
+}
 
-logger.info(f"Using team bucket: {user_bucket_name}")
-logger.info("Using instance specifications:")
-logger.info(f"- Instance type: {instance_type}")
-if instance_specs:
-    logger.info(f"- GPU: {instance_specs['gpu']}")
-    logger.info(f"- CPU/RAM: {instance_specs['cpu_ram']}")
-    logger.info(f"- Network: {instance_specs['network']}")
-    logger.info(f"- Storage: {instance_specs['storage']}")
-    logger.info(f"- Cost: ${instance_specs['cost']['on_demand']}/hr (on-demand) or ${instance_specs['cost']['spot']}/hr (spot)")
+if data_dir:
+    logger.info("Running locally on:")
+    logger.info(f"- System: {system_info['system']}")
+    logger.info(f"- Processor: Apple M1")
+    logger.info(f"- Architecture: {system_info['machine']}")
 else:
-    logger.warning(f"No specifications found for instance type: {instance_type}")
+    # Initialize AWS resources
+    s3_client = boto3.client("s3")
+    username, role, data_bucket_name, user_bucket_name, tags = initialize_aws_resources()
+
+    instance_type = get_script_processor_type()
+    instance_specs = INSTANCE_SPECS.get(instance_type)
+
+    logger.info(f"Using team bucket: {user_bucket_name}")
+    logger.info("Using instance specifications:")
+    logger.info(f"- Instance type: {instance_type}")
+    if instance_specs:
+        logger.info(f"- GPU: {instance_specs['gpu']}")
+        logger.info(f"- CPU/RAM: {instance_specs['cpu_ram']}")
+        logger.info(f"- Network: {instance_specs['network']}")
+        logger.info(f"- Storage: {instance_specs['storage']}")
+        logger.info(f"- Cost: ${instance_specs['cost']['on_demand']}/hr (on-demand) or ${instance_specs['cost']['spot']}/hr (spot)")
+    else:
+        logger.warning(f"No specifications found for instance type: {instance_type}")
 
 
 def load_training_data(bucket_name: str) -> pd.DataFrame:
