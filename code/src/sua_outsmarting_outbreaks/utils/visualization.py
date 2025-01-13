@@ -1,6 +1,7 @@
 """Visualization utilities for data analysis."""
 
 import matplotlib.pyplot as plt
+import pandas as pd
 from typing import Tuple, List
 
 def plot_locations(
