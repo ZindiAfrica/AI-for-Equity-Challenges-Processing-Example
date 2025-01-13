@@ -9,10 +9,7 @@ from scipy.spatial import cKDTree
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
     get_data_source,
-    get_execution_role,
-    get_tags,
     get_user_bucket_name,
-    get_user_name,
 )
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
@@ -109,8 +106,8 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
             logger.info(f"Loaded test data shape: {test.shape}")
             logger.debug(f"Train contents: {train}")
             # Fill missing values in target column
-            train['Total'] = train['Total'].fillna(0)
-            test['Total'] = test['Total'].fillna(0)
+            train["Total"] = train["Total"].fillna(0)
+            test["Total"] = test["Total"].fillna(0)
 
         except FileNotFoundError as e:
             logger.error(f"Could not find required data file: {e}")
