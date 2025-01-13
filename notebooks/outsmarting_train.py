@@ -10,11 +10,11 @@ from sklearn.preprocessing import LabelEncoder
 s3_client = boto3.client("s3")
 workspace_name = boto3.client("sts").get_caller_identity()["Arn"].split("/")[-1]
 bucket_name = f"{workspace_name}-team-bucket"
-
+prefix = 'data_prep'
 
 # Load preprocessed datasets from S3
 print("Downloading preprocessed datasets from S3...")
-train_data_path = f"s3://{bucket_name}/processed_train.csv"
+train_data_path = f"s3://{bucket_name}/{prefix}/processed_train.csv"
 train_df = pd.read_csv(train_data_path)
 
 # Specify the target column
