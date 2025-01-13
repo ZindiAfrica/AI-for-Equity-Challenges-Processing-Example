@@ -5,7 +5,10 @@ import logging
 import sys
 from pathlib import Path
 
+import pandas as pd
+
 from sua_outsmarting_outbreaks.data.data_prep import preprocess_data
+from sua_outsmarting_outbreaks.models.train import prepare_features
 from sua_outsmarting_outbreaks.models.evaluate import evaluate_model
 from sua_outsmarting_outbreaks.models.train import train_model
 from sua_outsmarting_outbreaks.predict.predict import generate_predictions

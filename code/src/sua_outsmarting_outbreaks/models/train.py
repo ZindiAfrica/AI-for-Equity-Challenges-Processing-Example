@@ -235,8 +235,10 @@ def train_model(features: pd.DataFrame | None = None, target: pd.Series | None =
         raise ModelError(error_msg) from e
 
 
-# Train the model and save it
+# Train the model
 model = train_model(features=X, target=y)
+
+# Save the trained model
 save_model(model, user_bucket_name)
 
 
