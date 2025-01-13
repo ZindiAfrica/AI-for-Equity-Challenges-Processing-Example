@@ -21,10 +21,10 @@ fi
 install_dependencies_python() {
     echo "Installing Python dependencies..."
     cd "$APP_DIR"
-    uv venv
+    python3 -m venv .venv
     source .venv/bin/activate
-    uv pip install -e ".[dev]"
-    uv pip install pytest pytest-cov
+    pip install -e ".[dev]"
+    pip install pytest pytest-cov
     pre-commit install
     echo "Dependencies installed successfully"
 }
@@ -82,35 +82,35 @@ run_prepare_local() {
     echo "Running data preparation step locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python run_pipeline.py --stage prepare --local "$@"
+    python -m sua_outsmarting_outbreaks.run_local --stage data-prep "$@"
 }
 
 run_train_local() {
     echo "Running model training step locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python run_pipeline.py --stage train --local "$@"
+    python -m sua_outsmarting_outbreaks.run_local --stage train "$@"
 }
 
 run_evaluate_local() {
     echo "Running model evaluation step locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python run_pipeline.py --stage evaluate --local "$@"
+    python -m sua_outsmarting_outbreaks.run_local --stage evaluate "$@"
 }
 
 run_predict_local() {
     echo "Running prediction step locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python run_pipeline.py --stage predict --local "$@"
+    python -m sua_outsmarting_outbreaks.run_local --stage predict "$@"
 }
 
 run_pipeline_local() {
     echo "Running full pipeline locally..."
     cd "$APP_DIR"
     source .venv/bin/activate
-    python run_pipeline.py --stage all --local "$@"
+    python -m sua_outsmarting_outbreaks.run_local --stage all "$@"
 }
 
 run_prepare_aws() {
