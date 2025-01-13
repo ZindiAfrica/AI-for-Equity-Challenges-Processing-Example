@@ -44,7 +44,7 @@ def download_data(output_dir: str) -> None:
                 filename,
                 str(file_path)
             )
-        except Exception as e:
+        except (boto3.exceptions.Boto3Error, IOError) as e:
             logger.warning(f"Could not download {filename}: {e}")
 
     logger.info(f"All files downloaded to {output_path}")

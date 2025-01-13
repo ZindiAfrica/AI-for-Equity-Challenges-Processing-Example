@@ -108,7 +108,7 @@ def main() -> None:
                 # Finally predict
                 generate_predictions(data_dir=args.output_dir)
 
-    except Exception as e:
+    except (ValueError, IOError, boto3.exceptions.Boto3Error) as e:
         logger.error(f"Pipeline failed: {e}")
         sys.exit(1)
 

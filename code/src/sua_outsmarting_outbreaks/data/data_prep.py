@@ -53,14 +53,8 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
     data_path, is_local = get_data_source(local_data_dir)
 
     # Initialize AWS resources
-    s3_client = boto3.client("s3")
-    username = get_user_name()
-    role = get_execution_role()
     data_bucket_name = get_data_bucket_name()
     user_bucket_name = get_user_bucket_name()
-
-    # Define common tags
-    tags = get_tags()
 
     logger.info(f"Using input bucket: {data_bucket_name}")
     logger.info(f"Using team bucket: {user_bucket_name}")
