@@ -71,32 +71,39 @@ go_to_directory_src() {
     exec $SHELL
 }
 
-run_pipeline() {
-    local debug=""
-    while [[ $# -gt 0 ]]; do
-        case "$1" in
-            --debug)
-                debug="--debug"
-                shift
-                ;;
-            *)
-                echo "Unknown parameter: $1"
-                return 1
-                ;;
-        esac
-    done
-
-    echo "Running ML pipeline${debug:+ in debug mode}..."
+run_prepare() {
+    echo "Running data preparation step..."
     cd "$APP_DIR"
     source .venv/bin/activate
+    sua-pipeline prepare "$@"
+}
 
-    if [ -n "$debug" ]; then
-        echo "Executing command: python -m sua_outsmarting_outbreaks.debug_entry"
-        python -m sua_outsmarting_outbreaks.debug_entry
-    else
-        echo "Executing command: python build_and_run_aws.py"
-        python build_and_run_aws.py
-    fi
+run_train() {
+    echo "Running model training step..."
+    cd "$APP_DIR" 
+    source .venv/bin/activate
+    sua-pipeline train "$@"
+}
+
+run_evaluate() {
+    echo "Running model evaluation step..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    sua-pipeline evaluate "$@"
+}
+
+run_predict() {
+    echo "Running prediction step..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    sua-pipeline predict "$@"
+}
+
+run_pipeline() {
+    echo "Running full pipeline..."
+    cd "$APP_DIR"
+    source .venv/bin/activate
+    python build_and_run_aws.py "$@"
 }
 
 all() {
@@ -178,7 +185,11 @@ show_menu() {
         "Lint Python Code"
         "Format Python Code"
         "Deploy to SageMaker"
-        "Run Pipeline"
+        "Run Data Preparation"
+        "Run Model Training"
+        "Run Model Evaluation" 
+        "Run Predictions"
+        "Run Full Pipeline"
         "Run All Steps"
         "Go to Source Directory"
         "Quit"
@@ -222,7 +233,23 @@ show_menu() {
                 deploy_sagemaker
                 show_menu
                 ;;
-            "Run Pipeline")
+            "Run Data Preparation")
+                run_prepare
+                show_menu
+                ;;
+            "Run Model Training") 
+                run_train
+                show_menu
+                ;;
+            "Run Model Evaluation")
+                run_evaluate
+                show_menu
+                ;;
+            "Run Predictions")
+                run_predict
+                show_menu
+                ;;
+            "Run Full Pipeline")
                 run_pipeline
                 show_menu
                 ;;
