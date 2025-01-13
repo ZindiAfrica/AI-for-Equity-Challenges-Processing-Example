@@ -403,10 +403,7 @@ terraform.tfstate.backup
 id_ed25519*
 .aider*
 *.iml
-#ignore_me
-#code/src/data/*
-!code/src/data/*.md
-!code/src/data/.gitkeep
+!.gitkeep
 *.joblib
 *.ipynb
 code/src/data/SampleSubmission.csv
@@ -416,3 +413,4 @@ code/src/data/Train.csv
 code/src/data/waste_management.csv
 code/src/data/water_sources.csv
 *.csv
+code/data/*

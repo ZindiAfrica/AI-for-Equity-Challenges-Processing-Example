@@ -321,3 +321,14 @@ aws_key_pair_id_rsa.pem
 terraform.tfstate.backup
 terraform.tfvars
 
+!.gitkeep
+*.joblib
+*.ipynb
+code/src/data/SampleSubmission.csv
+code/src/data/Test.csv
+code/src/data/toilets.csv
+code/src/data/Train.csv
+code/src/data/waste_management.csv
+code/src/data/water_sources.csv
+*.csv
+code/data/*
