@@ -53,6 +53,20 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
     """
     data_path, is_local = get_data_source(local_data_dir)
     
+    # Initialize AWS resources
+    s3_client = boto3.client("s3")
+    username = get_user_name()
+    role = get_execution_role()
+    data_bucket_name = get_data_bucket_name()
+    user_bucket_name = get_user_bucket_name()
+
+    # Define common tags
+    tags = get_tags()
+
+    logger.info(f"Using input bucket: {data_bucket_name}")
+    logger.info(f"Using team bucket: {user_bucket_name}")
+
+    # Load datasets from either local or S3
     if is_local:
         logger.info(f"Loading data from local directory: {data_path}")
         train = pd.read_csv(Path(data_path) / "Train.csv")
@@ -61,29 +75,25 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
         waste_management = pd.read_csv(Path(data_path) / "waste_management.csv")
         water_sources = pd.read_csv(Path(data_path) / "water_sources.csv")
     else:
-        # Initialize AWS resources
-        s3_client = boto3.client("s3")
-        username = get_user_name()
-        role = get_execution_role()
-        data_bucket_name = get_data_bucket_name()
-        user_bucket_name = get_user_bucket_name()
-
-        # Define common tags
-        tags = get_tags()
-
-        logger.info(f"Using input bucket: {data_bucket_name}")
-        logger.info(f"Using team bucket: {user_bucket_name}")
-
-        # Load and process datasets
+        # Load from S3 data bucket
         train, test, toilets, waste_management, water_sources = load_datasets(data_bucket_name)
 
-        # Combine train and test datasets
-        hospital_data = pd.concat([train, test])
+    # Combine train and test datasets
+    hospital_data = pd.concat([train, test])
 
-        # Process the data
-        merged_data = process_data(hospital_data, toilets, waste_management, water_sources)
+    # Process the data
+    merged_data = process_data(hospital_data, toilets, waste_management, water_sources)
 
-        # Save results
+    # Save results to user bucket or local dir
+    if output_dir:
+        output_path = Path(output_dir)
+        output_path.mkdir(parents=True, exist_ok=True)
+        logger.info(f"Saving processed data to {output_path}")
+        processed_train = merged_data[merged_data["Year"] < TRAIN_CUTOFF_YEAR]
+        processed_test = merged_data[merged_data["Year"] == TRAIN_CUTOFF_YEAR]
+        processed_train.to_csv(output_path / "processed_train.csv", index=False)
+        processed_test.to_csv(output_path / "processed_test.csv", index=False)
+    else:
         save_processed_data(merged_data, user_bucket_name)
 
 
