@@ -1,5 +1,6 @@
 """Script for downloading training data from S3."""
 
+import sys
 from pathlib import Path
 
 import boto3
