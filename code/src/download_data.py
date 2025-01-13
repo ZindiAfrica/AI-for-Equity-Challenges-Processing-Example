@@ -5,7 +5,6 @@ from pathlib import Path
 
 import boto3
 
-from sua_outsmarting_outbreaks.data.data_prep import get_data_dir
 from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_data_bucket_name,
 )
@@ -13,10 +12,12 @@ from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
 logger = setup_logger(__name__)
 
+
 def download_data(output_dir: str) -> None:
     """Download training data from S3 to local directory.
 
     Args:
+    ----
         output_dir: Local directory to save files
 
     """
@@ -46,15 +47,12 @@ def download_data(output_dir: str) -> None:
             file_path = output_path / filename
             file_path.parent.mkdir(parents=True, exist_ok=True)
 
-            s3_client.download_file(
-                data_bucket,
-                filename,
-                str(file_path)
-            )
-        except (boto3.exceptions.Boto3Error, IOError) as e:
+            s3_client.download_file(data_bucket, filename, str(file_path))
+        except (OSError, boto3.exceptions.Boto3Error) as e:
             logger.warning(f"Could not download {filename}: {e}")
 
     logger.info(f"All files downloaded to {output_path}")
+
 
 if __name__ == "__main__":
     logger.warning("Please use run.sh to download data:")

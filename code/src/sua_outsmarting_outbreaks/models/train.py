@@ -4,12 +4,14 @@ This module handles the training of a RandomForest regression model using prepro
 It includes data loading, feature engineering, model training and model artifact storage.
 
 Example:
+-------
     This script is typically run as part of the SageMaker processing job:
     >>> python -m sua_outsmarting_outbreaks.models.train
 
 """
 
 from pathlib import Path
+
 import boto3
 import joblib
 import pandas as pd
@@ -18,8 +20,8 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder
 
 from sua_outsmarting_outbreaks.utils.aws_utils import (
-    initialize_aws_resources,
     get_script_processor_type,
+    initialize_aws_resources,
 )
 from sua_outsmarting_outbreaks.utils.constants import INSTANCE_SPECS
 from sua_outsmarting_outbreaks.utils.logging_utils import (
@@ -50,7 +52,9 @@ if instance_specs:
     logger.info(f"- CPU/RAM: {instance_specs['cpu_ram']}")
     logger.info(f"- Network: {instance_specs['network']}")
     logger.info(f"- Storage: {instance_specs['storage']}")
-    logger.info(f"- Cost: ${instance_specs['cost']['on_demand']}/hr (on-demand) or ${instance_specs['cost']['spot']}/hr (spot)")
+    logger.info(
+        f"- Cost: ${instance_specs['cost']['on_demand']}/hr (on-demand) or ${instance_specs['cost']['spot']}/hr (spot)"
+    )
 else:
     logger.warning(f"No specifications found for instance type: {instance_type}")
 
@@ -59,12 +63,15 @@ def load_training_data(bucket_name: str) -> pd.DataFrame:
     """Load preprocessed training data from S3.
 
     Args:
+    ----
         bucket_name: Name of the S3 bucket containing the data
 
     Returns:
+    -------
         DataFrame containing the training data
 
     Raises:
+    ------
         DataError: If there are issues loading or processing the data
 
     """
@@ -99,25 +106,30 @@ def load_training_data(bucket_name: str) -> pd.DataFrame:
 def log_system_info() -> None:
     """Log system information when running locally."""
     import platform
+
     system_info = {
-        'machine': platform.machine(),
-        'processor': platform.processor(),
-        'system': platform.system(),
-        'version': platform.version()
+        "machine": platform.machine(),
+        "processor": platform.processor(),
+        "system": platform.system(),
+        "version": platform.version(),
     }
     logger.info("Running locally on:")
     logger.info(f"- System: {system_info['system']}")
-    logger.info(f"- Processor: Apple M1")
+    logger.info("- Processor: Apple M1")
     logger.info(f"- Architecture: {system_info['machine']}")
+
 
 def load_data(data_dir: str | None = None) -> pd.DataFrame:
     """Load training data from local directory or S3.
-    
+
     Args:
+    ----
         data_dir: Optional path to local data directory
-        
+
     Returns:
+    -------
         DataFrame containing training data
+
     """
     if data_dir:
         log_system_info()
@@ -126,6 +138,7 @@ def load_data(data_dir: str | None = None) -> pd.DataFrame:
     else:
         train_df = load_training_data(user_bucket_name)
     return train_df
+
 
 def save_model(
     model: RandomForestRegressor,
@@ -136,6 +149,7 @@ def save_model(
     """Save trained model locally and upload to S3.
 
     Args:
+    ----
         model: Trained model to save
         bucket_name: S3 bucket name
         model_name: Name of model file
@@ -164,6 +178,7 @@ def save_model(
             logger.error(f"Failed to upload model: {e!s}")
             raise
 
+
 # Load training data
 train_df = load_data(data_dir=None)
 
@@ -179,11 +194,13 @@ def prepare_features(
     """Prepare feature matrix and target vector from DataFrame.
 
     Args:
+    ----
         df: Input DataFrame
         target_col: Name of target column
         exclude_cols: List of columns to exclude from features
 
     Returns:
+    -------
         Tuple containing:
             - Feature matrix (X)
             - Target vector (y)
@@ -218,18 +235,23 @@ def prepare_features(
 X, y = prepare_features(train_df, target_column, ["ID", "Location"])
 
 
-def train_model(features: pd.DataFrame | None = None, target: pd.Series | None = None, data_dir: str | None = None) -> RandomForestRegressor:
+def train_model(
+    features: pd.DataFrame | None = None, target: pd.Series | None = None, data_dir: str | None = None
+) -> RandomForestRegressor:
     """Train a RandomForest regression model.
 
     Args:
+    ----
         features: Feature matrix, if provided directly
         target: Target vector, if provided directly
         data_dir: Optional path to local data directory
 
     Returns:
+    -------
         Trained RandomForestRegressor model
 
     Raises:
+    ------
         ModelError: If there are issues during model training
         ValueError: If input data is invalid
 

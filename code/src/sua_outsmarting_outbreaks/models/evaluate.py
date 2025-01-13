@@ -1,8 +1,5 @@
 """Model evaluation module for the SUA Outsmarting Outbreaks Challenge."""
 
-import logging
-import sys
-from typing import Optional
 
 import boto3
 import joblib
@@ -18,11 +15,14 @@ from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 # Configure logger
 logger = setup_logger(__name__)
 
-def evaluate_model(data_dir: Optional[str] = None) -> None:
+
+def evaluate_model(data_dir: str | None = None) -> None:
     """Evaluate the trained model on test data.
-    
+
     Args:
+    ----
         data_dir: Optional local directory containing test data and model
+
     """
     # Initialize AWS Resources
     logger.info("\nInitializing AWS resources...")

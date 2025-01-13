@@ -8,9 +8,8 @@ from pathlib import Path
 import pandas as pd
 
 from sua_outsmarting_outbreaks.data.data_prep import preprocess_data
-from sua_outsmarting_outbreaks.models.train import prepare_features
 from sua_outsmarting_outbreaks.models.evaluate import evaluate_model
-from sua_outsmarting_outbreaks.models.train import train_model
+from sua_outsmarting_outbreaks.models.train import prepare_features, train_model
 from sua_outsmarting_outbreaks.predict.predict import generate_predictions
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
@@ -19,6 +18,7 @@ logger = setup_logger(__name__)
 # Default paths
 DEFAULT_DATA_DIR = Path(__file__).parent.parent.parent / "data"
 DEFAULT_OUTPUT_DIR = Path(__file__).parent.parent.parent / "output"
+
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
@@ -48,6 +48,7 @@ def parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
+
 def main() -> None:
     """Execute pipeline stages locally."""
     args = parse_args()
@@ -73,13 +74,10 @@ def main() -> None:
         if args.stage in ("data-prep", "all"):
             logger.info("Running data preparation...")
             logger.debug(f"Input files in {data_dir}:")
-            for f in Path(data_dir).glob('*.csv'):
+            for f in Path(data_dir).glob("*.csv"):
                 logger.debug(f"- {f.name}")
 
-            preprocess_data(
-                local_data_dir=data_dir,
-                output_dir=str(output_dir)
-            )
+            preprocess_data(local_data_dir=data_dir, output_dir=str(output_dir))
 
         if args.stage in ("train", "all"):
             logger.info("Running model training...")
@@ -89,7 +87,7 @@ def main() -> None:
             if not train_path.exists():
                 logger.error(f"Training data not found at {train_path}")
                 logger.debug("Output directory contents:")
-                for f in Path(output_dir).glob('*'):
+                for f in Path(output_dir).glob("*"):
                     logger.debug(f"- {f.name}")
                 raise FileNotFoundError(f"Training data not found at {train_path}")
 
@@ -112,6 +110,7 @@ def main() -> None:
     except Exception as e:
         logger.error(f"Pipeline failed: {e}")
         sys.exit(1)
+
 
 if __name__ == "__main__":
     logger.warning("Please use run.sh to execute the pipeline:")

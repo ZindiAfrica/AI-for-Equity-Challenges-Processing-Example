@@ -13,6 +13,7 @@ from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 # Configure logger
 logger = setup_logger(__name__)
 
+
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Run ML pipeline stages")
@@ -44,6 +45,7 @@ def parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
+
 def main() -> None:
     """Execute pipeline stages."""
     args = parse_args()
@@ -56,19 +58,13 @@ def main() -> None:
             logger.info("Running data preparation...")
             if args.use_s3:
                 logger.info("Using S3 storage for data")
-                preprocess_data(
-                    local_data_dir=None,
-                    output_dir=None
-                )
+                preprocess_data(local_data_dir=None, output_dir=None)
             else:
                 logger.info("Using local filesystem for data (use --use-s3 flag to use S3 instead)")
                 if not args.local_data or not args.output_dir:
                     logger.error("When using local mode, --local-data and --output-dir are required")
                     sys.exit(1)
-                preprocess_data(
-                    local_data_dir=args.local_data,
-                    output_dir=args.output_dir
-                )
+                preprocess_data(local_data_dir=args.local_data, output_dir=args.output_dir)
         elif args.stage == "train":
             logger.info("Running model training...")
             train_model(data_dir=args.output_dir)
@@ -97,10 +93,7 @@ def main() -> None:
                     logger.error("When using local mode, --local-data and --output-dir are required")
                     sys.exit(1)
                 # First prepare the data
-                preprocess_data(
-                    local_data_dir=args.local_data,
-                    output_dir=args.output_dir
-                )
+                preprocess_data(local_data_dir=args.local_data, output_dir=args.output_dir)
                 # Then train the model
                 train_model(data_dir=args.output_dir)
                 # Then evaluate
@@ -108,9 +101,16 @@ def main() -> None:
                 # Finally predict
                 generate_predictions(data_dir=args.output_dir)
 
-    except (ValueError, IOError, boto3.exceptions.Boto3Error) as e:
+    except (OSError, ValueError, boto3.exceptions.Boto3Error) as e:
         logger.error(f"Pipeline failed: {e}")
         sys.exit(1)
 
+
 if __name__ == "__main__":
-    main()
+    logger.warning("Please use run.sh to execute the pipeline:")
+    logger.warning("  ./run.sh run-prepare-local  # Run data preparation")
+    logger.warning("  ./run.sh run-train-local    # Run training")
+    logger.warning("  ./run.sh run-evaluate-local # Run evaluation")
+    logger.warning("  ./run.sh run-predict-local  # Run predictions")
+    logger.warning("  ./run.sh run-local          # Run full pipeline")
+    sys.exit(1)

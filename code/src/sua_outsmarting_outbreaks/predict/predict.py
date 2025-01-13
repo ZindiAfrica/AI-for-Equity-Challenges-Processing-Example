@@ -1,6 +1,5 @@
 """Prediction module for generating model predictions on test data."""
 
-from typing import Optional
 
 import boto3
 import joblib
@@ -15,11 +14,14 @@ from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 # Configure logger
 logger = setup_logger(__name__)
 
-def generate_predictions(data_dir: Optional[str] = None) -> None:
+
+def generate_predictions(data_dir: str | None = None) -> None:
     """Generate predictions on test data using trained model.
-    
+
     Args:
+    ----
         data_dir: Optional local directory containing test data and model
+
     """
     # Initialize AWS resources
     s3_client = boto3.client("s3")
