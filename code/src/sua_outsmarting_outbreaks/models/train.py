@@ -181,10 +181,12 @@ def prepare_features(
 X, y = prepare_features(train_df, target_column, ["ID", "Location"])
 
 
-def train_model(data_dir: str | None = None) -> RandomForestRegressor:
+def train_model(features: pd.DataFrame | None = None, target: pd.Series | None = None, data_dir: str | None = None) -> RandomForestRegressor:
     """Train a RandomForest regression model.
 
     Args:
+        features: Feature matrix, if provided directly
+        target: Target vector, if provided directly
         data_dir: Optional path to local data directory
 
     Returns:
@@ -195,9 +197,6 @@ def train_model(data_dir: str | None = None) -> RandomForestRegressor:
         ValueError: If input data is invalid
 
     """
-    # Prepare features and target
-    features = X
-    target = y
     if X.empty or y.empty:
         raise ValueError("Input data cannot be empty")
 
@@ -237,7 +236,7 @@ def train_model(data_dir: str | None = None) -> RandomForestRegressor:
 
 
 # Train the model
-model = train_model(X, y)
+model = train_model(features=X, target=y)
 
 
 def save_model(
