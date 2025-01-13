@@ -67,6 +67,10 @@ def preprocess_data(local_data_dir: str | None = None, output_dir: str | None = 
         toilets = pd.read_csv(Path(data_path) / "toilets.csv")
         waste_management = pd.read_csv(Path(data_path) / "waste_management.csv")
         water_sources = pd.read_csv(Path(data_path) / "water_sources.csv")
+        
+        # Fill missing values in target column
+        train['Total'] = train['Total'].fillna(0)
+        test['Total'] = test['Total'].fillna(0)
     else:
         # Load from S3 data bucket
         train, test, toilets, waste_management, water_sources = load_datasets(data_bucket_name)

@@ -30,6 +30,13 @@ target_column = 'Total'
 X_test = test_df.drop(columns=[target_column, 'ID', 'Location'], errors='ignore')  # Exclude unnecessary columns
 y_test = test_df[target_column]
 
+# Remove any rows with NaN values
+mask = y_test.notna()
+X_test = X_test[mask]
+y_test = y_test[mask]
+
+logger.info(f"Removed {(~mask).sum()} rows with NaN in target variable")
+
 # Handle categorical features in the test data
 categorical_cols = X_test.select_dtypes(include=['object']).columns
 for col in categorical_cols:
