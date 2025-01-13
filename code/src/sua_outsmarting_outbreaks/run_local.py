@@ -3,11 +3,10 @@
 import argparse
 import logging
 import sys
-from pathlib import Path
 
 from sua_outsmarting_outbreaks.data.data_prep import preprocess_data
-from sua_outsmarting_outbreaks.models.train import train_model
 from sua_outsmarting_outbreaks.models.evaluate import evaluate_model
+from sua_outsmarting_outbreaks.models.train import train_model
 from sua_outsmarting_outbreaks.predict.predict import generate_predictions
 from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 

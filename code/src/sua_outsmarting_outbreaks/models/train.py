@@ -118,7 +118,7 @@ def prepare_features(
     mask = yaxis.notna()
     xaxis = xaxis[mask]
     yaxis = yaxis[mask]
-    
+
     logger.info(f"Removed {(~mask).sum()} rows with NaN in target variable")
 
     # Handle categorical features

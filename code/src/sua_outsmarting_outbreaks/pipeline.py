@@ -16,6 +16,7 @@ Example:
 """
 
 import logging
+from code.src.sua_outsmarting_outbreaks.utils.aws_utils import get_tags
 
 import sagemaker
 from sagemaker.image_uris import retrieve as retrieve_image_uri
@@ -28,8 +29,6 @@ from sua_outsmarting_outbreaks.utils.aws_utils import (
     get_user_name,
 )
 from sua_outsmarting_outbreaks.utils.config import settings
-
-from code.src.sua_outsmarting_outbreaks.utils.aws_utils import get_tags
 
 # Configure logging
 logging.basicConfig(
