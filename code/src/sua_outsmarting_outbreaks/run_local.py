@@ -3,6 +3,7 @@
 import argparse
 import logging
 import sys
+from pathlib import Path
 
 from sua_outsmarting_outbreaks.data.data_prep import preprocess_data
 from sua_outsmarting_outbreaks.models.evaluate import evaluate_model
@@ -12,6 +13,10 @@ from sua_outsmarting_outbreaks.utils.logging_utils import setup_logger
 
 logger = setup_logger(__name__)
 
+# Default paths
+DEFAULT_DATA_DIR = Path(__file__).parent.parent.parent.parent / "data"
+DEFAULT_OUTPUT_DIR = Path(__file__).parent.parent.parent.parent / "output"
+
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
     parser = argparse.ArgumentParser(description="Run ML pipeline stages locally")
@@ -20,6 +25,18 @@ def parse_args() -> argparse.Namespace:
         choices=["data-prep", "train", "evaluate", "predict", "all"],
         required=True,
         help="Pipeline stage to run",
+    )
+    parser.add_argument(
+        "--data-dir",
+        type=str,
+        default=str(DEFAULT_DATA_DIR),
+        help="Directory containing input data files",
+    )
+    parser.add_argument(
+        "--output-dir", 
+        type=str,
+        default=str(DEFAULT_OUTPUT_DIR),
+        help="Directory for output files",
     )
     parser.add_argument(
         "--debug",
@@ -35,22 +52,29 @@ def main() -> None:
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
 
+    # Ensure output directory exists
+    output_dir = Path(args.output_dir)
+    output_dir.mkdir(parents=True, exist_ok=True)
+
     try:
         if args.stage in ("data-prep", "all"):
             logger.info("Running data preparation...")
-            preprocess_data()
+            preprocess_data(
+                local_data_dir=args.data_dir,
+                output_dir=str(output_dir)
+            )
 
         if args.stage in ("train", "all"):
             logger.info("Running model training...")
-            train_model()
+            train_model(data_dir=str(output_dir))
 
         if args.stage in ("evaluate", "all"):
             logger.info("Running model evaluation...")
-            evaluate_model()
+            evaluate_model(data_dir=str(output_dir))
 
         if args.stage in ("predict", "all"):
             logger.info("Running predictions...")
-            generate_predictions()
+            generate_predictions(data_dir=str(output_dir))
 
     except Exception as e:
         logger.error(f"Pipeline failed: {e}")
