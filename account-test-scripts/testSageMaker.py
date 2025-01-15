@@ -34,9 +34,14 @@ def main():
     aws_access_key_id = input("Enter your AWS_ACCESS_KEY_ID: ").strip()
     aws_secret_access_key = input("Enter your AWS_SECRET_ACCESS_KEY: ").strip()
 
+    # Get AWS region from environment or default to us-east-2
+    aws_region = os.environ.get('AWS_REGION', 'us-east-2')
+    print(f"Using AWS Region: {aws_region}")
+
     # Initialize the SageMaker client
     sagemaker_client = boto3.client(
         'sagemaker',
+        region_name=aws_region,
         aws_access_key_id=aws_access_key_id,
         aws_secret_access_key=aws_secret_access_key
     )
@@ -47,6 +52,17 @@ def main():
         domains = sagemaker_client.list_domains()
         print("✓ Found domains:")
         print(format_response(domains))
+        
+        # Test domain URL access
+        for domain in domains.get('Domains', []):
+            domain_url = domain.get('Url')
+            if domain_url:
+                try:
+                    import urllib.request
+                    response = urllib.request.urlopen(domain_url)
+                    print(f"✓ Domain URL accessible: {domain_url}")
+                except Exception as e:
+                    print(f"⚠️  Warning: Could not access domain URL {domain_url}: {e}")
 
         # Step 2: List notebook instances
         print_step(2, "Listing available notebook instances")
@@ -61,6 +77,18 @@ def main():
         )
         print("✓ Recent processing jobs:")
         print(format_response(processing_jobs))
+        
+        # Analyze processing job failures
+        failed_jobs = [
+            job for job in processing_jobs.get('ProcessingJobSummaries', [])
+            if job.get('ProcessingJobStatus') == 'Failed'
+        ]
+        if failed_jobs:
+            print("\n⚠️  Warning: Found failed processing jobs:")
+            for job in failed_jobs:
+                print(f"\nJob: {job.get('ProcessingJobName')}")
+                print(f"Time: {job.get('CreationTime')}")
+                print(f"Reason: {job.get('FailureReason')}")
 
         # Step 4: Verify training job access
         print_step(4, "Verifying training job access")
