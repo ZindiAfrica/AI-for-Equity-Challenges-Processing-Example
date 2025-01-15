@@ -106,12 +106,12 @@ You can run this pipeline directly from AWS CloudShell:
 5. Clone this repository in a new cell:
 ```python
 # If using SSH
-!git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+!git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources.git
 
 # If using HTTPS with token
-!git clone https://YOUR_TOKEN@github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
+!git clone https://YOUR_TOKEN@github.com/ZindiAfrica/AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources.git
 
-%cd AI-for-Equity-Challenges-Processing-Example
+%cd AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources
 ```
 
 ## Running the Pipeline

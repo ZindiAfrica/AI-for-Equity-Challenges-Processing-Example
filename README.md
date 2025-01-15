@@ -1,13 +1,13 @@
 # SUA Outsmarting Outbreaks Challenge Example
 
-This repository contains example code for running ML pipelines on AWS using SageMaker. It demonstrates how to work with the infrastructure defined in the [ZindiAwsComp](https://github.com/ZindiAfrica/ZindiAwsComp) repository.
+This repository contains example code for running ML pipelines on AWS using SageMaker. It demonstrates how to work with the infrastructure defined in the [AWS ML Pipeline Example](https://github.com/ZindiAfrica/AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources) repository.
 
 ## Quick Start
 
 1. Clone the repository:
 ```bash
-git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
-cd sua-outsmarting-outbreaks
+git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources.git
+cd AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources
 ```
 
 2. Run the setup script:

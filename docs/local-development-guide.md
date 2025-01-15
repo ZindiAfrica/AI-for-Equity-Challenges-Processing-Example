@@ -42,8 +42,8 @@ ruff format .
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
-cd AI-for-Equity-Challenges-Processing-Example
+git clone https://github.com/ZindiAfrica/AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources.git
+cd AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources
 ```
 
 2. Configure AWS credentials in your environment:
