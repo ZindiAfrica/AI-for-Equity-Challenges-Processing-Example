@@ -39,8 +39,8 @@ def main(credentials=None):
     # Get caller identity to fetch username
     sts_client = boto3.client(
         'sts',
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key
+        aws_access_key_id=credentials['aws_access_key_id'],
+        aws_secret_access_key=credentials['aws_secret_access_key']
     )
     
     try:
