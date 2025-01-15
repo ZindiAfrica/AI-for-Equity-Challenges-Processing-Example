@@ -2,7 +2,7 @@ import boto3
 import json
 import os
 from typing import List, Dict
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 def print_step(step_num: int, desc: str) -> None:
     """Print a formatted step header."""
@@ -84,8 +84,9 @@ def main(credentials=None):
 
         # Step 3: Check processing job permissions
         print_step(3, "Checking processing job permissions")
+        # Only show jobs from last 24 hours
         processing_jobs = sagemaker_client.list_processing_jobs(
-            CreationTimeAfter=datetime(2024, 1, 1, tzinfo=timezone.utc)
+            CreationTimeAfter=datetime.now(timezone.utc) - timedelta(days=1)
         )
         print("✓ Recent processing jobs:")
         print(format_response(processing_jobs))
