@@ -21,3 +21,6 @@ python testS3.py
 
 echo -e "\nRunning SageMaker tests..."
 python testSageMaker.py
+
+echo -e "\nRunning SageMaker tests..."
+python testSageMaker.py
