@@ -18,7 +18,7 @@ def get_test_steps() -> List[str]:
         "Clean up local files"
     ]
 
-def main():
+def main(credentials=None):
     # Print test overview
     steps = get_test_steps()
     print("\nS3 Connection Test Steps:")
@@ -26,16 +26,15 @@ def main():
         print(f"{i}. {step}")
     print("\nStarting test execution...\n")
 
-    # Request AWS credentials from the user
-    aws_access_key_id = input("Enter your AWS_ACCESS_KEY_ID: ").strip()
-    aws_secret_access_key = input("Enter your AWS_SECRET_ACCESS_KEY: ").strip()
+    # Use provided credentials or request from user
+    if not credentials:
+        credentials = {
+            'aws_access_key_id': input("Enter your AWS_ACCESS_KEY_ID: ").strip(),
+            'aws_secret_access_key': input("Enter your AWS_SECRET_ACCESS_KEY: ").strip()
+        }
 
     # Initialize the S3 client
-    s3_client = boto3.client(
-        's3',
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key
-    )
+    s3_client = boto3.client('s3', **credentials)
 
     # Get caller identity to fetch username
     sts_client = boto3.client(

@@ -40,7 +40,7 @@ def validate_credentials(aws_access_key_id: str, aws_secret_access_key: str, aws
         print(f"❌ Invalid AWS credentials: {e}")
         return False
 
-def main():
+def main(credentials=None):
     # Print test overview
     steps = get_test_steps()
     print("\nSageMaker Access Test Steps:")
@@ -48,26 +48,17 @@ def main():
         print(f"{i}. {step}")
     print("\nStarting test execution...\n")
 
-    # Request AWS credentials from the user
-    aws_access_key_id = input("Enter your AWS_ACCESS_KEY_ID: ").strip()
-    aws_secret_access_key = input("Enter your AWS_SECRET_ACCESS_KEY: ").strip()
-
-    # Get AWS region from environment or default to us-east-2
-    aws_region = os.environ.get('AWS_REGION', 'us-east-2')
-    print(f"Using AWS Region: {aws_region}")
-
-    # Validate credentials before proceeding
-    if not validate_credentials(aws_access_key_id, aws_secret_access_key, aws_region):
-        print("Exiting due to invalid credentials")
-        return
+    # Use provided credentials or request from user
+    if not credentials:
+        credentials = {
+            'aws_access_key_id': input("Enter your AWS_ACCESS_KEY_ID: ").strip(),
+            'aws_secret_access_key': input("Enter your AWS_SECRET_ACCESS_KEY: ").strip(),
+            'region_name': os.environ.get('AWS_REGION', 'us-east-2')
+        }
+        print(f"Using AWS Region: {credentials['region_name']}")
 
     # Initialize the SageMaker client
-    sagemaker_client = boto3.client(
-        'sagemaker',
-        region_name=aws_region,
-        aws_access_key_id=aws_access_key_id,
-        aws_secret_access_key=aws_secret_access_key
-    )
+    sagemaker_client = boto3.client('sagemaker', **credentials)
 
     try:
         # Step 1: Check SageMaker Studio domain access
