@@ -3,6 +3,7 @@
 from pathlib import Path
 
 import boto3
+import numpy as np
 import pandas as pd
 from scipy.spatial import cKDTree
 
@@ -159,8 +160,8 @@ def find_nearest(
 
     Returns:
         Dictionary mapping hospital IDs to nearest location IDs
-
     """
+    location_df = location_df[np.isfinite(location_df[[lat_col, lon_col]]).all(axis=1)]
     tree = cKDTree(location_df[[lat_col, lon_col]].values)
     nearest = {}
     for _, row in hospital_df.iterrows():
