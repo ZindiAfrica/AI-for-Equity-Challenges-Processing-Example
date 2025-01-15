@@ -54,24 +54,13 @@ def main(credentials=None):
             raise ValueError(f"Invalid username format: {username}. Expected format: comp-user-XXXXXX")
             
         # Construct expected bucket name
-        expected_bucket_name = f"{username}-team-bucket"
+        bucket_name = f"{username}-team-bucket"
         print(f"\nDetected username: {username}")
-        print(f"Expected bucket name: {expected_bucket_name}")
-        
-        # Prompt for confirmation
-        confirm = input(f"\nUse bucket '{expected_bucket_name}'? [Y/n]: ").strip().lower()
-        if confirm not in ['', 'y', 'yes']:
-            bucket_name = input("Enter alternative bucket name: ").strip()
-            if not bucket_name.endswith('-team-bucket'):
-                raise ValueError("Bucket name must end with '-team-bucket'")
-        else:
-            bucket_name = expected_bucket_name
+        print(f"Using bucket name: {bucket_name}")
             
     except Exception as e:
         print(f"Error getting username: {e}")
-        bucket_name = input("Enter your S3 bucket name: ").strip()
-        if not bucket_name.endswith('-team-bucket'):
-            raise ValueError("Bucket name must end with '-team-bucket'")
+        raise
 
     # File details
     test_file_name = "test_file.txt"

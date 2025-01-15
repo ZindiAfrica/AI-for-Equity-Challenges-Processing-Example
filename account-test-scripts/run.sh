@@ -13,7 +13,11 @@ fi
 source .venv/bin/activate
 
 # Install dependencies
+uv pip install boto3 pytest
 uv pip install -e .
 
-# Run the test runner
-python test_runner.py
+# Run the test runner with improved error handling
+if ! python test_runner.py; then
+    echo "❌ Tests failed! Check the output above for details."
+    exit 1
+fi
