@@ -4,7 +4,9 @@ This repository contains example code for running ML pipelines on AWS using Sage
 
 ## Quick Start
 
-1. Clone the repository:
+1. [Sign in to AWS Console](docs/aws-signin-guide.md)
+
+2. Clone the repository:
 ```bash
 git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources.git
 cd AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources
