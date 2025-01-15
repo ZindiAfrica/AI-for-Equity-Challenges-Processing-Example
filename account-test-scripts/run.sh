@@ -15,5 +15,9 @@ source .venv/bin/activate
 # Install dependencies
 uv pip install -e .
 
-# Run the test script
+# Run the test scripts
+echo "Running S3 tests..."
 python testS3.py
+
+echo -e "\nRunning SageMaker tests..."
+python testSageMaker.py

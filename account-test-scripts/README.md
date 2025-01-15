@@ -2,9 +2,29 @@
 
 This directory contains scripts for testing AWS account access and S3 bucket operations.
 
-## S3 Test Script
+## Test Scripts
+
+### S3 Test Script
 
 The `testS3.py` script validates your AWS credentials and tests basic S3 operations using your team bucket.
+
+### SageMaker Test Script
+
+The `testSageMaker.py` script verifies access to SageMaker resources and permissions:
+
+- Checks SageMaker Studio domain access
+- Lists available notebook instances
+- Verifies processing job permissions
+- Tests training job access
+- Validates model deployment permissions
+- Checks endpoint access
+
+This helps ensure you have the necessary permissions for:
+- Using SageMaker Studio
+- Running notebook instances
+- Executing processing jobs
+- Training ML models
+- Deploying endpoints
 
 ### Features
 
