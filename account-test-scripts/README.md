@@ -44,7 +44,7 @@ This directory contains scripts for testing AWS account access and permissions. 
 
 1. Run the test suite:
 ```bash
-./run.sh
+cd account-test-scripts/ && ./run.sh
 ```
 
 2. Select test option from menu:
