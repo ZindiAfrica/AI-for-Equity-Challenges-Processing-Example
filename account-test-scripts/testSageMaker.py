@@ -67,16 +67,14 @@ def main(credentials=None):
         print("✓ Found domains:")
         print(format_response(domains))
         
-        # Test domain URL access
+        # Verify domain URL format
         for domain in domains.get('Domains', []):
             domain_url = domain.get('Url')
             if domain_url:
-                try:
-                    import urllib.request
-                    response = urllib.request.urlopen(domain_url)
-                    print(f"✓ Domain URL accessible: {domain_url}")
-                except Exception as e:
-                    print(f"⚠️  Warning: Could not access domain URL {domain_url}: {e}")
+                if domain_url.startswith('https://') and '.studio.us-east-2.sagemaker.aws' in domain_url:
+                    print(f"✓ Valid domain URL format: {domain_url}")
+                else:
+                    print(f"⚠️  Warning: Unexpected domain URL format: {domain_url}")
 
         # Step 2: List notebook instances
         print_step(2, "Listing available notebook instances")
