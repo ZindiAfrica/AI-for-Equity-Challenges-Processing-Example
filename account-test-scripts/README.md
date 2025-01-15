@@ -1,16 +1,34 @@
 # AWS Account Test Scripts
 
-This directory contains scripts for testing AWS account access and permissions. The test suite includes comprehensive checks for both S3 and SageMaker services.
+> Quick test suite for validating AWS account access and permissions
 
-## Features
+## 🚀 Quick Start
+```bash
+cd account-test-scripts/ && ./run.sh
+```
 
-### Interactive Test Runner
-- Menu-driven interface for running tests
-- Credential validation and persistence
-- Option to run individual or all tests
-- Clear progress indicators and error messages
+## 📋 TL;DR
+- Tests S3 and SageMaker access
+- Validates AWS credentials
+- Checks bucket permissions
+- Verifies SageMaker resources
+- Interactive menu-driven interface
+- Detailed error reporting
 
-### S3 Tests (`testS3.py`)
+## 🔑 Prerequisites
+- Python 3.10+
+- AWS credentials (Access Key + Secret Key)
+- AWS Region: us-east-2 (default)
+
+## ✨ Features
+
+### 🔄 Test Runner
+- Simple menu interface
+- Saves credentials between tests
+- Run individual or all tests
+- Clear pass/fail indicators
+
+### 📦 S3 Tests
 - Automatic username and bucket name detection
 - Complete S3 operation validation:
   1. Local file creation
@@ -22,115 +40,98 @@ This directory contains scripts for testing AWS account access and permissions. 
   7. Local cleanup
 - Team bucket name validation (format: `comp-user-XXXXXX-team-bucket`)
 
-### SageMaker Tests (`testSageMaker.py`)
-- Comprehensive SageMaker access verification:
-  1. Studio domain access
-  2. Notebook instance availability
-  3. Processing job permissions
-  4. Training job access
-  5. Model deployment capabilities
-  6. Endpoint accessibility
-- Detailed error reporting and troubleshooting guidance
-- Recent job history analysis (last 24 hours)
-- Failed job detection and reporting
+### 🤖 SageMaker Tests
+Validates access to:
+- Studio domains
+- Notebook instances
+- Processing jobs
+- Training jobs
+- Model deployment
+- Endpoints
 
-## Prerequisites
+Includes:
+- 24h job history
+- Failed job analysis
+- Detailed error help
 
-- Python 3.10 or higher
-- AWS credentials (Access Key ID and Secret Access Key)
-- `uv` package manager (auto-installed by run script)
+## 📱 Usage
 
-## Quick Start
-
-1. Run the test suite:
+1. Run tests:
 ```bash
 cd account-test-scripts/ && ./run.sh
 ```
 
-2. Select test option from menu:
+2. Pick a test:
 ```
-AWS Access Test Menu:
-1. Test S3 Access
-2. Test SageMaker Access
-3. Run All Tests
-4. Exit
-```
-
-3. Enter AWS credentials when prompted:
-```
-Please enter your AWS credentials:
-AWS Access Key ID: YOUR_ACCESS_KEY
-AWS Secret Access Key: YOUR_SECRET_KEY
+1️⃣ Test S3 Access
+2️⃣ Test SageMaker Access
+3️⃣ Run All Tests
+4️⃣ Exit
 ```
 
-## Project Structure
+3. Add credentials:
+```
+AWS Access Key ID: XXXX...
+AWS Secret Key: YYYY...
+```
+
+## 📁 Files
 
 ```
 account-test-scripts/
-├── pyproject.toml     # Project dependencies
-├── README.md         # This documentation
-├── run.sh           # Setup and execution script
-├── test_runner.py   # Interactive test menu
-├── testS3.py        # S3 access tests
-└── testSageMaker.py # SageMaker access tests
+├── run.sh           # ▶️ Main script
+├── test_runner.py   # 🎯 Test menu
+├── testS3.py        # 📦 S3 tests
+└── testSageMaker.py # 🤖 SageMaker tests
 ```
 
-## Development
+## 🛠 Development
 
 ### Dependencies
-- Managed via `pyproject.toml`
-- Core requirements:
-  - boto3: AWS SDK
-  - pytest: Testing framework
-- Dev dependencies available
+- boto3: AWS SDK
+- pytest: Testing
+- Dev tools in pyproject.toml
 
-### Virtual Environment
-- Created automatically by `run.sh`
-- Uses `uv` for dependency management
-- Located in `.venv` directory
-
-### Adding Dependencies
-1. Edit `pyproject.toml`
-2. Run `./run.sh` to update environment
-
-## Troubleshooting
-
-### Credential Issues
-- Verify AWS Access Key ID and Secret Access Key
-- Ensure proper IAM permissions
-- Check AWS region setting (default: us-east-2)
-
-### S3 Access Problems
-- Validate bucket name format
-- Check bucket existence and permissions
-- Review IAM policies for S3 access
-
-### SageMaker Access Issues
-- Verify SageMaker permissions in IAM
-- Check service quotas and limits
-- Review recent job failures in logs
-
-### Script Execution Errors
-- Ensure Python 3.10+ is installed
-- Check virtual environment activation
-- Verify network connectivity
-- Review error messages for details
-
-## Error Messages
-
-The scripts provide detailed error messages and troubleshooting tips:
-
-- Credential validation failures
-- Permission denied errors
-- Resource access issues
-- Service-specific error details
-
-Example error output:
+### Virtual Env
+Auto-created by run.sh:
+```bash
+# Install deps
+./run.sh
 ```
-❌ Error occurred: AccessDenied
-Troubleshooting tips:
-1. Verify your IAM user has appropriate permissions
-2. Check if you need additional IAM policies
-3. Ensure you're using the correct AWS region
-4. Contact support if you need policy adjustments
+
+## ❌ Troubleshooting
+
+### Common Issues
+1. **Bad Credentials**
+   - Check Access Key/Secret
+   - Verify IAM permissions
+   - Region = us-east-2
+
+2. **S3 Problems** 
+   - Check bucket name format
+   - Verify bucket exists
+   - Check S3 permissions
+
+3. **SageMaker Issues**
+   - IAM roles correct?
+   - Within service limits?
+   - Check job logs
+
+4. **Script Errors**
+   - Python 3.10+ installed?
+   - Network working?
+   - Check error details
+
+### Error Format
 ```
+❌ Error: AccessDenied
+Tips:
+1. Check IAM permissions
+2. Verify AWS region
+3. Contact support
+```
+
+## 💡 Need Help?
+- Check error messages
+- Review IAM permissions
+- Contact AWS support
