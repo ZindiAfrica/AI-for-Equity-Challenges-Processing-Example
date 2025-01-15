@@ -23,6 +23,23 @@ def format_response(response: Dict) -> str:
     """Format API response for display."""
     return json.dumps(response, indent=2, default=str)
 
+def validate_credentials(aws_access_key_id: str, aws_secret_access_key: str, aws_region: str) -> bool:
+    """Test if the provided AWS credentials are valid."""
+    try:
+        # Use STS to validate credentials
+        sts_client = boto3.client(
+            'sts',
+            region_name=aws_region,
+            aws_access_key_id=aws_access_key_id,
+            aws_secret_access_key=aws_secret_access_key
+        )
+        sts_client.get_caller_identity()
+        print("✅ AWS credentials validated successfully!")
+        return True
+    except Exception as e:
+        print(f"❌ Invalid AWS credentials: {e}")
+        return False
+
 def main():
     # Print test overview
     steps = get_test_steps()
@@ -38,6 +55,11 @@ def main():
     # Get AWS region from environment or default to us-east-2
     aws_region = os.environ.get('AWS_REGION', 'us-east-2')
     print(f"Using AWS Region: {aws_region}")
+
+    # Validate credentials before proceeding
+    if not validate_credentials(aws_access_key_id, aws_secret_access_key, aws_region):
+        print("Exiting due to invalid credentials")
+        return
 
     # Initialize the SageMaker client
     sagemaker_client = boto3.client(
