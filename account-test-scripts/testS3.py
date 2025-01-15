@@ -26,10 +26,9 @@ def main():
         print(f"{i}. {step}")
     print("\nStarting test execution...\n")
 
-    # Request AWS credentials and bucket name from the user
+    # Request AWS credentials from the user
     aws_access_key_id = input("Enter your AWS_ACCESS_KEY_ID: ").strip()
     aws_secret_access_key = input("Enter your AWS_SECRET_ACCESS_KEY: ").strip()
-    bucket_name = input("Enter your S3 bucket name: ").strip()
 
     # Initialize the S3 client
     s3_client = boto3.client(
@@ -37,6 +36,43 @@ def main():
         aws_access_key_id=aws_access_key_id,
         aws_secret_access_key=aws_secret_access_key
     )
+
+    # Get caller identity to fetch username
+    sts_client = boto3.client(
+        'sts',
+        aws_access_key_id=aws_access_key_id,
+        aws_secret_access_key=aws_secret_access_key
+    )
+    
+    try:
+        # Get the IAM username from the caller identity
+        caller_identity = sts_client.get_caller_identity()
+        arn = caller_identity['Arn']
+        username = arn.split('/')[-1]  # Extract username from ARN
+        
+        # Validate username format
+        if not username.startswith('comp-user-'):
+            raise ValueError(f"Invalid username format: {username}. Expected format: comp-user-XXXXXX")
+            
+        # Construct expected bucket name
+        expected_bucket_name = f"{username}-team-bucket"
+        print(f"\nDetected username: {username}")
+        print(f"Expected bucket name: {expected_bucket_name}")
+        
+        # Prompt for confirmation
+        confirm = input(f"\nUse bucket '{expected_bucket_name}'? [Y/n]: ").strip().lower()
+        if confirm not in ['', 'y', 'yes']:
+            bucket_name = input("Enter alternative bucket name: ").strip()
+            if not bucket_name.endswith('-team-bucket'):
+                raise ValueError("Bucket name must end with '-team-bucket'")
+        else:
+            bucket_name = expected_bucket_name
+            
+    except Exception as e:
+        print(f"Error getting username: {e}")
+        bucket_name = input("Enter your S3 bucket name: ").strip()
+        if not bucket_name.endswith('-team-bucket'):
+            raise ValueError("Bucket name must end with '-team-bucket'")
 
     # File details
     test_file_name = "test_file.txt"
