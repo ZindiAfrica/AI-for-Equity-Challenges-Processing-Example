@@ -7,12 +7,14 @@ This repository contains example code for running ML pipelines on AWS using Sage
 1. [Sign in to AWS Console](docs/aws-signin-guide.md)
 
 2. Clone the repository:
+
 ```bash
 git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources.git
 cd AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources
 ```
 
 2. Run the setup script:
+
 ```bash
 ./run.sh
 ```
@@ -36,6 +38,7 @@ This will present an interactive menu with the following options:
 - Quit
 
 3. Direct Command Usage:
+
 ```bash
 # Install dependencies
 ./run.sh install-python
@@ -58,6 +61,7 @@ This will present an interactive menu with the following options:
 ```
 
 4. Environment Configuration:
+
 - Copy `.env.example` to `.env` and customize settings
 - AWS credentials can be set via environment variables or AWS CLI profile
 
@@ -73,6 +77,7 @@ For detailed documentation, please see the files in the docs folder.
 4. [Troubleshooting Guide](docs/troubleshooting-guide.md)
 
 ### Infrastructure Details
+
 - [Project Structure](./docs/structure.md)
 - [Module Dependencies](./docs/dependencies.md)
 - [Billing & Cost Management](./docs/billing.md)
@@ -99,37 +104,48 @@ For detailed documentation, please see the files in the docs folder.
 ## GitHub Authentication Setup
 
 ### Generate SSH Key (Recommended)
+
 1. Generate a new SSH key:
+
 ```bash
 ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
 
 2. Add to GitHub:
+
 - Copy your public key:
+
 ```bash
 cat ~/.ssh/id_ed25519.pub
 ```
+
 - Go to GitHub → Settings → SSH Keys → New SSH Key
 - Paste your public key and save
 
 3. Add to SageMaker:
+
 - Open SageMaker Studio
 - Click File → New → Terminal
 - Create SSH directory:
+
 ```bash
 mkdir -p ~/.ssh
 chmod 700 ~/.ssh
 ```
+
 - Copy your private key:
+
 ```bash
 vim ~/.ssh/id_ed25519  # Paste your private key here
 chmod 600 ~/.ssh/id_ed25519
 ```
 
 ### Generate GitHub Token (Alternative)
+
 1. Go to GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic)
 2. Generate new token with 'repo' scope
 3. Copy token and add to SageMaker:
+
 ```bash
 git config --global credential.helper store
 echo "https://YOUR_USERNAME:YOUR_TOKEN@github.com" > ~/.git-credentials
@@ -145,6 +161,7 @@ chmod 600 ~/.git-credentials
 ### Core Dependencies
 
 ```mermaid
+
 ```
 
 ### Module Coupling Analysis
@@ -154,10 +171,11 @@ chmod 600 ~/.git-credentials
 ## Project Structure
 
 ### Documentation
+
 - [docs/](./docs/) - User and administrator documentation
 
-
 ### Scripts
+
 - [scripts/](./scripts/) - Management and utility scripts
 
 ## License

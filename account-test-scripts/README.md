@@ -3,11 +3,13 @@
 > Quick test suite for validating AWS account access and permissions
 
 ## 🚀 Quick Start
+
 ```bash
 cd account-test-scripts/ && ./run.sh
 ```
 
 ## 📋 TL;DR
+
 - Tests S3 and SageMaker access
 - Validates AWS credentials
 - Checks bucket permissions
@@ -16,6 +18,7 @@ cd account-test-scripts/ && ./run.sh
 - Detailed error reporting
 
 ## 🔑 Prerequisites
+
 - Python 3.10+
 - AWS credentials (Access Key + Secret Key)
 - AWS Region: us-east-2 (default)
@@ -23,12 +26,14 @@ cd account-test-scripts/ && ./run.sh
 ## ✨ Features
 
 ### 🔄 Test Runner
+
 - Simple menu interface
 - Saves credentials between tests
 - Run individual or all tests
 - Clear pass/fail indicators
 
 ### 📦 S3 Tests
+
 - Automatic username and bucket name detection
 - Complete S3 operation validation:
   1. Local file creation
@@ -41,7 +46,9 @@ cd account-test-scripts/ && ./run.sh
 - Team bucket name validation (format: `comp-user-XXXXXX-team-bucket`)
 
 ### 🤖 SageMaker Tests
+
 Validates access to:
+
 - Studio domains
 - Notebook instances
 - Processing jobs
@@ -50,6 +57,7 @@ Validates access to:
 - Endpoints
 
 Includes:
+
 - 24h job history
 - Failed job analysis
 - Detailed error help
@@ -57,11 +65,13 @@ Includes:
 ## 📱 Usage
 
 1. Run tests:
+
 ```bash
 cd account-test-scripts/ && ./run.sh
 ```
 
 2. Pick a test:
+
 ```
 1️⃣ Test S3 Access
 2️⃣ Test SageMaker Access
@@ -70,6 +80,7 @@ cd account-test-scripts/ && ./run.sh
 ```
 
 3. Add credentials:
+
 ```
 AWS Access Key ID: XXXX...
 AWS Secret Key: YYYY...
@@ -88,12 +99,15 @@ account-test-scripts/
 ## 🛠 Development
 
 ### Dependencies
+
 - boto3: AWS SDK
 - pytest: Testing
 - Dev tools in pyproject.toml
 
 ### Virtual Env
+
 Auto-created by run.sh:
+
 ```bash
 # Install deps
 ./run.sh
@@ -102,17 +116,21 @@ Auto-created by run.sh:
 ## ❌ Troubleshooting
 
 ### Common Issues
+
 1. **Bad Credentials**
+
    - Check Access Key/Secret
    - Verify IAM permissions
    - Region = us-east-2
 
-2. **S3 Problems** 
+2. **S3 Problems**
+
    - Check bucket name format
    - Verify bucket exists
    - Check S3 permissions
 
 3. **SageMaker Issues**
+
    - IAM roles correct?
    - Within service limits?
    - Check job logs
@@ -123,6 +141,7 @@ Auto-created by run.sh:
    - Check error details
 
 ### Error Format
+
 ```
 ❌ Error: AccessDenied
 Tips:
@@ -132,6 +151,7 @@ Tips:
 ```
 
 ## 💡 Need Help?
+
 - Check error messages
 - Review IAM permissions
 - Contact AWS support

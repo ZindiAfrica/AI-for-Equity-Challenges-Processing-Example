@@ -1,18 +1,20 @@
 # AWS Sign In Guide
 
 ## Sign In URL
+
 Use this URL to access the AWS Console:
-https://zindicomp.signin.aws.amazon.com
+<https://zindicomp.signin.aws.amazon.com>
 
 This URL will automatically populate the account ID field.
 
 ## Account Details
+
 - Account ID: 869935100875 (or zindicomp)
 - Username Format: comp-user-XXXXXX (where XXXXXX is your assigned user ID)
 
 ## Sign In Steps
 
-1. Navigate to https://zindicomp.signin.aws.amazon.com
+1. Navigate to <https://zindicomp.signin.aws.amazon.com>
 2. The account ID field should be pre-filled with "zindicomp"
 3. Enter your IAM username in the format: comp-user-XXXXXX
 4. Enter your password
@@ -25,6 +27,7 @@ This URL will automatically populate the account ID field.
 If you encounter sign in issues:
 
 1. Verify you're using the correct:
+
    - Sign in URL
    - Account ID (869935100875 or zindicomp)
    - Username format (comp-user-XXXXXX)

@@ -1,6 +1,7 @@
 # Running with AWS SageMaker Studio (Recommended)
 
 ## Prerequisites
+
 - Access to AWS SageMaker Studio (provided by competition organizers)
 - Your team's S3 bucket permissions
 - GitHub account with repository access
@@ -12,10 +13,12 @@
 The pipeline automatically handles role selection based on your AWS identity:
 
 1. If running in SageMaker:
+
    - Uses the SageMaker execution role
 
 2. If running locally with comp-user account:
-   - Attempts to use `SageMakerRole-{username}` 
+
+   - Attempts to use `SageMakerRole-{username}`
    - Falls back to user credentials if role access fails
 
 3. If running with other accounts:
@@ -26,11 +29,13 @@ The pipeline automatically handles role selection based on your AWS identity:
 You can run this pipeline directly from AWS CloudShell:
 
 1. Open AWS CloudShell:
+
    - Go to AWS Console
    - Click the CloudShell icon in the top navigation bar
    - Wait for the shell environment to initialize
 
 2. Clone and setup the repository:
+
    ```bash
    git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Processing-Example.git
    cd AI-for-Equity-Challenges-Processing-Example
@@ -39,22 +44,26 @@ You can run this pipeline directly from AWS CloudShell:
    ```
 
    Note: For comp-user accounts, the pipeline will automatically try to use:
+
    ```
    arn:aws:iam::{account_id}:role/SageMakerRole-comp-user-{id}
    ```
 
 3. Configure git:
+
    ```bash
    git config --global user.name "Your Name"
    git config --global user.email "your.email@example.com"
    ```
 
 4. Run the pipeline:
+
    ```bash
    python build_and_run_aws.py
    ```
 
 5. Monitor progress:
+
    ```bash
    aws sagemaker list-processing-jobs
    aws sagemaker describe-processing-job --processing-job-name <job-name>
@@ -63,11 +72,14 @@ You can run this pipeline directly from AWS CloudShell:
 ## SageMaker Studio Setup
 
 1. Configure AWS credentials in SageMaker:
+
    - Open SageMaker Studio Terminal
    - Run AWS configuration:
+
    ```bash
    aws configure
    ```
+
    - Enter your:
      - AWS Access Key ID
      - AWS Secret Access Key
@@ -75,11 +87,13 @@ You can run this pipeline directly from AWS CloudShell:
      - Default output format (json)
 
 2. Verify AWS configuration:
+
    ```bash
    aws sts get-caller-identity
    ```
 
 3. Configure git in SageMaker:
+
    ```bash
    git config --global user.name "Your Name"
    git config --global user.email "your.email@example.com"
@@ -91,6 +105,7 @@ You can run this pipeline directly from AWS CloudShell:
 2. Open SageMaker Studio and select your user profile
 3. In the launcher, choose "Python 3 (PyTorch 2.0 Python 3.10 GPU Optimized)" kernel
 4. Install required packages in a new cell:
+
 ```python
 # Install uv package installer
 !curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -104,6 +119,7 @@ You can run this pipeline directly from AWS CloudShell:
 ```
 
 5. Clone this repository in a new cell:
+
 ```python
 # If using SSH
 !git clone git@github.com:ZindiAfrica/AI-for-Equity-Challenges-Getting-Started-with-AWS-Resources.git
@@ -117,7 +133,9 @@ You can run this pipeline directly from AWS CloudShell:
 ## Running the Pipeline
 
 ### Method A: Direct Notebook Execution
+
 Run notebooks in order:
+
 ```python
 %run notebooks/outsmarting_data_prep.py
 %run notebooks/outsmarting_train.py
@@ -126,6 +144,7 @@ Run notebooks in order:
 ```
 
 ### Method B: Using Step Functions
+
 ```python
 import boto3
 import json
@@ -173,6 +192,7 @@ response = sfn.start_execution(
 ```
 
 ### Method C: Using AWS Batch
+
 ```python
 import boto3
 
